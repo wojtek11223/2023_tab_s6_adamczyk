@@ -1,0 +1,45 @@
+.Menu {
+  display: grid;
+  position: sticky;
+  width: 100%;
+  top: 0;
+  z-index: 999;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: 1fr;
+  background-color: rgb(8, 19, 25);
+}
+
+.Right,
+.Left {
+  width: 100%;
+  list-style-type: none;
+}
+
+.Right li {
+  float: right;
+}
+
+.Left li {
+  float: left;
+}
+
+.Menu li {
+  display: inline-block;
+  width: fit-content;
+  height: fit-content;
+  transition: ease-in-out 0.2s;
+}
+
+.Menu li:hover {
+  box-shadow: inset 0 -4px 0 white;
+  transition: ease-in-out 0.2s;
+}
+
+.Menu li a {
+  display: flex;
+  flex-shrink: 0;
+  width: 140px;
+  height: 50px;
+  align-items: center;
+  justify-content: center;
+}

@@ -28,12 +28,9 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         user.setName(userDto.getUsername());
         user.setEmail(userDto.getEmail());
-
-        //encrypt the password once we integrate spring security
-        //user.setPassword(userDto.getPassword());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
-        user.setRole(Role.ADMIN);
+        user.setRole(Role.USER);
         userRepository.save(user);
     }
 

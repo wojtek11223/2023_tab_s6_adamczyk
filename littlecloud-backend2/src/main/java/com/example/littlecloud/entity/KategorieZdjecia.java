@@ -24,3 +24,4 @@ public class KategorieZdjecia {
     @ManyToOne
     @JoinColumn(name = "id_kategorii")
     private Kategorie kategoria;
+}

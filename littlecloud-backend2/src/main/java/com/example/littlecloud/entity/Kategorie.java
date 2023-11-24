@@ -29,6 +29,6 @@ public class Kategorie {
 
     @ManyToOne
     @JoinColumn(name = "id_uzytkownik", nullable = false)
-    private User user;
+    private User uzytkownik;
 
 }

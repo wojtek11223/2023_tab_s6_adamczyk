@@ -1,11 +1,11 @@
 package com.example.littlecloud.controller;
 
 import com.example.littlecloud.dto.LoginDTO;
-import com.example.littlecloud.dto.LoginRes;
 import com.example.littlecloud.dto.UserDto;
 import com.example.littlecloud.entity.User;
-import com.example.littlecloud.model.ErrorRes;
 import com.example.littlecloud.service.UserService;
+import com.example.littlecloud.dto.LoginRes;
+import com.example.littlecloud.model.ErrorRes;
 import com.example.littlecloud.springjwt.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,18 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.context.SecurityContextHolderStrategy;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
-import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -37,14 +32,15 @@ public class LoginController {
     @Autowired
     private final UserService userService;
 
+    @Autowired
+    private AuthenticationManager authenticationManager;
+
     private final JwtUtil jwtUtil;
     public LoginController(UserService userService, AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
     }
-    @Autowired
-    private AuthenticationManager authenticationManager;
 
     @ResponseBody
     @RequestMapping(value = "/login",method = RequestMethod.POST)
@@ -67,7 +63,6 @@ public class LoginController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
     }
-
 
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@NotNull @RequestBody UserDto user) {
@@ -95,15 +90,12 @@ public class LoginController {
         return ResponseEntity.ok("Logged out successfully");
     }
 
+
     @PostAuthorize("ROLE_ADMIN")
     @GetMapping("/test")
     public ResponseEntity<String> getProtectedResource() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication != null && authentication.getPrincipal() instanceof UserDetails userDetails) {
-            String username = userDetails.getUsername();
-            ResponseEntity.ok(username);
-        }
         assert authentication != null;
         return ResponseEntity.ok(authentication.getName());
     }

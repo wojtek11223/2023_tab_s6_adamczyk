@@ -27,7 +27,7 @@ public class Zdjecia {
     private java.sql.Date dataWykonania;
 
     @Lob
-    @Column(name = "zdjecie", nullable = false)
+    @Column(name = "zdjecie", columnDefinition = "LONGBLOB", nullable = false)
     private byte[] zdjecie;
     
 }

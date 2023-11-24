@@ -3,10 +3,12 @@ package com.example.littlecloud.springjwt;
 import com.example.littlecloud.entity.User;
 import com.example.littlecloud.enums.Role;
 import io.jsonwebtoken.*;
+import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -15,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 public class JwtUtil {
 
 
-    private final String secret_key = "mysecretkey";
+    private final SecretKey secret_key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     private long accessTokenValidity = 60 * 60 * 1000;
 
     private final JwtParser jwtParser;

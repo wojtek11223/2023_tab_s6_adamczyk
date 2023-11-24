@@ -2,6 +2,7 @@ package com.example.littlecloud.entity;
 
 import com.example.littlecloud.enums.Role;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,6 +36,7 @@ public class User implements Serializable {
     private String password;
 
     @Enumerated(EnumType.STRING)
+    @NotNull
     @Column(name = "role", nullable = false)
     private Role role;
 

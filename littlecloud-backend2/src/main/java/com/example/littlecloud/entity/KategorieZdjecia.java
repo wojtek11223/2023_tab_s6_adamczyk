@@ -12,6 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name = "kategorie_zdjecia")
+@IdClass(KategorieZdjeciaId.class)
 public class KategorieZdjecia {
 
     @Id
@@ -23,5 +24,4 @@ public class KategorieZdjecia {
     @ManyToOne
     @JoinColumn(name = "id_kategorii")
     private Kategorie kategoria;
-
 }

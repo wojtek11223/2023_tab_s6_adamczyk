@@ -12,6 +12,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name = "tag")
+@IdClass(TagId.class)
 public class Tag {
 
     @Id
@@ -23,5 +24,4 @@ public class Tag {
     @JoinColumn(name = "id_zdjęcia")
     private Zdjecia zdjecie;
 
-    // Gettery, settery, konstruktory...
 }

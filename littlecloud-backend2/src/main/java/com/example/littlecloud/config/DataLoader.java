@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 
 @Component
@@ -33,21 +34,23 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        User user1 = dodajPrzykladowegoUsera("TypowyStudent", "toja@mail.pl", "haslo123");
-        Kategorie kategorie1 = dodajPrzykladoweKategorie(user1,"Moje fotki");
-        Kategorie kategorie2 = dodajPrzykladoweKategorie(user1,"Zwierzątka", kategorie1);
-
         try {
-            Zdjecia zdjecie = dodajPrzykladoweZdjecie("studenci przy maszynie", "2023-11-22", "studenci.jpg");
-            dodajPrzykladoweKategorieZdjecia(zdjecie, kategorie1);
-            dodajPrzykladowyTag(zdjecie, "zajęcia");
-            dodajPrzykladowyTag(zdjecie, "studenci");
-            Zdjecia zdjecie1 =dodajPrzykladoweZdjecie("kot za drzewem", "2022-01-26", "kot1.jpg");
-            dodajPrzykladoweKategorieZdjecia(zdjecie1, kategorie2);
-            dodajPrzykladowyTag(zdjecie1, "kotek");
-            Zdjecia zdjecie2 =dodajPrzykladoweZdjecie("kot na balu", "2023-11-22", "kot4.jpg");
-            dodajPrzykladoweKategorieZdjecia(zdjecie2, kategorie2);
-            dodajPrzykladowyTag(zdjecie2, "kotek");
+            User user1 = dodajPrzykladowegoUsera("TypowyStudent", "toja@mail.pl", "haslo123");
+            if(user1 != null)
+            {
+                Kategorie kategorie1 = dodajPrzykladoweKategorie(user1,"Moje fotki");
+                Kategorie kategorie2 = dodajPrzykladoweKategorie(user1,"Zwierzątka", kategorie1);
+                Zdjecia zdjecie = dodajPrzykladoweZdjecie("studenci przy maszynie", "2023-11-22", "studenci.jpg");
+                dodajPrzykladoweKategorieZdjecia(zdjecie, kategorie1);
+                dodajPrzykladowyTag(zdjecie, "zajęcia");
+                dodajPrzykladowyTag(zdjecie, "studenci");
+                Zdjecia zdjecie1 =dodajPrzykladoweZdjecie("kot za drzewem", "2022-01-26", "kot1.jpg");
+                dodajPrzykladoweKategorieZdjecia(zdjecie1, kategorie2);
+                dodajPrzykladowyTag(zdjecie1, "kotek");
+                Zdjecia zdjecie2 =dodajPrzykladoweZdjecie("kot na balu", "2023-11-22", "kot4.jpg");
+                dodajPrzykladoweKategorieZdjecia(zdjecie2, kategorie2);
+                dodajPrzykladowyTag(zdjecie2, "kotek");
+            }
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -55,14 +58,22 @@ public class DataLoader implements CommandLineRunner {
 
     }
     public User dodajPrzykladowegoUsera(String nazwauzytkownika, String email,String haslo){
-        User user = new User();
-        user.setName(nazwauzytkownika);
-        user.setEmail(email);
-        user.setRole(Role.USER);
-        String encodedPassword = passwordEncoder.encode(haslo);
-        user.setPassword(encodedPassword);
-        userRepository.save(user);
-        return user;
+        User user = userRepository.findByEmailOrName(email,nazwauzytkownika);
+        if(user== null)
+        {
+            user = new User();
+            user.setName(nazwauzytkownika);
+            user.setEmail(email);
+            user.setRole(Role.USER);
+            String encodedPassword = passwordEncoder.encode(haslo);
+            user.setPassword(encodedPassword);
+            userRepository.save(user);
+            return user;
+        }
+        else
+            return null;
+
+
     }
     public Kategorie dodajPrzykladoweKategorie(User user1, String nazwakategorii){
         Kategorie kategorie = new Kategorie();

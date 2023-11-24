@@ -13,17 +13,16 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
 
 @RestController
 @RequestMapping("/api")
@@ -35,22 +34,34 @@ public class LoginController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
-    public LoginController(UserService userService,
-                           AuthenticationManager authenticationManager
-                           ) {
+
+    private final JwtUtil jwtUtil;
+    public LoginController(UserService userService, AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
         this.userService = userService;
-        this.authenticationManager =authenticationManager;
+        this.authenticationManager = authenticationManager;
+        this.jwtUtil = jwtUtil;
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/login",method = RequestMethod.POST)
+    public ResponseEntity authenticateUser(@RequestBody @NotNull LoginDTO loginDto) {
+        try {
+            Authentication authentication =
+                    authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword()));
+            String email = authentication.getName();
+            User user = userService.findByName(loginDto.getUsername());
+            String token = jwtUtil.createToken(user);
+            LoginRes loginRes = new LoginRes(email, token);
 
-    @PostMapping("/login")
-    public ResponseEntity<String> authenticateUser(@RequestBody @NotNull LoginDTO loginDto) {
-        Authentication authenticationRequest =
-                UsernamePasswordAuthenticationToken.unauthenticated(loginDto.getUsername(), loginDto.getPassword());
-        Authentication authenticationResponse =
-                this.authenticationManager.authenticate(authenticationRequest);
-        SecurityContextHolder.getContext().setAuthentication(authenticationResponse);
-        return new ResponseEntity<>("User login successfully!...", HttpStatus.OK);
+            return ResponseEntity.ok(loginRes);
+
+        } catch (BadCredentialsException e) {
+            ErrorRes errorResponse = new ErrorRes(HttpStatus.BAD_REQUEST, "Invalid username or password");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        } catch (Exception e) {
+            ErrorRes errorResponse = new ErrorRes(HttpStatus.BAD_REQUEST, e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        }
     }
 
     @PostMapping("/register")
@@ -59,8 +70,9 @@ public class LoginController {
             return ResponseEntity.badRequest().body("Username and password are required");
         }
 
-        User existingUser = userService.findByEmail(user.getEmail());
-        if (existingUser != null) {
+        User existingUserEmail = userService.findByEmail(user.getEmail());
+        User existingUserUsername = userService.findByEmail(user.getUsername());
+        if (existingUserEmail != null || existingUserUsername != null) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("User already exists");
         }
 
@@ -68,10 +80,7 @@ public class LoginController {
         userService.saveUser(user);
         return ResponseEntity.ok("User registered successfully!");
     }
-    @GetMapping("/testt")
-    public LoginDTO test(){
-        return new LoginDTO("ok","123");
-    }
+
     @GetMapping("/logout")
     public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -81,16 +90,14 @@ public class LoginController {
         return ResponseEntity.ok("Logged out successfully");
     }
 
+
+    @PostAuthorize("ROLE_ADMIN")
     @GetMapping("/test")
     public ResponseEntity<String> getProtectedResource() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if (authentication != null && authentication.getPrincipal() instanceof UserDetails userDetails) {
-            String username = userDetails.getUsername();
-            // Możesz pobrać inne informacje, takie jak id, z UserDetails.
-            ResponseEntity.ok(username);
-        }
-        return ResponseEntity.ok("dupa");
+        assert authentication != null;
+        return ResponseEntity.ok(authentication.getName());
     }
 
 }

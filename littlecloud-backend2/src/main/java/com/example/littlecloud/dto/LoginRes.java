@@ -1,27 +1,18 @@
 package com.example.littlecloud.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class LoginRes {
-    private String email;
+    private String username;
     private String token;
 
-    public LoginRes(String email, String token) {
-        this.email = email;
+    public LoginRes(String username, String token) {
+        this.username = username;
         this.token = token;
     }
 
-    public String getEmail() {
-        return email;
-    }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
 }

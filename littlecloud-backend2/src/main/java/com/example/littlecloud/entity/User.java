@@ -10,8 +10,6 @@ import lombok.Setter;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @Setter
@@ -42,9 +40,5 @@ public class User implements Serializable {
     @Column(name = "role", nullable = false)
     private Role role;
 
-    public User(String email, String password) {
-        this.email = email;
-        this.password = password;
-    }
 
 }

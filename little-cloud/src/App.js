@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes, Navigate } from "react-router-dom";
 
-import ChmurkaDuza from "./assets/ChmurkaNot.svg";
+import CloudSmile from "./assets/CloudSmile.svg";
+import CloudSad from "./assets/CloudSad.svg";
 
 import "./App.css";
 import Menu from "./components/menu/Menu";
@@ -20,7 +21,7 @@ function App() {
           <Route path="/albums" element={<Albums />} />
         </Routes>
       </BrowserRouter>
-      <img className="ChmurkaDuza" src={ChmurkaDuza} alt="" />
+      <img className="Cloud" src={CloudSmile} alt="" />
     </>
   );
 }

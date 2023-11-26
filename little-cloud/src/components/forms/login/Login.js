@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 import "../Form.css";
 
@@ -8,6 +9,7 @@ import Eye from "../../../assets/eye.svg";
 import EyeClose from "../../../assets/eye-alt.svg";
 
 function Login() {
+  const navigate = useNavigate();
   const [message, setMessage] = useState("");
   const [passwordShow, setPasswordShow] = useState(false);
   const {
@@ -22,11 +24,12 @@ function Login() {
       password: data.password,
     };
     const apiUrl = "http://localhost:8080/api/login";
-    // Wywołaj API za pomocą Axios
     axios
       .post(apiUrl, postData)
       .then((response) => {
-        setMessage(`Zalogowano Token: ${response.data.token}`);
+        sessionStorage.setItem('authToken', response.data.token);
+        sessionStorage.setItem('authName', response.data.username);
+        navigate('/albums');
       })
       .catch((error) => {
         // Obsłuż błąd
@@ -39,6 +42,15 @@ function Login() {
       });
   };
   const handleError = (errors) => console.log(errors);
+
+  useEffect(() => {
+    // Sprawdź stan sesji lub wykonaj inne operacje po załadowaniu komponentu
+    const authToken = sessionStorage.getItem('authToken');
+    if (authToken) {
+      navigate("/albums");
+      console.log('Użytkownik jest zalogowany');
+    }
+  }, []);
 
   // const handleClick = () => {
   //   if (password.showPassword === true)

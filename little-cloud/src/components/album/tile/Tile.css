@@ -1,0 +1,58 @@
+.Tile {
+  width: 100%;
+  border-radius: 20px;
+  background-color: rgb(8, 19, 25);
+  display: flex;
+  flex-direction: column;
+  transition: ease-in-out 0.2s;
+  cursor: pointer;
+  padding: 15px 15px 0 15px;
+  overflow: hidden;
+}
+
+.Tile .Picture {
+  width: 100%;
+  height: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px 8px 2px 2px;
+  overflow: hidden;
+  aspect-ratio: 4/3;
+}
+
+.Tile .Text {
+  width: 100%;
+  height: 20%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 10px 0 10px;
+}
+
+.Tile p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 20px;
+  color: white;
+}
+
+.Tile .Picture img {
+  width: 100%;
+  transition: ease-in-out 0.2s;
+}
+
+.Tile:hover {
+  box-shadow: inset 0 -3px 0 white;
+  transition: ease-in-out 0.2s;
+}
+
+.Tile:hover .Picture img {
+  opacity: 100%;
+}
+
+.Tile:hover .Text {
+  color: white;
+  transition: ease-in-out 0.2s;
+}

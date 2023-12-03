@@ -30,11 +30,12 @@ function Login() {
         sessionStorage.setItem('authToken', response.data.token);
         sessionStorage.setItem('authName', response.data.username);
         navigate('/albums');
+        window.location.reload();
       })
       .catch((error) => {
         // Obsłuż błąd
         setMessage(
-          `Login failed. ${
+          `${
             error.response ? error.response.data.message : "Unknown error"
           }`
         );

@@ -1,8 +1,11 @@
 package com.example.littlecloud.controller;
 
+import com.example.littlecloud.dto.KategorieDTO;
 import com.example.littlecloud.dto.LoginDTO;
 import com.example.littlecloud.dto.UserDto;
+import com.example.littlecloud.entity.Kategorie;
 import com.example.littlecloud.entity.User;
+import com.example.littlecloud.service.KategorieService;
 import com.example.littlecloud.service.UserService;
 import com.example.littlecloud.dto.LoginRes;
 import com.example.littlecloud.model.ErrorRes;
@@ -18,19 +21,25 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 
 @RestController
 @RequestMapping("/api")
-@CrossOrigin("http://localhost:3000")
+@CrossOrigin(origins = "http://localhost:3000", allowedHeaders = "*")
 public class LoginController {
 
     @Autowired
     private final UserService userService;
+
+    @Autowired
+    private KategorieService categoryService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -56,7 +65,7 @@ public class LoginController {
             return ResponseEntity.ok(loginRes);
 
         } catch (BadCredentialsException e) {
-            ErrorRes errorResponse = new ErrorRes(HttpStatus.BAD_REQUEST, "Invalid username or password");
+            ErrorRes errorResponse = new ErrorRes(HttpStatus.BAD_REQUEST, "Nieprawidłowa nazwa użytkownika lub hasło");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         } catch (Exception e) {
             ErrorRes errorResponse = new ErrorRes(HttpStatus.BAD_REQUEST, e.getMessage());
@@ -98,6 +107,13 @@ public class LoginController {
 
         assert authentication != null;
         return ResponseEntity.ok(authentication.getName());
+    }
+
+    @GetMapping("/albums")
+    public ResponseEntity<List<KategorieDTO>> getAllUserCategories() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<KategorieDTO> userCategories = categoryService.getAllUserCategories(authentication.getName());
+        return ResponseEntity.ok(userCategories);
     }
 
 }

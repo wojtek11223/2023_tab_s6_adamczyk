@@ -2,14 +2,14 @@ import React from "react";
 import "./Tile.css";
 import Chmurka from "../../../assets/Kot.jpg";
 
-function Tile() {
+function Tile({albumName}) {
   return (
     <div className="Tile">
       <div className="Picture">
         <img src={Chmurka} alt="" />
       </div>
       <div className="Text">
-        <p>Nazwa albumu Little Cloud</p>
+        <p>{albumName}</p>
       </div>
     </div>
   );

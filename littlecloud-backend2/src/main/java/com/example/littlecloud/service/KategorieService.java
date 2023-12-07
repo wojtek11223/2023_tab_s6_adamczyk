@@ -20,12 +20,17 @@ public class KategorieService {
     }
 
     public List<KategorieDTO> getAllUserCategories(String username) {
-        List<Kategorie> kategorie = kategorieRepo.findAllByUzytkownik_Name(username);
-        return kategorie.stream()
+        List<Kategorie> kategories = kategorieRepo.findAllByUzytkownik_Name(username);
+        return kategories.stream()
                 .map(this::mapKategorieToDTO)
                 .collect(Collectors.toList());
     }
-
+    public List<KategorieDTO> getSubCategoriesByParentId(Long parentid, String username) {
+        List<Kategorie> kategories = kategorieRepo.findAllByUzytkownik_NameAndNadkategoria_IdKategorii(username,parentid);
+        return kategories.stream()
+                .map(this::mapKategorieToDTO)
+                .collect(Collectors.toList());
+    }
     private KategorieDTO mapKategorieToDTO(Kategorie kategorie) {
         KategorieDTO kategorieDTO = new KategorieDTO();
         kategorieDTO.setIdKategorii(kategorie.getIdKategorii());

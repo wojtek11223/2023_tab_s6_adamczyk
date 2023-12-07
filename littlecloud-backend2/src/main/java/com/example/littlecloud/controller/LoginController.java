@@ -116,4 +116,10 @@ public class LoginController {
         return ResponseEntity.ok(userCategories);
     }
 
+    @GetMapping("/album/{categoryId}")
+    public ResponseEntity<List<KategorieDTO>> getCategoryById(@PathVariable Long categoryId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<KategorieDTO> subCategories = categoryService.getSubCategoriesByParentId(categoryId,authentication.getName());
+        return ResponseEntity.ok(subCategories);
+    }
 }

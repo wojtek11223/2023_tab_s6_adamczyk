@@ -13,14 +13,6 @@ import PhotoUploadForm from "./components/forms/PhotoUpload";
 
 
 function App() {
-  const PrivateRoute = ({ path, element }) => {
-    return sessionStorage.getItem("AuthName") != null ? (
-      <Route path={path} element={element} />
-    ) : (
-      <Navigate to="/login" />
-    );
-  };
-
   return (
     <BrowserRouter>
       <Menu />
@@ -31,6 +23,7 @@ function App() {
         {sessionStorage.getItem("authName") != null ? (
           <>
             <Route path="/albums" element={<Albums />} />
+            <Route path="/albums/:albumId" element={<Albums />} />
             <Route path="/logout" element={<Logout />} />
             <Route path="/photoUpload" element={<PhotoUploadForm />} />
           </>
@@ -42,6 +35,5 @@ function App() {
     </BrowserRouter>
   );
 }
-
 
 export default App;

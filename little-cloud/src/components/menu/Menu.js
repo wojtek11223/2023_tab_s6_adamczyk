@@ -50,7 +50,7 @@ class Menu extends React.Component {
                   <a href="/albums">Albumy</a>
                 </li>
                 <li>
-                  <a href="/photoUpload">Albumy</a>
+                  <a href="/photoUpload">Dodaj zdjęcie</a>
                 </li>
               </ul>
               <ul className="Right">

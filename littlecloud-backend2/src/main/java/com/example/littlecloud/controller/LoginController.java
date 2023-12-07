@@ -79,15 +79,13 @@ public class LoginController {
             return ResponseEntity.badRequest().body("Username and password are required");
         }
 
-        User existingUserEmail = userService.findByEmail(user.getEmail());
-        User existingUserUsername = userService.findByEmail(user.getUsername());
-        if (existingUserEmail != null || existingUserUsername != null) {
-            return ResponseEntity.status(HttpStatus.CONFLICT).body("User already exists");
+        User existingUser = userService.findByEmailOrName(user.getUsername(),user.getEmail());
+        if (existingUser != null) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Użytkownik o podanych danych już istnieje");
         }
 
-
         userService.saveUser(user);
-        return ResponseEntity.ok("User registered successfully!");
+        return ResponseEntity.ok("Użytkownik został pomyślnie dodany");
     }
 
     @GetMapping("/logout")
@@ -96,7 +94,7 @@ public class LoginController {
         if (authentication != null) {
             new SecurityContextLogoutHandler().logout(request, response, authentication);
         }
-        return ResponseEntity.ok("Logged out successfully");
+        return ResponseEntity.ok("Wylogowano pomyślnie");
     }
 
 
@@ -116,4 +114,10 @@ public class LoginController {
         return ResponseEntity.ok(userCategories);
     }
 
+    @GetMapping("/album/{categoryId}")
+    public ResponseEntity<List<KategorieDTO>> getSubCategoryById(@PathVariable Long categoryId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<KategorieDTO> subCategories = categoryService.getSubCategoriesByParentId(categoryId,authentication.getName());
+        return ResponseEntity.ok(subCategories);
+    }
 }

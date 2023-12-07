@@ -57,7 +57,7 @@ public class DataLoader implements CommandLineRunner {
         }
 
     }
-    public User dodajPrzykladowegoUsera(String nazwauzytkownika, String email,String haslo){
+    private User dodajPrzykladowegoUsera(String nazwauzytkownika, String email,String haslo){
         User user = userRepository.findByEmailOrName(email,nazwauzytkownika);
         if(user== null)
         {
@@ -75,7 +75,7 @@ public class DataLoader implements CommandLineRunner {
 
 
     }
-    public Kategorie dodajPrzykladoweKategorie(User user1, String nazwakategorii){
+    private Kategorie dodajPrzykladoweKategorie(User user1, String nazwakategorii){
         Kategorie kategorie = new Kategorie();
         kategorie.setNazwaKategorii(nazwakategorii);
         kategorie.setUzytkownik(user1);
@@ -83,7 +83,7 @@ public class DataLoader implements CommandLineRunner {
         return kategorie;
     }
 
-    public Kategorie dodajPrzykladoweKategorie(User user1, String nazwakategorii, Kategorie kategorie1){
+    private Kategorie dodajPrzykladoweKategorie(User user1, String nazwakategorii, Kategorie kategorie1){
         Kategorie kategorie = new Kategorie();
         kategorie.setNazwaKategorii(nazwakategorii);
         kategorie.setNadkategoria(kategorie1);
@@ -92,19 +92,19 @@ public class DataLoader implements CommandLineRunner {
         return kategorie;
     }
 
-    public void dodajPrzykladoweKategorieZdjecia(Zdjecia zdjecie, Kategorie kategoria){
+    private void dodajPrzykladoweKategorieZdjecia(Zdjecia zdjecie, Kategorie kategoria){
         KategorieZdjecia kategorieZdjecia = new KategorieZdjecia();
         kategorieZdjecia.setZdjecia(zdjecie);
         kategorieZdjecia.setKategoria(kategoria);
         kategorieZdjeciaRepo.save(kategorieZdjecia);
     }
-    public void dodajPrzykladowyTag(Zdjecia zdjecie, String nazwatagu){
+    private void dodajPrzykladowyTag(Zdjecia zdjecie, String nazwatagu){
         Tag tag = new Tag();
         tag.setTag(nazwatagu);
         tag.setZdjecie(zdjecie);
         tagRepo.save(tag);
     }
-    public Zdjecia dodajPrzykladoweZdjecie(String nazwazdjecia, String datawykonania, String zdjeciewalbumie) throws IOException {
+    private Zdjecia dodajPrzykladoweZdjecie(String nazwazdjecia, String datawykonania, String zdjeciewalbumie) throws IOException {
         Path currentPath = Paths.get("").toAbsolutePath().resolve("przykladoweZdjecia").resolve(zdjeciewalbumie);
         String projectFolderPath = currentPath.toString();
         System.out.println("Pełna ścieżka: " + projectFolderPath);

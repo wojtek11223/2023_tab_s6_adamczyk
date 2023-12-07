@@ -45,6 +45,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User findByEmailOrName(String username, String email) {
+        return userRepository.findByEmailOrName(email, username);
+    }
+
+    @Override
     public List<UserDto> findAllUsers() {
         List<User> users = userRepository.findAll();
         return users.stream().map(this::convertEntityToDto)

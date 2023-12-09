@@ -35,7 +35,8 @@ function Albums() {
         headers: {
           Authorization: `Bearer ${authToken}`,
           Accept: "*/*",
-        },
+          "Content-Type": "application/json",
+        }
       })
       .then((response) => {
         setAlbums(response.data);

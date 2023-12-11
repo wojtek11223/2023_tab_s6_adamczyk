@@ -6,9 +6,9 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 
 import Tile from "./tile/Tile";
+import Filters from "./filters/Filters";
 
 function Albums() {
-  
   const navigate = useNavigate();
   const [allalbums, setAlllbums] = useState(null);
   const [albums, setAlbums] = useState(null);
@@ -22,10 +22,9 @@ function Albums() {
   useEffect(() => {
     if (inView && loading) {
       let apiURL;
-      if(albumId === undefined) {
+      if (albumId === undefined) {
         apiURL = "http://localhost:8080/api/albums";
-      }
-      else {
+      } else {
         apiURL = `http://localhost:8080/api/album/${albumId}`;
       }
 
@@ -36,19 +35,19 @@ function Albums() {
           Authorization: `Bearer ${authToken}`,
           Accept: "*/*",
           "Content-Type": "application/json",
-        }
+        },
       })
-      .then((response) => {
-        setAlbums(response.data);
-        setAlllbums(response.data);
-      })
-      .catch((error) => {
-        console.error(error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }
+        .then((response) => {
+          setAlbums(response.data);
+          setAlllbums(response.data);
+        })
+        .catch((error) => {
+          console.error(error);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
   }, [inView, authToken, loading]);
 
   useEffect(() => {
@@ -69,24 +68,24 @@ function Albums() {
   };
 
   return (
-    <div className="Collection" ref={ref}>
-      {loading ? (
-        <p>Loading...</p>
-      ) : (
-        albums &&
-        albums.length != 0 ? (
+    <>
+      <Filters />
+      <div className="Collection" ref={ref}>
+        {loading ? (
+          <p>Loading...</p>
+        ) : albums && albums.length != 0 ? (
           albums.map((album) => (
             <Tile
               key={album.id}
               albumName={album.nazwaKategorii}
               onClick={() => handleTileClick(album.idKategorii)}
             ></Tile>
-          )) 
+          ))
         ) : (
           <p>Ta kategoria jest pusta</p>
-        )
-      )}
-    </div>
+        )}
+      </div>
+    </>
   );
 }
 

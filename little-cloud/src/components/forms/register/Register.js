@@ -39,8 +39,8 @@ function Register() {
       })
       .catch((error) => {
         setMessage(
-          `Login failed. ${
-            error.response ? error.response.data.message : "Unknown error"
+          `Nieudana rejestracja. ${
+            error.response.data ? error.response.data : error.message
           }`
         );
       });

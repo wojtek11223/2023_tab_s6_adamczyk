@@ -1,0 +1,137 @@
+.Filters {
+  width: 75vw;
+  margin-top: 50px;
+  padding: 20px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(2px);
+
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  z-index: 10;
+}
+
+.SearchInput input {
+  color: #262626;
+  width: 100%;
+  border-radius: 25px;
+  padding: 10px 10px 10px 40px;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+.SearchInput {
+  position: relative;
+  grid-area: 1 / 2 / 2 / 4;
+}
+
+.SearchInput img {
+  position: absolute;
+  aspect-ratio: 1/1;
+  width: 30px;
+  opacity: 0.7;
+
+  left: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.SelectMenu {
+  grid-area: 1 / 4 / 2 / 5;
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+
+.SelectMenu .SelectCont {
+  width: 80%;
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+
+.SelectMenu .SelectButton {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  border-radius: 25px;
+  align-items: center;
+  color: #262626;
+  padding: 10px 10px 10px 15px;
+  text-align: left;
+  user-select: none;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+.SelectMenu .SelectButton img {
+  position: absolute;
+  aspect-ratio: 1/1;
+  width: 20px;
+  opacity: 0.7;
+
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.SelectList.active {
+  position: absolute;
+  left: 0;
+  top: 50px;
+  list-style: none;
+  display: block;
+  width: 100%;
+  background-color: white;
+  padding: 10px;
+  border-radius: 25px;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  visibility: visible;
+}
+
+.SelectList.inactive {
+  position: absolute;
+  left: 0;
+  top: 50px;
+  list-style: none;
+  display: block;
+  width: 80%;
+  background-color: white;
+  padding: 10px;
+  border-radius: 25px;
+  visibility: hidden;
+  opacity: 0;
+}
+
+.SelectList.inactive li {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.SelectList li {
+  list-style: none;
+  display: block;
+  color: #262626;
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.SelectList li:hover {
+  background-color: #262626;
+  color: white;
+}
+
+@media screen and (max-width: 1000px) {
+  .Filters {
+    width: 100vw;
+  }
+}

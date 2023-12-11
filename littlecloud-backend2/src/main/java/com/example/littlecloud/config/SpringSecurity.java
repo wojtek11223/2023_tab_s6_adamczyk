@@ -53,8 +53,8 @@ public class SpringSecurity {
         http.csrf().disable()
                 .authorizeHttpRequests((authorize) ->
                         //authorize.anyRequest().authenticated()
-                        authorize.requestMatchers("/api/login", "api/register", "/api/album/*").permitAll()
-                                .requestMatchers("/api/test" , "/api/albums"  ).hasRole("USER")
+                        authorize.requestMatchers("/api/login", "api/register", "/api/album/*", "/api/albums" ).permitAll()
+                                .requestMatchers("/api/test").hasRole("USER")
                                 .and().addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
 
                 );

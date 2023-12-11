@@ -8,11 +8,40 @@ import { useParams } from "react-router-dom";
 import Tile from "./tile/Tile";
 import Filters from "./filters/Filters";
 
+const tempAlbums = [
+  {
+    idKategorii: "3",
+    nazwaKategorii: "Kotek",
+    id_kat_nadrz: "null",
+  },
+  {
+    idKategorii: "4",
+    nazwaKategorii: "Miasto",
+    id_kat_nadrz: null,
+  },
+  {
+    idKategorii: "5",
+    nazwaKategorii: "Abrakadabra",
+    id_kat_nadrz: null,
+  },
+  {
+    idKategorii: "6",
+    nazwaKategorii: "Czary Mary",
+    id_kat_nadrz: null,
+  },
+  {
+    idKategorii: "7",
+    nazwaKategorii: "Zespół",
+    id_kat_nadrz: null,
+  },
+];
+
 function Albums() {
   const navigate = useNavigate();
-  const [allalbums, setAlllbums] = useState(null);
   const [albums, setAlbums] = useState(null);
+  const [albumsSort, setAlbumsSort] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [funny, setFunny] = useState();
   const { albumId } = useParams();
   const [ref, inView] = useInView({
     triggerOnce: true,
@@ -39,10 +68,12 @@ function Albums() {
       })
         .then((response) => {
           setAlbums(response.data);
-          setAlllbums(response.data);
+          setAlbumsSort(response.data);
         })
         .catch((error) => {
           console.error(error);
+          setAlbums(tempAlbums);
+          setAlbumsSort(tempAlbums);
         })
         .finally(() => {
           setLoading(false);
@@ -69,14 +100,19 @@ function Albums() {
 
   return (
     <>
-      <Filters />
+      <Filters
+        albums={albums}
+        albumsSort={albumsSort}
+        setAlbumsSort={setAlbumsSort}
+        setFunny={setFunny}
+      />
       <div className="Collection" ref={ref}>
         {loading ? (
           <p>Loading...</p>
-        ) : albums && albums.length != 0 ? (
-          albums.map((album) => (
+        ) : albumsSort && albumsSort.length != 0 ? (
+          albumsSort.map((album) => (
             <Tile
-              key={album.id}
+              key={album.idKategorii}
               albumName={album.nazwaKategorii}
               onClick={() => handleTileClick(album.idKategorii)}
             ></Tile>

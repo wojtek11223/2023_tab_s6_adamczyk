@@ -3,9 +3,10 @@ import "./Filters.css";
 import Search from "../../../assets/search.svg";
 import Arrow from "../../../assets/arrow.svg";
 
-function Filters() {
+function Filters({ albums, albumsSort, setAlbumsSort, setFunny }) {
   const [selectedOption, setSelectedOption] = useState("Sortowanie");
   const [showOptions, setShowOptions] = useState(false);
+  const [searchText, setSearchText] = useState("");
 
   let menuRef = useRef();
 
@@ -19,13 +20,56 @@ function Filters() {
     return () => {
       document.removeEventListener("mousedown", handler);
     };
-  });
+  }, [menuRef]);
+
+  useEffect(() => {
+    if (searchText) {
+      let newAlbums = albums.filter((album) => {
+        if (
+          album.nazwaKategorii.toLowerCase().includes(searchText.toLowerCase())
+        ) {
+          return album;
+        }
+      });
+      setAlbumsSort(newAlbums);
+    } else {
+      setAlbumsSort(albums);
+    }
+  }, [searchText]);
+
+  const defaultSort = () => {
+    const sortedAlbums = albumsSort.sort(
+      (a, b) => a.idKategorii - b.idKategorii
+    );
+    setAlbumsSort(sortedAlbums);
+    setFunny(0);
+  };
+
+  const handleSort = () => {
+    const sortedAlbums = albumsSort.sort((a, b) =>
+      a.nazwaKategorii.localeCompare(b.nazwaKategorii)
+    );
+    setAlbumsSort(sortedAlbums);
+    setFunny(1);
+  };
+
+  const handleSortRe = () => {
+    const sortedAlbums = albumsSort.sort((a, b) =>
+      b.nazwaKategorii.localeCompare(a.nazwaKategorii)
+    );
+    setAlbumsSort(sortedAlbums);
+    setFunny(2);
+  };
 
   return (
     <div className="Filters">
       <div className="SearchInput">
         <img src={Search} alt=""></img>
-        <input type="text" placeholder="Wyszukaj po nazwie" />
+        <input
+          type="text"
+          placeholder="Wyszukaj po nazwie"
+          onChange={(e) => setSearchText(e.target.value)}
+        />
       </div>
       <div className="SelectMenu" ref={menuRef}>
         <div className="SelectCont">
@@ -40,23 +84,29 @@ function Filters() {
           </button>
 
           <ul className={`SelectList ${showOptions ? "active" : "inactive"}`}>
-            <li onClick={(e) => setSelectedOption(e.target.innerHTML)}>
+            <li
+              onClick={(e) => {
+                setSelectedOption(e.target.innerHTML);
+                defaultSort();
+              }}
+            >
               Domyślnie
             </li>
-            <li onClick={(e) => setSelectedOption(e.target.innerHTML)}>
+            <li
+              onClick={(e) => {
+                setSelectedOption(e.target.innerHTML);
+                handleSort();
+              }}
+            >
               Alfabetycznie rosnąco
             </li>
-            <li onClick={(e) => setSelectedOption(e.target.innerHTML)}>
+            <li
+              onClick={(e) => {
+                setSelectedOption(e.target.innerHTML);
+                handleSortRe();
+              }}
+            >
               Alfabetycznie malejąco
-            </li>
-            <li onClick={(e) => setSelectedOption(e.target.innerHTML)}>
-              Rzecz
-            </li>
-            <li onClick={(e) => setSelectedOption(e.target.innerHTML)}>
-              Banan
-            </li>
-            <li onClick={(e) => setSelectedOption(e.target.innerHTML)}>
-              Pomarańcza
             </li>
           </ul>
         </div>

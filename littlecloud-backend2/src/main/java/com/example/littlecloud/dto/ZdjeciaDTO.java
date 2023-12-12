@@ -14,7 +14,10 @@ import java.sql.Date;
 @AllArgsConstructor
 public class ZdjeciaDTO {
 
-    private Zdjecia zdjecia;
+    private Long idZdjecia;
+    private String nazwa;
     private String format;
+    private byte[] miniaturka;
+
 
 }

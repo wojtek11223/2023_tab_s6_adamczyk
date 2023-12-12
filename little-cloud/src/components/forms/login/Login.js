@@ -45,7 +45,6 @@ function Login() {
   const handleError = (errors) => console.log(errors);
 
   useEffect(() => {
-    // Sprawdź stan sesji lub wykonaj inne operacje po załadowaniu komponentu
     const authToken = sessionStorage.getItem('authToken');
     if (authToken) {
       navigate("/albums");

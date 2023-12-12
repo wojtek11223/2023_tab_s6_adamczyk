@@ -130,10 +130,65 @@ public class LoginController {
         return ResponseEntity.ok(userCategories);
     }
     @GetMapping("/album/{categoryId}")
-    public ResponseEntity<List<KategorieDTO>> getSubCategoryById(@PathVariable Long categoryId) {
+    public ResponseEntity<ZdjeciaKategorieDTO> getAllImages(@PathVariable Long categoryId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        List<KategorieDTO> subCategories = categoryService.getSubCategoriesByParentId(categoryId,authentication.getName());
-        return ResponseEntity.ok(subCategories);
+        List<ZdjeciaDTO> images;
+        if (categoryId != null) {
+            images = zdjeciaService.getAllZdjeciaDTO(categoryId,authentication.getName());
+            List<KategorieDTO> subCategories = categoryService.getSubCategoriesByParentId(categoryId,authentication.getName());
+            return ResponseEntity.ok(new ZdjeciaKategorieDTO(images,subCategories));
+        } else {
+            return ResponseEntity.status(400).body(null);
+        }
+    }
+    @GetMapping("/photo/{photoId}")
+    public ResponseEntity<SinglePhotoDTO> getPhoto(@PathVariable Long photoId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<ZdjeciaDTO> images;
+        if (photoId != null) {
+            SinglePhotoDTO singlePhotoDTO = zdjeciaService.getZdjecieByIdAndUsername(photoId,authentication.getName());
+            return ResponseEntity.ok(singlePhotoDTO);
+        } else {
+            return ResponseEntity.status(400).body(null);
+        }
+    }
+    @PostMapping("/photo_upload")
+    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file,
+                                                   @RequestParam("wysokosc") String wysokosc,
+                                                   @RequestParam("szerokosc") String szerokosc,
+                                                @RequestParam("nazwa") String nazwa,
+                                                @RequestParam("dataWykonania") Date dataWykonania,
+                                                @RequestParam("nazwaKategorii") String nazwaKategorii) {
+        try {
+            // Jeśli nie ma plików wyślij komunikat 
+            if (file.isEmpty()) {
+                return ResponseEntity.badRequest().body("Please upload a file");
+            }
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            Kategorie kategorie = categoryService.findAllByNazwaKategoriiAndUzytkownik_Name(nazwaKategorii, authentication.getName());
+            if(kategorie == null)
+            {
+                return ResponseEntity.badRequest().body("Nie istenieje podana kategoria");
+            }
+            byte[] imageData = file.getBytes();
+
+            Zdjecia zdjecia = new Zdjecia();
+            zdjecia.setNazwa(nazwa);
+            zdjecia.setDataWykonania(dataWykonania);
+            zdjecia.setZdjecie(imageData);
+            zdjecia.setFormat(file.getContentType());
+            zdjecia.setWidth(szerokosc);
+            zdjecia.setHeight(wysokosc);
+            zdjecia.setMiniaturkaFromOriginal();
+
+            zdjeciaRepo.save(zdjecia);
+            KategorieZdjecia kategorieZdjecia = new KategorieZdjecia(zdjecia,kategorie);
+            kategorieZdjeciaRepo.save(kategorieZdjecia);
+            return ResponseEntity.ok("Plik został pomyślnie dodany");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Error uploading file");
+        }
     }
 
     @GetMapping("/getAllImages")

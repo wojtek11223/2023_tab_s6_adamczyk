@@ -5,7 +5,7 @@ import Chmurka from "../../../assets/Kot.jpg";
 function Tile({ albumName, onClick, image }) {
   const handleTileClick = () => {
     if (onClick) {
-      onClick(); // Execute the onClick function passed as a prop
+      onClick();
     }
   };
 
@@ -13,7 +13,11 @@ function Tile({ albumName, onClick, image }) {
     <div className="Tile" onClick={handleTileClick}>
       <div className="Picture">
         <img
-          src={image ? `data:image/jpeg;base64,${image.zdjecie}` : Chmurka}
+          src={
+            image
+              ? `data:${image.format};base64,${image.miniaturka}`
+              : Chmurka
+          }
           alt=""
         />
       </div>

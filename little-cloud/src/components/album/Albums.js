@@ -67,6 +67,7 @@ function Albums() {
         },
       })
         .then((response) => {
+          console.log(authToken);
           setAlbums(response.data);
           setAlbumsSort(response.data);
         })

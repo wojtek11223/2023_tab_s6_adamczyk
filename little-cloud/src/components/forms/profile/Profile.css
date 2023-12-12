@@ -1,22 +1,22 @@
-.Form {
-  position: absolute;
+.FormProfile {
   width: 500px;
-  padding: 0 50px 50px 50px;
-
-  border-radius: 10px;
-  background: rgba(0, 0, 0, 0.5);
-
-  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-  backdrop-filter: blur(2px);
   z-index: 2;
 }
 
-.Form .InputField {
+.Profile {
+  padding: 50px;
+  background-color: rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(2px);
+  border-radius: 10px;
+}
+
+.Profile .InputField {
   width: 100%;
   position: relative;
 }
 
-.Form .InputField Label {
+.Profile .InputField Label {
   position: absolute;
   font-size: 15px;
   color: #262626;
@@ -31,7 +31,7 @@
   user-select: none;
 }
 
-.Form .InputField a {
+.Profile .InputField a {
   display: flex;
   border: none;
   height: fit-content;
@@ -49,7 +49,7 @@
   user-select: none;
 }
 
-.Form input {
+.Profile input {
   color: #262626;
   width: 100%;
   border-radius: 10px;
@@ -60,43 +60,37 @@
   font-size: 20px;
 }
 
-.Form #password,
-.Form #repassword {
+.Profile #password,
+.Profile #repassword {
   padding: 14px 40px 14px 14px;
 }
 
-.Form input[type="submit"] {
+.Profile input[type="submit"] {
   background-color: rgb(8, 19, 25);
   color: white;
   margin-bottom: 0;
   transition: ease-in-out 0.2s;
 }
 
-.Form input[type="submit"]:hover {
+.Profile input[type="submit"]:hover {
   background: white;
   color: #262626;
   transition: ease-in-out 0.2s;
 }
 
-.Form .Text {
-  text-align: center;
-  font-size: 32px;
-  padding: 60px 0 60px 0;
-}
-
-.Form .InputGroup {
+.Profile .InputGroup {
   border-radius: 10px;
   margin-bottom: 20px;
   background-color: rgba(140, 0, 0, 0.5);
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 }
 
-.Form .InputGroup p {
+.Profile .InputGroup p {
   color: white;
   padding: 5px 5px 5px 10px;
 }
 
-.Form .Regulations {
+.Profile .Regulations {
   display: flex;
   width: 100%;
   height: fit-content;
@@ -110,7 +104,7 @@
   padding: 10px;
 }
 
-.Form input[type="checkbox"] {
+.Profile input[type="checkbox"] {
   display: flex;
   width: 25px;
   height: 25px;
@@ -123,16 +117,60 @@
   transition: ease-in-out 0.1s;
 }
 
-.Form input[type="checkbox"]:hover {
+.Profile input[type="checkbox"]:hover {
   background-color: rgb(128, 208, 255);
   transition: ease-in-out 0.1s;
 }
 
-.Form input[type="checkbox"]:checked {
+.Profile input[type="checkbox"]:checked {
   width: 25px;
   height: 25px;
   background-color: rgb(0, 162, 255);
   transition: ease-in-out 0.1s;
+}
+
+.InfoProfile {
+  padding: 0 50px 50px 50px;
+  background-color: rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(2px);
+  border-radius: 10px;
+}
+
+.InfoProfile .Text {
+  text-align: center;
+  font-size: 32px;
+  padding: 60px 0 60px 0;
+}
+
+.InfoProfile .Info {
+  position: relative;
+  background-color: white;
+  padding: 14px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(2px);
+}
+
+.Info p {
+  color: #262626;
+  font-size: 20px;
+  padding: 10px 0 10px 0;
+}
+
+.InfoProfile label {
+  position: absolute;
+  font-size: 15px;
+  color: #262626;
+  top: 0%;
+  left: 0%;
+  transform: translateY(-50%);
+  cursor: text;
+  transition: ease-in-out 0.2s;
+  background-color: rgb(255, 255, 255);
+  border-radius: 10px 10px 0 0;
+  padding: 0 5px 0 5px;
+  user-select: none;
 }
 
 @media screen and (max-height: 850px) {

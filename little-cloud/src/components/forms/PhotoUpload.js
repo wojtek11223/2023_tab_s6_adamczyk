@@ -1,81 +1,69 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
-function PhotoUploadForm() {
-  const [selectedFiles, setSelectedFiles] = useState([]);
-  const authToken = sessionStorage.getItem("authToken");
+const PhotoUploadForm = () => {
+  const [file, setFile] = useState(null);
+  const [nazwa, setNazwa] = useState('');
+  const [dataWykonania, setDataWykonania] = useState('');
+  const [kategoriaID, setKategoriaID] = useState('');
+  const [message, setMessage] = useState('');
 
   const handleFileChange = (e) => {
-    const files = Array.from(e.target.files);
-    setSelectedFiles(files);
+    const selectedFile = e.target.files[0];
+    setFile(selectedFile);
+
+    // Automatically populate the "nazwa" field with the file name
+    if (selectedFile) {
+      setNazwa(selectedFile.name);
+    }
   };
 
-  const handleFormSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (selectedFiles.length === 0) {
-      alert('Wybierz przynajmniej jeden plik przed wysłaniem formularza.');
-      return;
-    }
-
-    try {
-      // Przygotowanie danych do wysłania na serwer
+    debugger
+    const jwtToken = sessionStorage.getItem("authToken");
+    
       const formData = new FormData();
-      selectedFiles.forEach((file, index) => {
-        formData.append(`photo-${index + 1}`, file);
-      });
+      formData.append('file', file);
+      formData.append('nazwa', nazwa);
+      formData.append('dataWykonania', dataWykonania);
+      formData.append('nazwaKategorii', kategoriaID);
 
-      // Wysłanie formData na backend
-      const response = fetch('http://localhost:8080/api/photo_upload', {
-        method: 'POST',
-        body: formData,
+      axios.post('http://localhost:8080/api/photo_upload', formData, {
         headers: {
-          Authorization: `Bearer ${authToken}`,
-          Accept: "*/*",
-          "Content-Type": "application/json",
+          'Content-Type': 'multipart/form-data',
+          'Authorization': `Bearer ${jwtToken}`,
         },
-      });
-      //const response = fetch ('http://localhost:8080/api/photo_upload', authToken);
-      debugger;
-      // Sprawdzenie, czy żądanie zostało wykonane poprawnie
-      if (response.ok) {
-        // Pobranie odpowiedzi z serwera w formie JSON
-        const jsonResponse = await response.json();
-
-        // Przetworzenie odpowiedzi (jeśli serwer zwraca jakieś dodatkowe informacje)
-        console.log('Odpowiedź serwera:', jsonResponse);
-      } else {
-        console.error('Wystąpił błąd podczas wysyłania danych na serwer.');
-      }
-    } catch (error) {
-      console.error('Wystąpił błąd podczas dodawania zdjęć:', error);
-    }
+      }).then(() => {
+        setMessage('File uploaded successfully');
+      }).catch((error) => {
+        setMessage('Error uploading file');
+        console.error('Error uploading file:', error);
+      })
   };
 
-  
   return (
-    <form onSubmit={handleFormSubmit}>
-      <div>
-        <label htmlFor="fileInput">Wybierz zdjęcia: </label>
-        <input
-          type="file"
-          id="fileInput"
-          accept="image/*"
-          onChange={handleFileChange}
-          multiple
-        />
-      </div>
-      <div>
-        <label htmlFor="fileInput">Wybierz kategorię: </label>
-        <select>
-        <option value="">--select--</option>
-        <option value="1">Moje fotki</option>
-        <option value="2">Zwierzątka</option>
-        </select>  
-      </div>
-      <div>
-        <button type="submit">Dodaj Zdjęcia</button>
-      </div>
-    </form>
+    <div>
+      <h2>Photo Upload Form</h2>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label>File:</label>
+          <input type="file" onChange={handleFileChange} />
+        </div>
+        <div>
+          <label>Data Wykonania:</label>
+          <input style={{ color: 'black' }} type="date" value={dataWykonania} onChange={(e) => setDataWykonania(e.target.value)} />
+        </div>
+        <div>
+          <label>Nazwa kategorii:</label>
+          <input style={{ color: 'black' }} type="text" value={kategoriaID} onChange={(e) => setKategoriaID(e.target.value)} />
+        </div>
+        <div>
+          <button type="submit">Upload</button>
+        </div>
+      </form>
+      {message && <p>{message}</p>}
+    </div>
   );
 };
 

@@ -65,7 +65,7 @@ function Albums() {
           Accept: "*/*",
           "Content-Type": "application/json",
         },
-      })
+        })
         .then((response) => {
           setAlbums(response.data);
           setAlbumsSort(response.data);

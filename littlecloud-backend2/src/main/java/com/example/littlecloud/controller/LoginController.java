@@ -8,6 +8,7 @@ import com.example.littlecloud.entity.Kategorie;
 import com.example.littlecloud.entity.KategorieZdjecia;
 import com.example.littlecloud.entity.User;
 import com.example.littlecloud.entity.Zdjecia;
+import com.example.littlecloud.repository.KategorieZdjeciaRepo;
 import com.example.littlecloud.service.KategorieService;
 import com.example.littlecloud.service.UserService;
 import com.example.littlecloud.dto.LoginRes;
@@ -54,11 +55,15 @@ public class LoginController {
     @Autowired
     private ZdjeciaRepo zdjeciaRepo;
 
+    @Autowired
+    private KategorieZdjeciaRepo kategorieZdjeciaRepo;
+
     private final JwtUtil jwtUtil;
-    public LoginController(UserService userService, AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
+    public LoginController(UserService userService, AuthenticationManager authenticationManager, JwtUtil jwtUtil,KategorieZdjeciaRepo kategorieZdjeciaRepo) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
+        this.kategorieZdjeciaRepo =kategorieZdjeciaRepo;
     }
 
     @ResponseBody
@@ -135,14 +140,19 @@ public class LoginController {
     public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file,
                                                 @RequestParam("nazwa") String nazwa,
                                                 @RequestParam("dataWykonania") Date dataWykonania,
-                                                @RequestParam("kategoria") Long kategoriaID) {
+                                                @RequestParam("nazwaKategorii") String nazwaKategorii) {
         try {
             // Jeśli nie ma plików wyślij komunikat 
             if (file.isEmpty()) {
                 return ResponseEntity.badRequest().body("Please upload a file");
             }
-
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             // Convert MultipartFile to byte array
+            Kategorie kategorie = categoryService.findAllByNazwaKategoriiAndUzytkownik_Name(nazwaKategorii, authentication.getName());
+            if(kategorie == null)
+            {
+                return ResponseEntity.badRequest().body("Nie istenieje podana kategoria");
+            }
             byte[] imageData = file.getBytes();
 
             // Create a new Zdjecia entity
@@ -151,12 +161,9 @@ public class LoginController {
             zdjecia.setDataWykonania(dataWykonania);
             zdjecia.setZdjecie(imageData);
 
-            KategorieZdjecia katZdj = new KategorieZdjecia();
-            //katZdj.setid_kategorii(kategoriaID);
-
-            // Save the entity to the database
             zdjeciaRepo.save(zdjecia);
-
+            KategorieZdjecia kategorieZdjecia = new KategorieZdjecia(zdjecia,kategorie);
+            kategorieZdjeciaRepo.save(kategorieZdjecia);
             return ResponseEntity.ok("File uploaded successfully");
         } catch (IOException e) {
             e.printStackTrace();

@@ -39,6 +39,7 @@ const tempAlbums = [
 function Albums() {
   const navigate = useNavigate();
   const [albums, setAlbums] = useState(null);
+  const [images, setImages] = useState(null);
   const [albumsSort, setAlbumsSort] = useState(null);
   const [loading, setLoading] = useState(true);
   const [funny, setFunny] = useState();
@@ -51,10 +52,32 @@ function Albums() {
   useEffect(() => {
     if (inView && loading) {
       let apiURL;
+      let apiURLphoto;
       if (albumId === undefined) {
         apiURL = "http://localhost:8080/api/albums";
       } else {
         apiURL = `http://localhost:8080/api/album/${albumId}`;
+        apiURLphoto = `http://localhost:8080/api/getAllImages?categoryId=${albumId}`;
+        debugger;
+        axios({
+          url: apiURLphoto,
+          method: "get",
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            Accept: "*/*",
+            "Content-Type": "application/json",
+          },
+          })
+          .then((response) => {
+            setImages(response.data);
+            setImages(response.data);
+          })
+          .catch((error) => {
+            console.error(error);
+          })
+          .finally(() => {
+            setLoading(false);
+          });
       }
 
       axios({
@@ -119,6 +142,19 @@ function Albums() {
           ))
         ) : (
           <p>Ta kategoria jest pusta</p>
+        )}
+        {loading && albumId !== undefined ?  (
+        <p>Loading...</p>) : images && images.length != 0 ? (
+          images.map((image) => (
+            <Tile
+              key={image.zdjecia.idZdjecia}
+              albumName={image.zdjecia.nazwa}
+              image={image.zdjecia}
+              onClick={() => handleTileClick(image.idZdjecia)}
+            ></Tile>
+          ))
+        ) : (
+          <p>Nie ma żadnych zdjęć</p>
         )}
       </div>
     </>

@@ -1,9 +1,7 @@
 package com.example.littlecloud.controller;
 
 import com.example.littlecloud.config.CorsConfig;
-import com.example.littlecloud.dto.KategorieDTO;
-import com.example.littlecloud.dto.LoginDTO;
-import com.example.littlecloud.dto.UserDto;
+import com.example.littlecloud.dto.*;
 import com.example.littlecloud.entity.Kategorie;
 import com.example.littlecloud.entity.KategorieZdjecia;
 import com.example.littlecloud.entity.User;
@@ -11,8 +9,8 @@ import com.example.littlecloud.entity.Zdjecia;
 import com.example.littlecloud.repository.KategorieZdjeciaRepo;
 import com.example.littlecloud.service.KategorieService;
 import com.example.littlecloud.service.UserService;
-import com.example.littlecloud.dto.LoginRes;
 import com.example.littlecloud.model.ErrorRes;
+import com.example.littlecloud.service.ZdjeciaService;
 import com.example.littlecloud.springjwt.JwtUtil;
 import com.example.littlecloud.repository.ZdjeciaRepo;
 import jakarta.servlet.http.HttpServletRequest;
@@ -48,6 +46,9 @@ public class LoginController {
 
     @Autowired
     private KategorieService categoryService;
+
+    @Autowired
+    private ZdjeciaService zdjeciaService;
 
     @Autowired
     private AuthenticationManager authenticationManager;
@@ -128,7 +129,6 @@ public class LoginController {
         List<KategorieDTO> userCategories = categoryService.getAllUserCategories(authentication.getName());
         return ResponseEntity.ok(userCategories);
     }
-
     @GetMapping("/album/{categoryId}")
     public ResponseEntity<List<KategorieDTO>> getSubCategoryById(@PathVariable Long categoryId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -136,6 +136,18 @@ public class LoginController {
         return ResponseEntity.ok(subCategories);
     }
 
+    @GetMapping("/getAllImages")
+    public ResponseEntity<List<ZdjeciaDTO>> getAllImages(@RequestParam(required = false) Long categoryId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<ZdjeciaDTO> images;
+        if (categoryId != null) {
+            images = zdjeciaService.getAllZdjeciaDTO(categoryId,authentication.getName());
+        } else {
+            return ResponseEntity.status(400).body(null);
+        }
+
+        return ResponseEntity.ok(images);
+    }
     @PostMapping("/photo_upload")
     public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file,
                                                 @RequestParam("nazwa") String nazwa,

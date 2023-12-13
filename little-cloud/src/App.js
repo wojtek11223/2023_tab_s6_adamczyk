@@ -1,4 +1,10 @@
-import { BrowserRouter, Route, Routes, Navigate, useNavigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Route,
+  Routes,
+  Navigate,
+  useNavigate,
+} from "react-router-dom";
 
 import CloudSmile from "./assets/CloudSmile.svg";
 import CloudSad from "./assets/CloudSad.svg";
@@ -9,8 +15,8 @@ import Login from "./components/forms/login/Login";
 import Register from "./components/forms/register/Register";
 import Albums from "./components/album/Albums";
 import Logout from "./components/Logout";
-import PhotoUploadForm from "./components/forms/PhotoUpload";
-
+import PhotoUploadForm from "./components/forms/photoupload/PhotoUpload";
+import Profile from "./components/forms/profile/Profile";
 
 function App() {
   return (
@@ -26,12 +32,13 @@ function App() {
             <Route path="/albums/:albumId" element={<Albums />} />
             <Route path="/logout" element={<Logout />} />
             <Route path="/photoUpload" element={<PhotoUploadForm />} />
+            <Route path="/profile" element={<Profile />} />
           </>
         ) : (
           <Route path="*" element={<Navigate to="/login" />} />
         )}
       </Routes>
-      <img className="Cloud" src={CloudSmile} alt="" />
+      <img className="Cloud" src={CloudSad} alt="" />
     </BrowserRouter>
   );
 }

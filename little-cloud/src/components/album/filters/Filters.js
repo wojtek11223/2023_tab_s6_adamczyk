@@ -26,7 +26,9 @@ function Filters({ albums, albumsSort, setAlbumsSort, setFunny }) {
     if (searchText) {
       let newAlbums = albums.filter((album) => {
         if (
-          album.nazwaKategorii.toLowerCase().includes(searchText.toLowerCase())
+          album.nazwaKategorii
+            .toLowerCase()
+            .startsWith(searchText.toLowerCase())
         ) {
           return album;
         }

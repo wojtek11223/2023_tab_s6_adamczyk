@@ -1,6 +1,6 @@
 .Collection {
   position: relative;
-  width: 75vw;
+  width: 75%;
   padding: 20px;
   border-radius: 10px;
   background: rgba(0, 0, 0, 0.5);
@@ -17,6 +17,6 @@
 
 @media screen and (max-width: 1000px) {
   .Collection {
-    width: 100vw;
+    width: 100%;
   }
 }

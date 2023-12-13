@@ -1,15 +1,19 @@
 package com.example.littlecloud.controller;
 
+import com.example.littlecloud.config.CorsConfig;
 import com.example.littlecloud.dto.KategorieDTO;
 import com.example.littlecloud.dto.LoginDTO;
 import com.example.littlecloud.dto.UserDto;
 import com.example.littlecloud.entity.Kategorie;
+import com.example.littlecloud.entity.KategorieZdjecia;
 import com.example.littlecloud.entity.User;
+import com.example.littlecloud.entity.Zdjecia;
 import com.example.littlecloud.service.KategorieService;
 import com.example.littlecloud.service.UserService;
 import com.example.littlecloud.dto.LoginRes;
 import com.example.littlecloud.model.ErrorRes;
 import com.example.littlecloud.springjwt.JwtUtil;
+import com.example.littlecloud.repository.ZdjeciaRepo;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.jetbrains.annotations.NotNull;
@@ -27,9 +31,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-
+import java.io.IOException;
+import java.sql.Date;
 
 @RestController
 @RequestMapping("/api")
@@ -44,6 +50,9 @@ public class LoginController {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private ZdjeciaRepo zdjeciaRepo;
 
     private final JwtUtil jwtUtil;
     public LoginController(UserService userService, AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
@@ -120,5 +129,38 @@ public class LoginController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<KategorieDTO> subCategories = categoryService.getSubCategoriesByParentId(categoryId,authentication.getName());
         return ResponseEntity.ok(subCategories);
+    }
+
+    @PostMapping("/photo_upload")
+    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file,
+                                                @RequestParam("nazwa") String nazwa,
+                                                @RequestParam("dataWykonania") Date dataWykonania,
+                                                @RequestParam("kategoria") Long kategoriaID) {
+        try {
+            // Jeśli nie ma plików wyślij komunikat 
+            if (file.isEmpty()) {
+                return ResponseEntity.badRequest().body("Please upload a file");
+            }
+
+            // Convert MultipartFile to byte array
+            byte[] imageData = file.getBytes();
+
+            // Create a new Zdjecia entity
+            Zdjecia zdjecia = new Zdjecia();
+            zdjecia.setNazwa(nazwa);
+            zdjecia.setDataWykonania(dataWykonania);
+            zdjecia.setZdjecie(imageData);
+
+            KategorieZdjecia katZdj = new KategorieZdjecia();
+            //katZdj.setid_kategorii(kategoriaID);
+
+            // Save the entity to the database
+            zdjeciaRepo.save(zdjecia);
+
+            return ResponseEntity.ok("File uploaded successfully");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Error uploading file");
+        }
     }
 }

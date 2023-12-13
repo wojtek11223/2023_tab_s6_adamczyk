@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 function PhotoUploadForm() {
   const [selectedFiles, setSelectedFiles] = useState([]);
+  const authToken = sessionStorage.getItem("authToken");
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
@@ -24,11 +25,17 @@ function PhotoUploadForm() {
       });
 
       // Wysłanie formData na backend
-      const response = await fetch('url_do_twojego_api', {
+      const response = fetch('http://localhost:8080/api/photo_upload', {
         method: 'POST',
         body: formData,
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          Accept: "*/*",
+          "Content-Type": "application/json",
+        },
       });
-
+      //const response = fetch ('http://localhost:8080/api/photo_upload', authToken);
+      debugger;
       // Sprawdzenie, czy żądanie zostało wykonane poprawnie
       if (response.ok) {
         // Pobranie odpowiedzi z serwera w formie JSON
@@ -44,6 +51,7 @@ function PhotoUploadForm() {
     }
   };
 
+  
   return (
     <form onSubmit={handleFormSubmit}>
       <div>
@@ -55,6 +63,14 @@ function PhotoUploadForm() {
           onChange={handleFileChange}
           multiple
         />
+      </div>
+      <div>
+        <label htmlFor="fileInput">Wybierz kategorię: </label>
+        <select>
+        <option value="">--select--</option>
+        <option value="1">Moje fotki</option>
+        <option value="2">Zwierzątka</option>
+        </select>  
       </div>
       <div>
         <button type="submit">Dodaj Zdjęcia</button>

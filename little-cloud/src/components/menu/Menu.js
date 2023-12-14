@@ -17,6 +17,11 @@ class Menu extends React.Component {
     });
   }
 
+  handleClick = () => {
+    const { cloudHumor, setCloudHumor } = this.props;
+    this.props.setCloudHumor(!cloudHumor);
+  };
+
   render() {
     const { authName } = this.state;
     return (
@@ -27,6 +32,9 @@ class Menu extends React.Component {
               <ul className="Left">
                 <li>
                   <a href="">Strona główna</a>
+                </li>
+                <li>
+                  <a onClick={this.handleClick}>Chmurka</a>
                 </li>
               </ul>
               <ul className="Right">
@@ -49,6 +57,9 @@ class Menu extends React.Component {
                 </li>
                 <li>
                   <a href="/photoUpload">Dodaj zdjęcie</a>
+                </li>
+                <li>
+                  <a onClick={this.handleClick}>Chmurka</a>
                 </li>
               </ul>
               <ul className="Right">

@@ -1,15 +1,18 @@
 package com.example.littlecloud.controller;
 
-import com.example.littlecloud.dto.KategorieDTO;
-import com.example.littlecloud.dto.LoginDTO;
-import com.example.littlecloud.dto.UserDto;
+import com.example.littlecloud.config.CorsConfig;
+import com.example.littlecloud.dto.*;
 import com.example.littlecloud.entity.Kategorie;
+import com.example.littlecloud.entity.KategorieZdjecia;
 import com.example.littlecloud.entity.User;
+import com.example.littlecloud.entity.Zdjecia;
+import com.example.littlecloud.repository.KategorieZdjeciaRepo;
 import com.example.littlecloud.service.KategorieService;
 import com.example.littlecloud.service.UserService;
-import com.example.littlecloud.dto.LoginRes;
 import com.example.littlecloud.model.ErrorRes;
+import com.example.littlecloud.service.ZdjeciaService;
 import com.example.littlecloud.springjwt.JwtUtil;
+import com.example.littlecloud.repository.ZdjeciaRepo;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.jetbrains.annotations.NotNull;
@@ -27,9 +30,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-
+import java.io.IOException;
+import java.sql.Date;
 
 @RestController
 @RequestMapping("/api")
@@ -43,13 +48,23 @@ public class LoginController {
     private KategorieService categoryService;
 
     @Autowired
+    private ZdjeciaService zdjeciaService;
+
+    @Autowired
     private AuthenticationManager authenticationManager;
 
+    @Autowired
+    private ZdjeciaRepo zdjeciaRepo;
+
+    @Autowired
+    private KategorieZdjeciaRepo kategorieZdjeciaRepo;
+
     private final JwtUtil jwtUtil;
-    public LoginController(UserService userService, AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
+    public LoginController(UserService userService, AuthenticationManager authenticationManager, JwtUtil jwtUtil,KategorieZdjeciaRepo kategorieZdjeciaRepo) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
+        this.kategorieZdjeciaRepo =kategorieZdjeciaRepo;
     }
 
     @ResponseBody
@@ -114,11 +129,57 @@ public class LoginController {
         List<KategorieDTO> userCategories = categoryService.getAllUserCategories(authentication.getName());
         return ResponseEntity.ok(userCategories);
     }
-
     @GetMapping("/album/{categoryId}")
     public ResponseEntity<List<KategorieDTO>> getSubCategoryById(@PathVariable Long categoryId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<KategorieDTO> subCategories = categoryService.getSubCategoriesByParentId(categoryId,authentication.getName());
         return ResponseEntity.ok(subCategories);
+    }
+
+    @GetMapping("/getAllImages")
+    public ResponseEntity<List<ZdjeciaDTO>> getAllImages(@RequestParam(required = false) Long categoryId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<ZdjeciaDTO> images;
+        if (categoryId != null) {
+            images = zdjeciaService.getAllZdjeciaDTO(categoryId,authentication.getName());
+        } else {
+            return ResponseEntity.status(400).body(null);
+        }
+
+        return ResponseEntity.ok(images);
+    }
+    @PostMapping("/photo_upload")
+    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file,
+                                                @RequestParam("nazwa") String nazwa,
+                                                @RequestParam("dataWykonania") Date dataWykonania,
+                                                @RequestParam("nazwaKategorii") String nazwaKategorii) {
+        try {
+            // Jeśli nie ma plików wyślij komunikat 
+            if (file.isEmpty()) {
+                return ResponseEntity.badRequest().body("Please upload a file");
+            }
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            // Convert MultipartFile to byte array
+            Kategorie kategorie = categoryService.findAllByNazwaKategoriiAndUzytkownik_Name(nazwaKategorii, authentication.getName());
+            if(kategorie == null)
+            {
+                return ResponseEntity.badRequest().body("Nie istenieje podana kategoria");
+            }
+            byte[] imageData = file.getBytes();
+
+            // Create a new Zdjecia entity
+            Zdjecia zdjecia = new Zdjecia();
+            zdjecia.setNazwa(nazwa);
+            zdjecia.setDataWykonania(dataWykonania);
+            zdjecia.setZdjecie(imageData);
+
+            zdjeciaRepo.save(zdjecia);
+            KategorieZdjecia kategorieZdjecia = new KategorieZdjecia(zdjecia,kategorie);
+            kategorieZdjeciaRepo.save(kategorieZdjecia);
+            return ResponseEntity.ok("File uploaded successfully");
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Error uploading file");
+        }
     }
 }

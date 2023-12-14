@@ -68,7 +68,7 @@ function Profile() {
               <input
                 id="login"
                 type="text"
-                placeholder={"Jakaś faken nazwa twoja"}
+                placeholder={"Wpisz nową nazwę użytkownika"}
                 {...register("username", registerOptions.username)}
               ></input>
             </div>
@@ -80,7 +80,7 @@ function Profile() {
               <input
                 id="email"
                 type="text"
-                placeholder={"mail@mail.pl"}
+                placeholder={"Wpisz nowy adres e-mail"}
                 {...register("email", registerOptions.email)}
               ></input>
             </div>

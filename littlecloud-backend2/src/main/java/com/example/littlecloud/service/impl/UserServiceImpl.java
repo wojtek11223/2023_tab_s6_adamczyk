@@ -1,6 +1,7 @@
 package com.example.littlecloud.service.impl;
 
 import com.example.littlecloud.dto.UserDto;
+import com.example.littlecloud.dto.UserUploadDTO;
 import com.example.littlecloud.entity.User;
 import com.example.littlecloud.enums.Role;
 import com.example.littlecloud.repository.UserRepository;
@@ -32,6 +33,11 @@ public class UserServiceImpl implements UserService {
 
         user.setRole(Role.USER);
         userRepository.save(user);
+    }
+
+    @Override
+    public void uploadUsername(String oldUsername, String newUsername) {
+        userRepository.updateUsername(oldUsername, newUsername);
     }
 
     @Override

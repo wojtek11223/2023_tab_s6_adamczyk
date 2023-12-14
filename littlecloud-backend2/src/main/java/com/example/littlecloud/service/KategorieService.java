@@ -30,6 +30,10 @@ public class KategorieService {
                 .map(this::mapKategorieToDTO)
                 .collect(Collectors.toList());
     }
+
+    public Kategorie findAllByNazwaKategoriiAndUzytkownik_Name(String namecategory, String username){
+        return kategorieRepo.findAllByNazwaKategoriiAndUzytkownik_Name(namecategory,username);
+    }
     private KategorieDTO mapKategorieToDTO(Kategorie kategorie) {
         KategorieDTO kategorieDTO = new KategorieDTO();
         kategorieDTO.setIdKategorii(kategorie.getIdKategorii());

@@ -1,5 +1,10 @@
 package com.example.littlecloud.config;
 
+import org.modelmapper.ModelMapper;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+
 import com.example.littlecloud.security.CustomUserDetailsService;
 import com.example.littlecloud.springjwt.JwtAuthorizationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +40,11 @@ public class SpringSecurity {
 
         this.jwtAuthorizationFilter = jwtAuthorizationFilter;
     }
+
+    @Bean
+    public ModelMapper modelMapper() {
+        return new ModelMapper();
+    }
     @Bean
     public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -53,7 +63,8 @@ public class SpringSecurity {
         http.csrf().disable()
                 .authorizeHttpRequests((authorize) ->
                         //authorize.anyRequest().authenticated()
-                        authorize.requestMatchers("/api/login", "api/register", "/api/album/*", "/api/albums" ).permitAll()
+                        
+                        authorize.requestMatchers("/api/login", "api/register", "/api/album/*", "/api/albums", "/api/photo_upload" ,"/api/getAllImages", "/api/profile", "/api/uploadUser").permitAll()
                                 .requestMatchers("/api/test").hasRole("USER")
                                 .and().addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
 

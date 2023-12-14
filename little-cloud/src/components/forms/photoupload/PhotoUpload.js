@@ -73,22 +73,22 @@ const PhotoUploadForm = () => {
         dataWykonania: dataWykonania,
         nazwaKategorii: kategoriaID
       };
-  
+
      return axios
         .post("http://localhost:8080/api/photo_upload", postZdjecieDTO, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${jwtToken}`,
-          },
-        })
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${jwtToken}`,
+        },
+      })
     })
     .then((response) => {
       setMessage(response.data !== undefined ? response.data : "File uploaded successfully");
-    })
-    .catch((error) => {
+      })
+      .catch((error) => {
       setMessage(error.response.data  !== undefined  ? error.response.data : "Error uploading file");
-      console.error("Error uploading file:", error);
-    });
+        console.error("Error uploading file:", error);
+      });
    
   };
 

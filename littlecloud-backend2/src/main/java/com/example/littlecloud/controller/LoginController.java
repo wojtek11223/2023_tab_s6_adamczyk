@@ -1,6 +1,7 @@
 package com.example.littlecloud.controller;
 
-import com.example.littlecloud.config.CorsConfig;
+import org.modelmapper.ModelMapper;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import com.example.littlecloud.dto.*;
 import com.example.littlecloud.entity.Kategorie;
 import com.example.littlecloud.entity.KategorieZdjecia;
@@ -20,17 +21,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PostAuthorize;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import com.example.littlecloud.dto.UserDto;
+import com.example.littlecloud.repository.UserRepository;
 
 import java.util.List;
 import java.io.IOException;
@@ -43,6 +43,11 @@ public class LoginController {
 
     @Autowired
     private final UserService userService;
+    @Autowired
+    private final UserRepository userRepository;
+
+    @Autowired
+    private ModelMapper modelMapper;
 
     @Autowired
     private KategorieService categoryService;
@@ -58,10 +63,13 @@ public class LoginController {
 
     @Autowired
     private KategorieZdjeciaRepo kategorieZdjeciaRepo;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     private final JwtUtil jwtUtil;
-    public LoginController(UserService userService, AuthenticationManager authenticationManager, JwtUtil jwtUtil,KategorieZdjeciaRepo kategorieZdjeciaRepo) {
+    public LoginController(UserService userService, UserRepository userRepository, AuthenticationManager authenticationManager, JwtUtil jwtUtil, KategorieZdjeciaRepo kategorieZdjeciaRepo) {
         this.userService = userService;
+        this.userRepository = userRepository;
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.kategorieZdjeciaRepo =kategorieZdjeciaRepo;
@@ -104,6 +112,51 @@ public class LoginController {
         return ResponseEntity.ok("Użytkownik został pomyślnie dodany");
     }
 
+    @GetMapping("/profile")
+    public ResponseEntity<UserInfoDTO> ShowUserData() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        User user1 = userService.findByName(authentication.getName());
+        return ResponseEntity.ok(new UserInfoDTO(user1.getName(), user1.getEmail()));
+
+        }
+
+    @PostMapping("/uploadUser")
+    public ResponseEntity<String> uploadUser(@NotNull @RequestBody UserDto user) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User existingUser = userService.findByName(authentication.getName());
+        if (userService.findByName(authentication.getName()) != null)
+        {
+            return ResponseEntity.ok("Istnieje już użytkownik o takiej nazwie");
+        }
+
+        if (userService.findByEmail(authentication.getName()) != null)
+        {
+            return ResponseEntity.ok("Konto o takim adresie email już istnieje");
+        }
+
+        if (user.getUsername() != null) {
+            existingUser.setName(user.getUsername());
+
+        }
+        if (user.getEmail() != null && !user.getEmail().isEmpty()) {
+            existingUser.setEmail(user.getEmail());
+        }
+        if (user.getPassword() != null && !user.getPassword().isEmpty()) {
+            existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+
+        // Wykorzystanie ModelMapper do przekształcenia UserDto na User
+        modelMapper.map(user, existingUser);
+        UserDto existingUserDto = modelMapper.map(existingUser, UserDto.class);
+
+        userService.uploadUsername(authentication.getName(), existingUser.getName());
+
+
+        return ResponseEntity.ok("Zmiany zostały zatwierdzone");
+    }
+
+
     @GetMapping("/logout")
     public ResponseEntity<String> logout(HttpServletRequest request, HttpServletResponse response) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -129,6 +182,7 @@ public class LoginController {
         List<KategorieDTO> userCategories = categoryService.getAllUserCategories(authentication.getName());
         return ResponseEntity.ok(userCategories);
     }
+
     @GetMapping("/album/{categoryId}")
     public ResponseEntity<ZdjeciaKategorieDTO> getAllImages(@PathVariable Long categoryId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -190,5 +244,4 @@ public class LoginController {
             return ResponseEntity.status(500).body("Error uploading file");
         }
     }
-    
 }

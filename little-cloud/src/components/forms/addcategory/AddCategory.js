@@ -37,6 +37,7 @@ function AddCategory() {
       })
       .then((response) => {
         setMessage(response.data);
+
         //navigate('/albums');
         //window.location.reload();
       })

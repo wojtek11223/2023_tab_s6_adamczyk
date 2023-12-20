@@ -19,6 +19,7 @@ import Albums from "./components/album/Albums";
 import Logout from "./components/Logout";
 import PhotoUploadForm from "./components/forms/photoupload/PhotoUpload";
 import Profile from "./components/forms/profile/Profile";
+import AddCategory from "./components/forms/addcategory/AddCategory";
 
 function App() {
   const [cloudHumor, setCloudHumor] = useState(false);
@@ -36,6 +37,7 @@ function App() {
             <Route path="/albums/:albumId" element={<Albums />} />
             <Route path="/logout" element={<Logout />} />
             <Route path="/photoUpload" element={<PhotoUploadForm />} />
+            <Route path="/addCategory" element={<AddCategory />} />
             <Route path="/profile" element={<Profile />} />
           </>
         ) : (

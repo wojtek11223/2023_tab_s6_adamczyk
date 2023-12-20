@@ -59,6 +59,9 @@ class Menu extends React.Component {
                   <a href="/photoUpload">Dodaj zdjęcie</a>
                 </li>
                 <li>
+                  <a href="/addCategory">Dodaj katorgię</a>
+                </li>
+                <li>
                   <a onClick={this.handleClick}>Chmurka</a>
                 </li>
               </ul>

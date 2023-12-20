@@ -148,6 +148,34 @@ public class LoginController {
 
         return ResponseEntity.ok(images);
     }
+
+    @PostMapping("/add_category")
+    public ResponseEntity<String> handleNewCategory(@RequestParam("category") String category,
+                                                   @RequestParam("parentCategory") String parentCategory) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Kategorie kategorie = categoryService.findAllByNazwaKategoriiAndUzytkownik_Name(category, authentication.getName());
+        if(kategorie != null)
+        {
+            return ResponseEntity.badRequest().body("Istenieje podana kategoria");
+        }
+        kategorie = categoryService.findAllByNazwaKategoriiAndUzytkownik_Name(parentCategory, authentication.getName());
+        if(kategorie == null)
+        {
+            return ResponseEntity.badRequest().body("Nie istenieje kategoria rodzic");
+        }
+
+
+        User currentUser = userService.findByName(authentication.getName());
+        Kategorie kategoria = new Kategorie();
+        kategoria.setNazwaKategorii(category);
+
+        Kategorie currentParentCat = categoryService.findAllByNazwaKategoriiAndUzytkownik_Name(parentCategory, authentication.getName());
+        kategoria.setNadkategoria(currentParentCat);
+        kategoria.setUzytkownik(currentUser);
+        categoryService.addCategory(kategoria);
+        return ResponseEntity.ok("Cat uploaded successfully");
+    }
+
     @PostMapping("/photo_upload")
     public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file,
                                                 @RequestParam("nazwa") String nazwa,

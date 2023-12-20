@@ -34,6 +34,22 @@ public class KategorieService {
     public Kategorie findAllByNazwaKategoriiAndUzytkownik_Name(String namecategory, String username){
         return kategorieRepo.findAllByNazwaKategoriiAndUzytkownik_Name(namecategory,username);
     }
+
+    public Kategorie findAllByIdKategoriiAndUzytkownik_Name(Long idcategory, String username){
+        return kategorieRepo.findAllByIdKategoriiAndUzytkownik_Name(idcategory,username);
+    }
+    public Long counterUnderCategories(Long ParentId, String username) {
+        Kategorie kategorie = kategorieRepo.findAllByIdKategoriiAndUzytkownik_Name(ParentId,username);
+        if(kategorie.getNadkategoria() == null)
+        {
+            return 0L;
+        }
+        else
+        {
+            return  counterUnderCategories(kategorie.getNadkategoria().getIdKategorii(),username) + 1;
+        }
+    }
+
     private KategorieDTO mapKategorieToDTO(Kategorie kategorie) {
         KategorieDTO kategorieDTO = new KategorieDTO();
         kategorieDTO.setIdKategorii(kategorie.getIdKategorii());

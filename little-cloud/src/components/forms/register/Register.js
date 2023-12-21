@@ -19,6 +19,7 @@ function Register() {
   } = useForm();
 
   const handleRegistration = (data) => {
+    console.log(data);
     const postData = {
       username: data.username,
       email: data.email,

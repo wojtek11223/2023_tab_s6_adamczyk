@@ -1,14 +1,44 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../Form.css";
 
 const PhotoUploadForm = () => {
   const [file, setFile] = useState(null);
   const [nazwa, setNazwa] = useState("");
+  const [format, setFormat] = useState(null);
+  const [roz, setRoz] = useState(null);
+  const [albums, setAlbums] = useState(null);
   const [dataWykonania, setDataWykonania] = useState("");
   const [kategoriaID, setKategoriaID] = useState("");
   const [message, setMessage] = useState("");
 
+  const getImageInfoFromFile = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+  
+      reader.onload = (event) => {
+        const image = new Image();
+  
+        image.onload = () => {
+          const resolution = { width: image.width, height: image.height };
+          const format = file.type.replace('image/', '');
+  
+          // Zamyka obraz, aby zwolnić zasoby
+          URL.revokeObjectURL(image.src);
+  
+          // Zwraca informacje
+          resolve({ resolution, format });
+        };
+  
+        image.onerror = (error) => {
+          reject(error);
+        };
+
+        image.src = event.target.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  };
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
     setFile(selectedFile);
@@ -18,32 +48,48 @@ const PhotoUploadForm = () => {
       setNazwa(selectedFile.name);
     }
   };
+  useEffect(() => {
+    const handlePopstate = () => {
+      window.location.reload();
+    };
 
+    window.addEventListener("popstate", handlePopstate);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopstate);
+    };
+  },[]);
   const handleSubmit = (e) => {
     e.preventDefault();
     debugger;
     const jwtToken = sessionStorage.getItem("authToken");
-
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("nazwa", nazwa);
-    formData.append("dataWykonania", dataWykonania);
-    formData.append("nazwaKategorii", kategoriaID);
-
-    axios
-      .post("http://localhost:8080/api/photo_upload", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          Authorization: `Bearer ${jwtToken}`,
-        },
-      })
-      .then(() => {
-        setMessage("File uploaded successfully");
-      })
-      .catch((error) => {
-        setMessage("Error uploading file");
-        console.error("Error uploading file:", error);
-      });
+    getImageInfoFromFile(file).then((info) => {
+      debugger
+      const postZdjecieDTO = {
+        file: file,
+        nazwa: nazwa,
+        wysokosc: info.resolution.height,
+        szerokosc: info.resolution.width,
+        dataWykonania: dataWykonania,
+        nazwaKategorii: kategoriaID
+      };
+  
+     return axios
+        .post("http://localhost:8080/api/photo_upload", postZdjecieDTO, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        })
+    })
+    .then((response) => {
+      setMessage(response.data !== undefined ? response.data : "File uploaded successfully");
+    })
+    .catch((error) => {
+      setMessage(error.response.data  !== undefined  ? error.response.data : "Error uploading file");
+      console.error("Error uploading file:", error);
+    });
+   
   };
 
   return (
@@ -64,6 +110,7 @@ const PhotoUploadForm = () => {
             <input
               style={{ color: "black" }}
               type="date"
+              accept="image/*" 
               value={dataWykonania}
               onChange={(e) => setDataWykonania(e.target.value)}
             />

@@ -19,6 +19,7 @@ import Albums from "./components/album/Albums";
 import Logout from "./components/Logout";
 import PhotoUploadForm from "./components/forms/photoupload/PhotoUpload";
 import Profile from "./components/forms/profile/Profile";
+import Photo from "./components/album/slides/Slide";
 
 function App() {
   const [cloudHumor, setCloudHumor] = useState(false);

@@ -9,11 +9,10 @@ import java.util.List;
 public interface UserService {
     void saveUser(UserDto userDto);
 
-    void uploadUsername(String oldUsername, String newUsername);
-
     User findByEmail(String email);
 
     User findByName(String username);
+    void updateUser(User user);
 
     List<UserDto> findAllUsers();
 

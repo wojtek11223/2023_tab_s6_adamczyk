@@ -190,51 +190,5 @@ public class LoginController {
             return ResponseEntity.status(500).body("Error uploading file");
         }
     }
-
-    @GetMapping("/getAllImages")
-    public ResponseEntity<List<ZdjeciaDTO>> getAllImages(@RequestParam(required = false) Long categoryId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        List<ZdjeciaDTO> images;
-        if (categoryId != null) {
-            images = zdjeciaService.getAllZdjeciaDTO(categoryId,authentication.getName());
-        } else {
-            return ResponseEntity.status(400).body(null);
-        }
-
-        return ResponseEntity.ok(images);
-    }
-    @PostMapping("/photo_upload")
-    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file,
-                                                @RequestParam("nazwa") String nazwa,
-                                                @RequestParam("dataWykonania") Date dataWykonania,
-                                                @RequestParam("nazwaKategorii") String nazwaKategorii) {
-        try {
-            // Jeśli nie ma plików wyślij komunikat 
-            if (file.isEmpty()) {
-                return ResponseEntity.badRequest().body("Please upload a file");
-            }
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            // Convert MultipartFile to byte array
-            Kategorie kategorie = categoryService.findAllByNazwaKategoriiAndUzytkownik_Name(nazwaKategorii, authentication.getName());
-            if(kategorie == null)
-            {
-                return ResponseEntity.badRequest().body("Nie istenieje podana kategoria");
-            }
-            byte[] imageData = file.getBytes();
-
-            // Create a new Zdjecia entity
-            Zdjecia zdjecia = new Zdjecia();
-            zdjecia.setNazwa(nazwa);
-            zdjecia.setDataWykonania(dataWykonania);
-            zdjecia.setZdjecie(imageData);
-
-            zdjeciaRepo.save(zdjecia);
-            KategorieZdjecia kategorieZdjecia = new KategorieZdjecia(zdjecia,kategorie);
-            kategorieZdjeciaRepo.save(kategorieZdjecia);
-            return ResponseEntity.ok("File uploaded successfully");
-        } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body("Error uploading file");
-        }
-    }
+    
 }

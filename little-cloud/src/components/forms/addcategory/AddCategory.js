@@ -1,12 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 import "../Form.css";
-
-import Eye from "../../../assets/eye.svg";
-import EyeClose from "../../../assets/eye-alt.svg";
 
 function AddCategory() {
   const navigate = useNavigate();
@@ -14,7 +11,6 @@ function AddCategory() {
   const {
     register,
     handleSubmit,
-    getValues,
     formState: { errors },
   } = useForm();
 
@@ -37,17 +33,11 @@ function AddCategory() {
       })
       .then((response) => {
         setMessage(response.data);
-
-        //navigate('/albums');
-        //window.location.reload();
       })
       .catch((error) => {
-        // Obsłuż błąd
-        /*setMessage(
-          `${
-            error.response ? error.response.data.message : "Pierdolło"
-          }`
-        );*/
+        setMessage(
+          `${error.response ? error.response.data.message : "Problem"}`
+        );
         console.log(error);
       });
   };
@@ -59,33 +49,21 @@ function AddCategory() {
     },
     parentCategory: {
       required: "Hasło nie zostało wprowadzone",
-    }};
-
-  /*useEffect(() => {
-    // Sprawdź stan sesji lub wykonaj inne operacje po załadowaniu komponentu
-    const authToken = sessionStorage.getItem('authToken');
-    if (authToken) {
-      navigate("/albums");
-      console.log('Użytkownik jest zalogowany');
-    }
-  }, []);*/
-
-  // const handleClick = () => {
-  //   if (password.showPassword === true)
-  //     setPassword({ ...password, showPassword: false });
-  //   else setPassword({ ...password, showPassword: true });
-  // };
-
+    },
+  };
 
   return (
-    <div className="Container" >
-      <form className="Form" onSubmit={handleSubmit(handleCategory, handleError)}>
+    <div className="Container">
+      <form
+        className="Form"
+        onSubmit={handleSubmit(handleCategory, handleError)}
+      >
         <div className="Text">
-          Dodaj kategorie <p>{message}</p>
+          Dodaj kategorię <p>{message}</p>
         </div>
         <div className="InputGroup">
           <div className="InputField">
-            <label htmlFor="category">Category: </label>
+            <label htmlFor="category">Nazwa kategorii: </label>
             <input
               type="text"
               id="category"
@@ -96,7 +74,7 @@ function AddCategory() {
         </div>
         <div className="InputGroup">
           <div className="InputField">
-            <label htmlFor="parentCategory">Kategoria rodziczna: </label>
+            <label htmlFor="parentCategory">Nazwa kategorii nadrzędnej: </label>
             <input
               type="text"
               id="parentCategory"
@@ -105,7 +83,7 @@ function AddCategory() {
           </div>
           {errors?.password && <p>{errors.password.message}</p>}
         </div>
-        <input type="submit" value={"Zaloguj się"}></input>
+        <input type="submit" value={"Dodaj kategorię"}></input>
       </form>
     </div>
   );

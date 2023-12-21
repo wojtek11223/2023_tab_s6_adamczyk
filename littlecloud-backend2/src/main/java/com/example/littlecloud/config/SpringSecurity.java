@@ -64,8 +64,7 @@ public class SpringSecurity {
                 .authorizeHttpRequests((authorize) ->
                         //authorize.anyRequest().authenticated()
                         
-                        authorize.requestMatchers("/api/login", "api/register", "/api/album/*", "/api/albums", "/api/photo_upload" ,"/api/getAllImages", "/api/profile", "/api/uploadUser").permitAll()
-                        authorize.requestMatchers("/api/login", "api/register", "/api/album/*", "/api/albums", "/api/photo_upload" ,"/api/getAllImages", "/api/photo/**").permitAll()
+                        authorize.requestMatchers("/api/login", "api/register", "/api/album/*", "/api/albums", "/api/photo_upload" ,"/api/getAllImages", "/api/profile", "/api/uploadUser", "/api/photo/**").permitAll()
                                 .requestMatchers("/api/test").hasRole("USER")
                                 .and().addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)
 

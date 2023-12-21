@@ -130,15 +130,16 @@ public class LoginController {
 
         User existingUsernameCheck = userService.findByName(user.getUsername());
         if (existingUsernameCheck != null && !existingUsernameCheck.getId().equals(existingUser.getId())) {
-            return ResponseEntity.ok("Istnieje już użytkownik o takiej nazwie");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Konto o podanej nazwie istnieje");
         }
 
         User existingEmailCheck = userService.findByEmail(user.getEmail());
         if (existingEmailCheck != null && !existingEmailCheck.getId().equals(existingUser.getId())) {
-            return ResponseEntity.ok("Konto o takim adresie email już istnieje");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Konto o podanym adresie email istnieje");
         }
 
-        if (user.getUsername() != null) {
+
+        if (user.getUsername() != null && !user.getEmail().isEmpty()) {
             existingUser.setName(user.getUsername());
         }
         if (user.getEmail() != null && !user.getEmail().isEmpty()) {
@@ -148,7 +149,7 @@ public class LoginController {
             existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
         }
 
-        // Wywołaj metodę serwisu do aktualizacji użytkownika w bazie danych
+
         userService.updateUser(existingUser);
 
 

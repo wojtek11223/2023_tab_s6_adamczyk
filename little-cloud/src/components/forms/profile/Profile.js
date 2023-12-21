@@ -87,9 +87,13 @@ function Profile() {
   console.log("Profile component rendered with userInfo:", userInfo);
 
   const onSubmit = async (data) => {
-    const postData = {username: data.username, email: data.email, password: data.password};
-    console.log("Button clicked with data:", postData);
-    debugger;
+    const postData = {
+      username: data.username || userInfo.username,
+      email: data.email || userInfo.email
+    };
+    if(data.password){
+      postData.password = data.password;
+    }
     setLoading(true);
     try {
         const response = await axios.post("http://localhost:8080/api/uploadUser", postData, {
@@ -100,10 +104,17 @@ function Profile() {
             },
         });
         sessionStorage.setItem("authToken", response.data);
+        sessionStorage.setItem('authName', data.username);
         window.location.reload();
     } catch (error) {
         console.error(error);
+      if (error.response && error.response.data) {
+        setMessage(error.response.data);
+      } else {
         setMessage("Wystąpił błąd podczas zapisywania zmian");
+      }
+    } finally {
+      setLoading(false);
     }
 };
 

@@ -45,11 +45,6 @@ public class LoginController {
 
     @Autowired
     private final UserService userService;
-    @Autowired
-    private final CustomUserDetailsService userDetailsService;
-
-    @Autowired
-    private ModelMapper modelMapper;
 
     @Autowired
     private KategorieService categoryService;
@@ -71,7 +66,6 @@ public class LoginController {
     private final JwtUtil jwtUtil;
     public LoginController(UserService userService, UserRepository userRepository, CustomUserDetailsService userDetailsService, AuthenticationManager authenticationManager, JwtUtil jwtUtil, KategorieZdjeciaRepo kategorieZdjeciaRepo) {
         this.userService = userService;
-        this.userDetailsService = userDetailsService;
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.kategorieZdjeciaRepo =kategorieZdjeciaRepo;
@@ -130,15 +124,16 @@ public class LoginController {
 
         User existingUsernameCheck = userService.findByName(user.getUsername());
         if (existingUsernameCheck != null && !existingUsernameCheck.getId().equals(existingUser.getId())) {
-            return ResponseEntity.ok("Istnieje już użytkownik o takiej nazwie");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Konto o podanej nazwie istnieje");
         }
 
         User existingEmailCheck = userService.findByEmail(user.getEmail());
         if (existingEmailCheck != null && !existingEmailCheck.getId().equals(existingUser.getId())) {
-            return ResponseEntity.ok("Konto o takim adresie email już istnieje");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Konto o podanym adresie email istnieje");
         }
 
-        if (user.getUsername() != null) {
+
+        if (user.getUsername() != null && !user.getEmail().isEmpty()) {
             existingUser.setName(user.getUsername());
         }
         if (user.getEmail() != null && !user.getEmail().isEmpty()) {
@@ -148,10 +143,7 @@ public class LoginController {
             existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
         }
 
-        // Wywołaj metodę serwisu do aktualizacji użytkownika w bazie danych
         userService.updateUser(existingUser);
-
-
 
         return ResponseEntity.ok(jwtUtil.createToken(existingUser));
     }
@@ -183,18 +175,6 @@ public class LoginController {
         return ResponseEntity.ok(userCategories);
     }
 
-    @GetMapping("/album/{categoryId}")
-    public ResponseEntity<ZdjeciaKategorieDTO> getAllImages(@PathVariable Long categoryId) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        List<ZdjeciaDTO> images;
-        if (categoryId != null) {
-            images = zdjeciaService.getAllZdjeciaDTO(categoryId,authentication.getName());
-            List<KategorieDTO> subCategories = categoryService.getSubCategoriesByParentId(categoryId,authentication.getName());
-            return ResponseEntity.ok(new ZdjeciaKategorieDTO(images,subCategories));
-        } else {
-            return ResponseEntity.status(400).body(null);
-        }
-    }
     @GetMapping("/photo/{photoId}")
     public ResponseEntity<SinglePhotoDTO> getPhoto(@PathVariable Long photoId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -242,6 +222,31 @@ public class LoginController {
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body("Error uploading file");
+        }
+    }
+
+    @GetMapping("/getAllImages")
+    public ResponseEntity<List<ZdjeciaDTO>> getAllImages(@RequestParam(required = false) Long categoryId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<ZdjeciaDTO> images;
+        if (categoryId != null) {
+            images = zdjeciaService.getAllZdjeciaDTO(categoryId,authentication.getName());
+        } else {
+            return ResponseEntity.status(400).body(null);
+        }
+
+        return ResponseEntity.ok(images);
+    }
+    @GetMapping("/album/{categoryId}")
+    public ResponseEntity<ZdjeciaKategorieDTO> getImages(@PathVariable Long categoryId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        List<ZdjeciaDTO> images;
+        if (categoryId != null) {
+            images = zdjeciaService.getAllZdjeciaDTO(categoryId,authentication.getName());
+            List<KategorieDTO> subCategories = categoryService.getSubCategoriesByParentId(categoryId,authentication.getName());
+            return ResponseEntity.ok(new ZdjeciaKategorieDTO(images,subCategories));
+        } else {
+            return ResponseEntity.status(400).body(null);
         }
     }
 }

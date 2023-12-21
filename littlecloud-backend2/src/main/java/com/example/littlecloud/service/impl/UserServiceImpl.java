@@ -36,10 +36,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void uploadUsername(String oldUsername, String newUsername) {
-        userRepository.updateUsername(oldUsername, newUsername);
+    public void updateUser(User user) {
+        userRepository.save(user);
     }
-
     @Override
     public User findByEmail(String email) {
         return userRepository.findByEmail(email);

@@ -33,8 +33,8 @@ const PhotoUploadForm = () => {
     axios
       .post("http://localhost:8080/api/photo_upload", formData, {
         headers: {
-          "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${jwtToken}`,
+          Accept: "*/*"
         },
       })
       .then(() => {

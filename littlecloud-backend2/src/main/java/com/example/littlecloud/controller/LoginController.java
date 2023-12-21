@@ -1,5 +1,6 @@
 package com.example.littlecloud.controller;
 
+import com.example.littlecloud.security.CustomUserDetailsService;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import com.example.littlecloud.dto.*;
@@ -32,6 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.littlecloud.dto.UserDto;
 import com.example.littlecloud.repository.UserRepository;
 
+import java.nio.file.attribute.UserPrincipal;
 import java.util.List;
 import java.io.IOException;
 import java.sql.Date;
@@ -44,7 +46,7 @@ public class LoginController {
     @Autowired
     private final UserService userService;
     @Autowired
-    private final UserRepository userRepository;
+    private final CustomUserDetailsService userDetailsService;
 
     @Autowired
     private ModelMapper modelMapper;
@@ -67,9 +69,9 @@ public class LoginController {
     private PasswordEncoder passwordEncoder;
 
     private final JwtUtil jwtUtil;
-    public LoginController(UserService userService, UserRepository userRepository, AuthenticationManager authenticationManager, JwtUtil jwtUtil, KategorieZdjeciaRepo kategorieZdjeciaRepo) {
+    public LoginController(UserService userService, UserRepository userRepository, CustomUserDetailsService userDetailsService, AuthenticationManager authenticationManager, JwtUtil jwtUtil, KategorieZdjeciaRepo kategorieZdjeciaRepo) {
         this.userService = userService;
-        this.userRepository = userRepository;
+        this.userDetailsService = userDetailsService;
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
         this.kategorieZdjeciaRepo =kategorieZdjeciaRepo;
@@ -125,19 +127,19 @@ public class LoginController {
     public ResponseEntity<String> uploadUser(@NotNull @RequestBody UserDto user) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         User existingUser = userService.findByName(authentication.getName());
-        if (userService.findByName(authentication.getName()) != null)
-        {
+
+        User existingUsernameCheck = userService.findByName(user.getUsername());
+        if (existingUsernameCheck != null && !existingUsernameCheck.getId().equals(existingUser.getId())) {
             return ResponseEntity.ok("Istnieje już użytkownik o takiej nazwie");
         }
 
-        if (userService.findByEmail(authentication.getName()) != null)
-        {
+        User existingEmailCheck = userService.findByEmail(user.getEmail());
+        if (existingEmailCheck != null && !existingEmailCheck.getId().equals(existingUser.getId())) {
             return ResponseEntity.ok("Konto o takim adresie email już istnieje");
         }
 
         if (user.getUsername() != null) {
             existingUser.setName(user.getUsername());
-
         }
         if (user.getEmail() != null && !user.getEmail().isEmpty()) {
             existingUser.setEmail(user.getEmail());
@@ -146,14 +148,12 @@ public class LoginController {
             existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
         }
 
-        // Wykorzystanie ModelMapper do przekształcenia UserDto na User
-        modelMapper.map(user, existingUser);
-        UserDto existingUserDto = modelMapper.map(existingUser, UserDto.class);
-
-        userService.uploadUsername(authentication.getName(), existingUser.getName());
+        // Wywołaj metodę serwisu do aktualizacji użytkownika w bazie danych
+        userService.updateUser(existingUser);
 
 
-        return ResponseEntity.ok("Zmiany zostały zatwierdzone");
+
+        return ResponseEntity.ok(jwtUtil.createToken(existingUser));
     }
 
 

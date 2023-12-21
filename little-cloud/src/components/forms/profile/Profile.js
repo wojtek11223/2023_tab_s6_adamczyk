@@ -15,10 +15,11 @@ function Profile() {
   const [repasswordShow, setRepasswordShow] = useState(false);
   const [userInfo, getUserInfo] = useState(null)
   const [loading, setLoading] = useState(true);
+  const [authToken, setToken] = useState(null);
   const [ref, inView] = useInView({
     triggerOnce: true,
   });
-  const authToken = sessionStorage.getItem("authToken");
+  
   console.log("authToken:", authToken);
   const {
     register,
@@ -58,7 +59,8 @@ function Profile() {
 
 
   useEffect(() => {
-    if (inView && loading) {
+    if ((inView && loading)) {
+      setToken(sessionStorage.getItem("authToken"));
       let apiURL;
       apiURL = "http://localhost:8080/api/profile";
       axios({
@@ -88,6 +90,7 @@ function Profile() {
     const postData = {username: data.username, email: data.email, password: data.password};
     console.log("Button clicked with data:", postData);
     debugger;
+    setLoading(true);
     try {
         const response = await axios.post("http://localhost:8080/api/uploadUser", postData, {
             headers: {
@@ -96,7 +99,8 @@ function Profile() {
                 "Content-Type": "application/json",
             },
         });
-        setMessage(response.data);
+        sessionStorage.setItem("authToken", response.data);
+        window.location.reload();
     } catch (error) {
         console.error(error);
         setMessage("Wystąpił błąd podczas zapisywania zmian");

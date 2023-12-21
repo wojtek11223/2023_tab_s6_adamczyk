@@ -77,8 +77,8 @@ const PhotoUploadForm = () => {
      return axios
         .post("http://localhost:8080/api/photo_upload", postZdjecieDTO, {
         headers: {
-          "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${jwtToken}`,
+          Accept: "*/*"
         },
       })
     })

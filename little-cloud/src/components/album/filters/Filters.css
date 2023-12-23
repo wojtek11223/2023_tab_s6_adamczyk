@@ -8,7 +8,8 @@
   backdrop-filter: blur(2px);
 
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(16, 1fr);
+  grid-column-gap: 10px;
   z-index: 10;
 }
 
@@ -25,7 +26,7 @@
 
 .SearchInput {
   position: relative;
-  grid-area: 1 / 2 / 2 / 4;
+  grid-area: 1 / 5 / 2 / 13;
 }
 
 .SearchInput img {
@@ -40,7 +41,7 @@
 }
 
 .SelectMenu {
-  grid-area: 1 / 4 / 2 / 5;
+  grid-area: 1 / 13 / 2 / 17;
   display: flex;
   justify-content: center;
   position: relative;
@@ -128,6 +129,30 @@
 .SelectList li:hover {
   background-color: #262626;
   color: white;
+}
+
+.AddCategory {
+  grid-area: 1 / 1 / 2 / 2;
+  width: 100%;
+  height: 100%;
+}
+
+.AddCategory button {
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  color: #262626;
+  border-radius: 10px;
+  border: none;
+  transition: ease-in-out 0.2s;
+  font-size: 30px;
+  font-weight: bold;
+}
+
+.AddCategory button:hover {
+  background-color: #262626;
+  color: white;
+  transition: ease-in-out 0.2s;
 }
 
 @media screen and (max-width: 1000px) {

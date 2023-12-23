@@ -3,7 +3,14 @@ import "./Filters.css";
 import Search from "../../../assets/search.svg";
 import Arrow from "../../../assets/arrow.svg";
 
-function Filters({ albums, albumsSort, setAlbumsSort, setFunny }) {
+function Filters({
+  albums,
+  albumsSort,
+  setAlbumsSort,
+  setFunny,
+  showAddCat,
+  setShowAddCat,
+}) {
   const [selectedOption, setSelectedOption] = useState("Sortowanie");
   const [showOptions, setShowOptions] = useState(false);
   const [searchText, setSearchText] = useState("");
@@ -65,6 +72,11 @@ function Filters({ albums, albumsSort, setAlbumsSort, setFunny }) {
 
   return (
     <div className="Filters">
+      <div className="AddCategory">
+        <button onClick={() => setShowAddCat((showAddCat) => !showAddCat)}>
+          +
+        </button>
+      </div>
       <div className="SearchInput">
         <img src={Search} alt=""></img>
         <input

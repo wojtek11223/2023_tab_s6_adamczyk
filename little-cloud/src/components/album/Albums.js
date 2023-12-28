@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./Albums.css";
 import { useNavigate } from "react-router-dom";
 import { useInView } from "react-intersection-observer";
@@ -122,6 +122,7 @@ function Albums() {
             handleTileClick={handleTileClick}
             showAddCat={showAddCat}
             setShowAddCat={setShowAddCat}
+            setFunny={setFunny}
           />
           {albumId !== undefined ? (
             <ImageCollection

@@ -70,12 +70,14 @@ function Filters({
     setFunny(2);
   };
 
+  function AddCategory() {
+    setShowAddCat((showAddCat) => true);
+  }
+
   return (
     <div className="Filters">
       <div className="AddCategory">
-        <button onClick={() => setShowAddCat((showAddCat) => !showAddCat)}>
-          +
-        </button>
+        <button onClick={AddCategory}>+</button>
       </div>
       <div className="SearchInput">
         <img src={Search} alt=""></img>

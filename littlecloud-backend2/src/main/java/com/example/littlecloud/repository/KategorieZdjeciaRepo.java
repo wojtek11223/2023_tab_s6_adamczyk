@@ -15,4 +15,5 @@ public interface KategorieZdjeciaRepo extends JpaRepository<KategorieZdjecia, Lo
 
     @Query("SELECT DISTINCT kz.zdjecia FROM KategorieZdjecia kz WHERE kz.zdjecia.id = :idzdjecia AND kz.kategoria.uzytkownik.name = :username")
     Zdjecia findZdjeciaByKategoria_IdZdjeciaAndKategoria_Uzytkownik_Name(@Param("idzdjecia") Long idzdjecia, @Param("username") String username);
+
 }

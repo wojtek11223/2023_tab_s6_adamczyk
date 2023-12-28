@@ -8,12 +8,10 @@ import com.example.littlecloud.dto.ZdjeciaDTO;
 import com.example.littlecloud.entity.Zdjecia;
 import com.example.littlecloud.repository.KategorieZdjeciaRepo;
 import com.example.littlecloud.repository.ZdjeciaRepo;
-import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
+
 import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,6 +50,7 @@ public class ZdjeciaService {
                 zdjecia.getZdjecie()
         );
     }
+
     public Zdjecia addZdjecia(Zdjecia zdjecia) {
         // Tutaj możesz dodać logikę walidacji, przetwarzania, itp.
         return zdjeciaRepo.save(zdjecia);

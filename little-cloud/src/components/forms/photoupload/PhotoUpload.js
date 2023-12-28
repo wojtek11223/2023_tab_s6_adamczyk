@@ -1,4 +1,6 @@
+
 import React, { useState, useEffect } from "react";
+
 import axios from "axios";
 import "../Form.css";
 
@@ -8,6 +10,7 @@ const PhotoUploadForm = () => {
   const [format, setFormat] = useState(null);
   const [roz, setRoz] = useState(null);
   const [albums, setAlbums] = useState(null);
+
   const [dataWykonania, setDataWykonania] = useState("");
   const [kategoriaID, setKategoriaID] = useState("");
   const [message, setMessage] = useState("");
@@ -59,6 +62,7 @@ const PhotoUploadForm = () => {
       window.removeEventListener("popstate", handlePopstate);
     };
   },[]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     debugger;
@@ -73,23 +77,25 @@ const PhotoUploadForm = () => {
         dataWykonania: dataWykonania,
         nazwaKategorii: kategoriaID
       };
-  
+
      return axios
         .post("http://localhost:8080/api/photo_upload", postZdjecieDTO, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `Bearer ${jwtToken}`,
-          },
-        })
+
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+          Accept: "*/*"
+        },
+      })
     })
     .then((response) => {
       setMessage(response.data !== undefined ? response.data : "File uploaded successfully");
-    })
-    .catch((error) => {
+      })
+      .catch((error) => {
       setMessage(error.response.data  !== undefined  ? error.response.data : "Error uploading file");
-      console.error("Error uploading file:", error);
-    });
+        console.error("Error uploading file:", error);
+      });
    
+
   };
 
   return (
@@ -111,6 +117,7 @@ const PhotoUploadForm = () => {
               style={{ color: "black" }}
               type="date"
               accept="image/*" 
+
               value={dataWykonania}
               onChange={(e) => setDataWykonania(e.target.value)}
             />

@@ -19,5 +19,4 @@ public class ZdjeciaDTO {
     private String format;
     private byte[] miniaturka;
 
-
 }

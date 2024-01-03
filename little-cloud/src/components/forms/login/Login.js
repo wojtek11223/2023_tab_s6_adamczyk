@@ -36,10 +36,9 @@ function Login() {
         // Obsłuż błąd
         setMessage(
           `${
-            error.response ? error.response.data.message : "Unknown error"
+            error.response ? error.response.data.message : error.message
           }`
         );
-        console.log(error.response.status);
       });
   };
   const handleError = (errors) => console.log(errors);

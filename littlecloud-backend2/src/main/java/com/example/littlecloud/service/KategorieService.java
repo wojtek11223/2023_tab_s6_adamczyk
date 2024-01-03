@@ -7,6 +7,7 @@ import com.example.littlecloud.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,6 +21,7 @@ public class KategorieService {
     }
     public List<KategorieDTO> getAllUserCategories(String username) {
         List<Kategorie> kategories = kategorieRepo.findAllByUzytkownik_Name(username);
+        kategories.removeIf(kategorie -> "default".equals(kategorie.getNazwaKategorii()));
         return kategories.stream()
                 .map(this::mapKategorieToDTO)
                 .collect(Collectors.toList());

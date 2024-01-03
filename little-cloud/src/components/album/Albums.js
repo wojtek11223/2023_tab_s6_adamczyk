@@ -21,6 +21,7 @@ function Albums() {
   const [showSlide, setShowSlide] = useState(false);
   const [activeSlidePhoto, setActiveSlidePhoto] = useState(null);
   const { albumId } = useParams();
+  const [uniqueTags, SetUniqueTags] = useState(null);
   const [ref, inView] = useInView({
     triggerOnce: true,
   });
@@ -31,50 +32,32 @@ function Albums() {
       let apiURL;
       if (albumId === undefined) {
         apiURL = "http://localhost:8080/api/albums";
-        axios({
-          url: apiURL,
-          method: "get",
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-            Accept: "*/*",
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => {
-          setAlbums(response.data);
-          setAlbumsSort(response.data);
-        })
-        .catch((error) => {
-          console.error(error);
-          setError(error);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
       } else {
         apiURL = `http://localhost:8080/api/album/${albumId}`;
-        axios({
-          url: apiURL,
-          method: "get",
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-            Accept: "*/*",
-            "Content-Type": "application/json",
-          },
-        })
-          .then((response) => {
-            setImages(response.data.zdjeciaDTO);
-            setAlbums(response.data.kategorieDTO);
-            setAlbumsSort(response.data.kategorieDTO);
-          })
-          .catch((error) => {
-            setError(error);
-            console.error(error);
-          })
-          .finally(() => {
-            setLoading(false);
-          });
       }
+      debugger
+      axios({
+        url: apiURL,
+        method: "get",
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          Accept: "*/*",
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        setImages(response.data.zdjeciaDTO);
+        setAlbums(response.data.kategorieDTO);
+        setAlbumsSort(response.data.kategorieDTO);
+        getUniqueTags(response.data.zdjeciaDTO);
+      })
+      .catch((error) => {
+        setError(error);
+        console.error(error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
     }
   }, [inView, authToken, loading, albumId]);
 
@@ -95,6 +78,21 @@ function Albums() {
     window.location.reload();
   };
 
+  const getUniqueTags = (images) => {
+    const uniqueValuesSet = new Set();
+    debugger;
+    images.forEach(image=> {
+      image.tags.forEach(tag => {
+        uniqueValuesSet.add(tag);
+      });
+    });
+
+    // Zamiana zbioru na tablicę
+    const uniqueValuesArray = [...uniqueValuesSet];
+
+    SetUniqueTags(uniqueValuesArray);
+  };
+
   return (
     <React.Fragment>
       {showSlide ? (
@@ -110,6 +108,7 @@ function Albums() {
             albumsSort={albumsSort}
             setAlbumsSort={setAlbumsSort}
             setFunny={setFunny}
+            images={images}
           />
           <AlbumsCollection
             forwardedRef={ref}
@@ -118,18 +117,14 @@ function Albums() {
             albumsSort={albumsSort}
             handleTileClick={handleTileClick}
           />
-          {albumId !== undefined ? (
-            <ImageCollection
-              error={error}
-              loading={loading}
-              images={images}
-              setShowSlide={setShowSlide}
-              activeSlidePhoto={activeSlidePhoto}
-              setActiveSlidePhoto={setActiveSlidePhoto}
-            />
-          ) : (
-            <></>
-          )}
+          <ImageCollection
+            error={error}
+            loading={loading}
+            images={images}
+            setShowSlide={setShowSlide}
+            activeSlidePhoto={activeSlidePhoto}
+            setActiveSlidePhoto={setActiveSlidePhoto}
+          />
         </>
       )}
     </React.Fragment>

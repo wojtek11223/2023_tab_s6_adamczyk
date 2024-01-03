@@ -1,9 +1,14 @@
 package com.example.littlecloud.service.impl;
 
 import com.example.littlecloud.dto.UserDto;
+
 import com.example.littlecloud.dto.UserUploadDTO;
+
+import com.example.littlecloud.entity.Kategorie;
+
 import com.example.littlecloud.entity.User;
 import com.example.littlecloud.enums.Role;
+import com.example.littlecloud.repository.KategorieRepo;
 import com.example.littlecloud.repository.UserRepository;
 import com.example.littlecloud.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,10 +23,13 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
+    private final KategorieRepo kategorieRepo;
+
     public UserServiceImpl(UserRepository userRepository,
-                           PasswordEncoder passwordEncoder) {
+                           PasswordEncoder passwordEncoder, KategorieRepo kategorieRepo) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.kategorieRepo = kategorieRepo;
     }
 
     @Override
@@ -33,6 +41,10 @@ public class UserServiceImpl implements UserService {
 
         user.setRole(Role.USER);
         userRepository.save(user);
+        Kategorie kategorie = new Kategorie(null,"default",null,user);
+        kategorieRepo.save(kategorie);
+
+
     }
 
     @Override

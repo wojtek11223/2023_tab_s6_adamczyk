@@ -169,10 +169,16 @@ public class LoginController {
     }
 
     @GetMapping("/albums")
-    public ResponseEntity<List<KategorieDTO>> getAllUserCategories() {
+    public ResponseEntity<ZdjeciaKategorieDTO> getAllUserCategories() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<KategorieDTO> userCategories = categoryService.getAllUserCategories(authentication.getName());
-        return ResponseEntity.ok(userCategories);
+        Kategorie kategorieDefault = categoryService.findAllByNazwaKategoriiAndUzytkownik_Name("default", authentication.getName());
+        if(kategorieDefault == null)
+        {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+        }
+        List<ZdjeciaDTO> images = zdjeciaService.getAllZdjeciaDTO(kategorieDefault.getIdKategorii(),authentication.getName());
+        return ResponseEntity.ok(new ZdjeciaKategorieDTO(images,userCategories));
     }
 
     @GetMapping("/photo/{photoId}")
@@ -200,7 +206,8 @@ public class LoginController {
             }
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
             Kategorie kategorie = categoryService.findAllByNazwaKategoriiAndUzytkownik_Name(nazwaKategorii, authentication.getName());
-            if(kategorie == null)
+            Kategorie kategorieDefault = categoryService.findAllByNazwaKategoriiAndUzytkownik_Name("default", authentication.getName());
+            if(kategorie == null || kategorieDefault == null)
             {
                 return ResponseEntity.badRequest().body("Nie istenieje podana kategoria");
             }
@@ -217,6 +224,8 @@ public class LoginController {
 
             zdjeciaRepo.save(zdjecia);
             KategorieZdjecia kategorieZdjecia = new KategorieZdjecia(zdjecia,kategorie);
+            KategorieZdjecia kategorieZdjeciadefault = new KategorieZdjecia(zdjecia,kategorieDefault);
+            kategorieZdjeciaRepo.save(kategorieZdjeciadefault);
             kategorieZdjeciaRepo.save(kategorieZdjecia);
             return ResponseEntity.ok("Plik został pomyślnie dodany");
         } catch (IOException e) {

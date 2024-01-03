@@ -1,7 +1,8 @@
 package com.example.littlecloud.config;
+import com.example.littlecloud.dto.UserDto;
 import com.example.littlecloud.entity.*;
+import com.example.littlecloud.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import com.example.littlecloud.enums.Role;
 import com.example.littlecloud.repository.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -9,21 +10,23 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Optional;
 
 
 @Component
 public class DataLoader implements CommandLineRunner {
 
     private final KategorieZdjeciaRepo kategorieZdjeciaRepo;
+
+    private final UserService userService;
     private final KategorieRepo kategoriaRepo;
     private final TagRepo tagRepo;
     private final UserRepository userRepository;
     private final ZdjeciaRepo zdjeciaRepo;
     private final PasswordEncoder passwordEncoder;
 
-    public DataLoader(KategorieZdjeciaRepo kategorieZdjeciaRepo, KategorieRepo kategoriaRepo, TagRepo tagRepo, UserRepository userRepository, ZdjeciaRepo zdjeciaRepo, PasswordEncoder passwordEncoder) {
+    public DataLoader(KategorieZdjeciaRepo kategorieZdjeciaRepo, UserService userService, KategorieRepo kategoriaRepo, TagRepo tagRepo, UserRepository userRepository, ZdjeciaRepo zdjeciaRepo, PasswordEncoder passwordEncoder) {
         this.kategorieZdjeciaRepo = kategorieZdjeciaRepo;
+        this.userService = userService;
         this.kategoriaRepo = kategoriaRepo;
 
         this.tagRepo = tagRepo;
@@ -59,22 +62,15 @@ public class DataLoader implements CommandLineRunner {
 
     }
     private User dodajPrzykladowegoUsera(String nazwauzytkownika, String email,String haslo){
-        User user = userRepository.findByEmailOrName(email,nazwauzytkownika);
+        User user = userService.findByName(nazwauzytkownika);
         if(user== null)
         {
-            user = new User();
-            user.setName(nazwauzytkownika);
-            user.setEmail(email);
-            user.setRole(Role.USER);
-            String encodedPassword = passwordEncoder.encode(haslo);
-            user.setPassword(encodedPassword);
-            userRepository.save(user);
+            userService.saveUser(new UserDto(null,nazwauzytkownika,email,haslo));
+            user = userService.findByName(nazwauzytkownika);
             return user;
         }
         else
             return null;
-
-
     }
     private Kategorie dodajPrzykladoweKategorie(User user1, String nazwakategorii){
         Kategorie kategorie = new Kategorie();

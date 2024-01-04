@@ -4,11 +4,8 @@ import "./ProgressBar.css";
 function ProgressBar({ progressBar }) {
   return (
     <div className="ProgressBar">
-      <div
-        className="Progress"
-        style={progressBar ? { width: `${progressBar}%` } : {}}
-      >
-        {progressBar ? `${progressBar}%` : "0%"}
+      <div className="Progress" style={{ width: `${progressBar}%` }}>
+        <p>{progressBar ? `${progressBar}%` : "0%"}</p>
       </div>
     </div>
   );

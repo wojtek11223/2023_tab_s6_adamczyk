@@ -81,7 +81,7 @@ const PhotoUploadForm = () => {
       };
 
      return axios
-        .post("http://localhost:8080/api/photo_upload", postZdjecieDTO, {
+        .post("http://localhost:8080/api/photo_edit", postZdjecieDTO, {
 
         headers: {
           Authorization: `Bearer ${jwtToken}`,
@@ -90,11 +90,11 @@ const PhotoUploadForm = () => {
       })
     })
     .then((response) => {
-      setMessage(response.data !== undefined ? response.data : "File uploaded successfully");
+      setMessage(response.data !== undefined ? response.data : "File edited successfully");
       })
       .catch((error) => {
-      setMessage(error.response.data  !== undefined  ? error.response.data : "Error uploading file");
-        console.error("Error uploading file:", error);
+      setMessage(error.response.data  !== undefined  ? error.response.data : "Error editing file");
+        console.error("Error editing file:", error);
       });
    
 
@@ -107,8 +107,13 @@ const PhotoUploadForm = () => {
 
         <div className="InputGroup">
           <div className="InputField">
-            <label>Zdjęcie: </label>
-            <input type="file" onChange={handleFileChange} />
+            <label>ID zdjęcia: </label>
+            <input
+              style={{ color: "black" }}
+              type="text"
+              value={zdjecieID}
+              onChange={(e) => setZdjecieID(e.target.value)}
+            />
           </div>
         </div>
 
@@ -150,7 +155,7 @@ const PhotoUploadForm = () => {
         </div>
         <div className="InputGroup">
           <div className="InputField">
-            <input type="submit" value="Prześlij zdjęcie" />
+            <input type="submit" value="Edytuj zdjęcie" />
           </div>
         </div>
       </form>

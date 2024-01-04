@@ -1,0 +1,24 @@
+.ProgressBar {
+  display: flex;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(2px);
+  padding: 5px;
+}
+
+.Progress {
+  width: min-content;
+  font-weight: bold;
+  transition: ease-in-out 0.5s;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 1);
+  border-radius: 25px;
+  overflow: hidden;
+}
+
+.Progress p {
+  border-radius: 25px;
+  padding: 0 10px 0 10px;
+  color: #262626;
+}

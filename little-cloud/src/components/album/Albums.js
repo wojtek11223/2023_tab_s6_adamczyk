@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import "./Albums.css";
 import { useNavigate } from "react-router-dom";
 import { useInView } from "react-intersection-observer";
@@ -20,6 +20,7 @@ function Albums() {
   const [funny, setFunny] = useState();
   const [showSlide, setShowSlide] = useState(false);
   const [activeSlidePhoto, setActiveSlidePhoto] = useState(null);
+  const [showAddCat, setShowAddCat] = useState(false);
   const { albumId } = useParams();
   const [ref, inView] = useInView({
     triggerOnce: true,
@@ -110,6 +111,8 @@ function Albums() {
             albumsSort={albumsSort}
             setAlbumsSort={setAlbumsSort}
             setFunny={setFunny}
+            showAddCat={showAddCat}
+            setShowAddCat={setShowAddCat}
           />
           <AlbumsCollection
             forwardedRef={ref}
@@ -117,6 +120,9 @@ function Albums() {
             loading={loading}
             albumsSort={albumsSort}
             handleTileClick={handleTileClick}
+            showAddCat={showAddCat}
+            setShowAddCat={setShowAddCat}
+            setFunny={setFunny}
           />
           {albumId !== undefined ? (
             <ImageCollection

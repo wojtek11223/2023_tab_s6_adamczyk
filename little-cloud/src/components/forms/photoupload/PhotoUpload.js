@@ -77,7 +77,7 @@ const PhotoUploadForm = () => {
         szerokosc: info.resolution.width,
         dataWykonania: dataWykonania,
         nazwaKategorii: kategoriaID,
-        tag: Tag
+        tagi: Tag
       };
 
      return axios
@@ -85,7 +85,8 @@ const PhotoUploadForm = () => {
 
         headers: {
           Authorization: `Bearer ${jwtToken}`,
-          Accept: "*/*"
+          Accept: "*/*",
+          "Content-Type": "multipart/form-data",
         },
       })
     })

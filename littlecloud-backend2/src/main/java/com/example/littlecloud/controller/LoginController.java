@@ -2,6 +2,7 @@ package com.example.littlecloud.controller;
 
 import com.example.littlecloud.security.CustomUserDetailsService;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import com.example.littlecloud.dto.*;
 import com.example.littlecloud.entity.Kategorie;
@@ -195,7 +196,7 @@ public class LoginController {
         }
     }
 
-   
+
 
     @PostMapping("/photo_upload")
     public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file,
@@ -204,7 +205,7 @@ public class LoginController {
                                                 @RequestParam("nazwa") String nazwa,
                                                 @RequestParam("dataWykonania") Date dataWykonania,
                                                 @RequestParam("nazwaKategorii") String nazwaKategorii,
-                                                @RequestParam("tag") String tag) {
+                                                @RequestParam("tagi") String tagi) {
         try {
             // Jeśli nie ma plików wyślij komunikat 
             if (file.isEmpty()) {
@@ -228,11 +229,14 @@ public class LoginController {
             zdjecia.setMiniaturkaFromOriginal();
             zdjeciaRepo.save(zdjecia);
 
-            if (!tag.isEmpty()){
-                Tag Tag = new Tag();
-                Tag.setTag(tag);
-                Tag.setZdjecie(zdjecia);
-                tagRepo.save(Tag);
+            if (!tagi.isEmpty()){
+                List<String> tags = List.of(tagi.split(","));
+                tags.forEach(tag1 -> {
+                    Tag Tag = new Tag();
+                    Tag.setTag(tag1.trim());
+                    Tag.setZdjecie(zdjecia);
+                    tagRepo.save(Tag);
+                });
             }
 
             KategorieZdjecia kategorieZdjecia = new KategorieZdjecia(zdjecia,kategorie);

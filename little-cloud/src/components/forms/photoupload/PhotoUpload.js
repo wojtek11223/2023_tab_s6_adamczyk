@@ -73,7 +73,6 @@ const PhotoUploadForm = () => {
     debugger;
     const jwtToken = sessionStorage.getItem("authToken");
     getImageInfoFromFile(file).then((info) => {
-      //debugger
       const postZdjecieDTO = {
         file: file,
         nazwa: nazwa,
@@ -81,7 +80,7 @@ const PhotoUploadForm = () => {
         szerokosc: info.resolution.width,
         dataWykonania: dataWykonania,
         nazwaKategorii: kategoriaID,
-        tag: Tag
+        tagi: Tag
       };
         return axios.post(
           "http://localhost:8080/api/photo_upload",
@@ -90,6 +89,7 @@ const PhotoUploadForm = () => {
             headers: {
               "Content-Type": "multipart/form-data",
               Authorization: `Bearer ${jwtToken}`,
+              Accept: "*/*",
             },
             onUploadProgress: (e) => {
               setProgressBar(Math.round(100 * e.loaded) / e.total);

@@ -8,6 +8,7 @@ import com.example.littlecloud.entity.Kategorie;
 import com.example.littlecloud.entity.KategorieZdjecia;
 import com.example.littlecloud.entity.User;
 import com.example.littlecloud.entity.Zdjecia;
+import com.example.littlecloud.entity.Tag;
 import com.example.littlecloud.repository.KategorieZdjeciaRepo;
 import com.example.littlecloud.service.KategorieService;
 import com.example.littlecloud.service.UserService;
@@ -15,6 +16,7 @@ import com.example.littlecloud.model.ErrorRes;
 import com.example.littlecloud.service.ZdjeciaService;
 import com.example.littlecloud.springjwt.JwtUtil;
 import com.example.littlecloud.repository.ZdjeciaRepo;
+import com.example.littlecloud.repository.TagRepo;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +32,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import com.example.littlecloud.dto.UserDto;
+import org.springframework.http.ResponseEntity;
+
 import com.example.littlecloud.repository.UserRepository;
 
 import java.nio.file.attribute.UserPrincipal;
@@ -59,16 +62,21 @@ public class LoginController {
     private ZdjeciaRepo zdjeciaRepo;
 
     @Autowired
+    private TagRepo tagRepo;
+
+    @Autowired
     private KategorieZdjeciaRepo kategorieZdjeciaRepo;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     private final JwtUtil jwtUtil;
-    public LoginController(UserService userService, UserRepository userRepository, CustomUserDetailsService userDetailsService, AuthenticationManager authenticationManager, JwtUtil jwtUtil, KategorieZdjeciaRepo kategorieZdjeciaRepo) {
+    public LoginController(ZdjeciaRepo zdjeciaRepo, UserService userService, UserRepository userRepository, CustomUserDetailsService userDetailsService, AuthenticationManager authenticationManager, JwtUtil jwtUtil, KategorieZdjeciaRepo kategorieZdjeciaRepo, TagRepo tagRepo) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.jwtUtil = jwtUtil;
+        this.zdjeciaRepo =zdjeciaRepo;
         this.kategorieZdjeciaRepo =kategorieZdjeciaRepo;
+        this.tagRepo =tagRepo;
     }
 
     @ResponseBody
@@ -186,13 +194,17 @@ public class LoginController {
             return ResponseEntity.status(400).body(null);
         }
     }
+
+   
+
     @PostMapping("/photo_upload")
     public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file,
                                                    @RequestParam("wysokosc") String wysokosc,
                                                    @RequestParam("szerokosc") String szerokosc,
                                                 @RequestParam("nazwa") String nazwa,
                                                 @RequestParam("dataWykonania") Date dataWykonania,
-                                                @RequestParam("nazwaKategorii") String nazwaKategorii) {
+                                                @RequestParam("nazwaKategorii") String nazwaKategorii,
+                                                @RequestParam("tag") String tag) {
         try {
             // Jeśli nie ma plików wyślij komunikat 
             if (file.isEmpty()) {
@@ -214,8 +226,15 @@ public class LoginController {
             zdjecia.setWidth(szerokosc);
             zdjecia.setHeight(wysokosc);
             zdjecia.setMiniaturkaFromOriginal();
-
             zdjeciaRepo.save(zdjecia);
+
+            if (!tag.isEmpty()){
+                Tag Tag = new Tag();
+                Tag.setTag(tag);
+                Tag.setZdjecie(zdjecia);
+                tagRepo.save(Tag);
+            }
+
             KategorieZdjecia kategorieZdjecia = new KategorieZdjecia(zdjecia,kategorie);
             kategorieZdjeciaRepo.save(kategorieZdjecia);
             return ResponseEntity.ok("Plik został pomyślnie dodany");
@@ -224,7 +243,6 @@ public class LoginController {
             return ResponseEntity.status(500).body("Error uploading file");
         }
     }
-
     @GetMapping("/getAllImages")
     public ResponseEntity<List<ZdjeciaDTO>> getAllImages(@RequestParam(required = false) Long categoryId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

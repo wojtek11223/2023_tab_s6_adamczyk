@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 
 import axios from "axios";
 import "../Form.css";
-import ProgressBar from "./ProgressBar/ProgressBar";
 
 const PhotoUploadForm = () => {
   const [file, setFile] = useState(null);
@@ -16,26 +15,25 @@ const PhotoUploadForm = () => {
   const [kategoriaID, setKategoriaID] = useState("");
   const [Tag, setTag] = useState("");
   const [message, setMessage] = useState("");
-  const [progressBar, setProgressBar] = useState(null);
 
   const getImageInfoFromFile = (file) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
-
+  
       reader.onload = (event) => {
         const image = new Image();
-
+  
         image.onload = () => {
           const resolution = { width: image.width, height: image.height };
-          const format = file.type.replace("image/", "");
-
+          const format = file.type.replace('image/', '');
+  
           // Zamyka obraz, aby zwolnić zasoby
           URL.revokeObjectURL(image.src);
-
+  
           // Zwraca informacje
           resolve({ resolution, format });
         };
-
+  
         image.onerror = (error) => {
           reject(error);
         };
@@ -46,8 +44,6 @@ const PhotoUploadForm = () => {
     });
   };
   const handleFileChange = (e) => {
-    setProgressBar(0);
-    setMessage(null);
     const selectedFile = e.target.files[0];
     setFile(selectedFile);
 
@@ -66,8 +62,8 @@ const PhotoUploadForm = () => {
     return () => {
       window.removeEventListener("popstate", handlePopstate);
     };
+  },[]);
 
-  }, []);
   const handleSubmit = (e) => {
     e.preventDefault();
     debugger;
@@ -83,76 +79,68 @@ const PhotoUploadForm = () => {
         nazwaKategorii: kategoriaID,
         tag: Tag
       };
-        return axios.post(
-          "http://localhost:8080/api/photo_upload",
-          postZdjecieDTO,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              Authorization: `Bearer ${jwtToken}`,
-            },
-            onUploadProgress: (e) => {
-              setProgressBar(Math.round(100 * e.loaded) / e.total);
-            },
-          }
-        );
+
+     return axios
+        .post("http://localhost:8080/api/photo_edit", postZdjecieDTO, {
+
+        headers: {
+          Authorization: `Bearer ${jwtToken}`,
+          Accept: "*/*"
+        },
       })
-      .then((response) => {
-        setMessage(
-          response.data !== undefined
-            ? response.data
-            : "File uploaded successfully"
-        );
+    })
+    .then((response) => {
+      setMessage(response.data !== undefined ? response.data : "File edited successfully");
       })
       .catch((error) => {
-        setMessage(
-          error.response.data !== undefined
-            ? error.response.data
-            : "Error uploading file"
-        );
-        console.error("Error uploading file:", error);
+      setMessage(error.response.data  !== undefined  ? error.response.data : "Error editing file");
+        console.error("Error editing file:", error);
       });
+   
+
   };
 
   return (
-    <>
-      <ProgressBar progressBar={progressBar} />
-      <div className="Container">
-        <form className="Form" onSubmit={handleSubmit}>
-          <div className="Text">
-            Dodaj zdjęcie {message && <p>{message}</p>}
-          </div>
+    <div className="Container">
+      <form className="Form" onSubmit={handleSubmit}>
+        <div className="Text">Dodaj zdjęcie {message && <p>{message}</p>}</div>
 
-          <div className="InputGroup">
-            <div className="InputField">
-              <label>Zdjęcie: </label>
-              <input type="file" onChange={handleFileChange} />
-            </div>
+        <div className="InputGroup">
+          <div className="InputField">
+            <label>ID zdjęcia: </label>
+            <input
+              style={{ color: "black" }}
+              type="text"
+              value={zdjecieID}
+              onChange={(e) => setZdjecieID(e.target.value)}
+            />
           </div>
+        </div>
 
+        <div className="InputGroup">
+          <div className="InputField">
+            <label>Data Wykonania:</label>
+            <input
+              style={{ color: "black" }}
+              type="date"
+              accept="image/*" 
 
-          <div className="InputGroup">
-            <div className="InputField">
-              <label>Data Wykonania:</label>
-              <input
-                style={{ color: "black" }}
-                type="date"
-                accept="image/*"
-                value={dataWykonania}
-                onChange={(e) => setDataWykonania(e.target.value)}
-              />
-            </div>
+              value={dataWykonania}
+              onChange={(e) => setDataWykonania(e.target.value)}
+            />
           </div>
-          <div className="InputGroup">
-            <div className="InputField">
-              <label>Nazwa kategorii:</label>
-              <input
-                style={{ color: "black" }}
-                type="text"
-                value={kategoriaID}
-                onChange={(e) => setKategoriaID(e.target.value)}
-              />
-            </div>
+        </div>
+
+        <div className="InputGroup">
+          <div className="InputField">
+            <label>Nazwa kategorii:</label>
+            <input
+              style={{ color: "black" }}
+              type="text"
+              value={kategoriaID}
+              onChange={(e) => setKategoriaID(e.target.value)}
+            />
+          </div>
         </div>
         <div className="InputGroup">
           <div className="InputField">
@@ -167,12 +155,11 @@ const PhotoUploadForm = () => {
         </div>
         <div className="InputGroup">
           <div className="InputField">
-            <input type="submit" value="Prześlij zdjęcie" />
+            <input type="submit" value="Edytuj zdjęcie" />
           </div>
         </div>
-        </form>
-      </div>
-    </>
+      </form>
+    </div>
   );
 };
 

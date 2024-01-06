@@ -28,7 +28,7 @@ public class Kategorie {
     private Kategorie nadkategoria;
 
     @ManyToOne
-    @JoinColumn(name = "id_uzytkownik", nullable = false)
+    @JoinColumn(name = "id_uzytkownik", nullable = true)
     private User uzytkownik;
 
 }

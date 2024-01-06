@@ -1,6 +1,7 @@
 package com.example.littlecloud.service.impl;
 
 import com.example.littlecloud.dto.UserDto;
+import com.example.littlecloud.dto.UserUploadDTO;
 import com.example.littlecloud.entity.User;
 import com.example.littlecloud.enums.Role;
 import com.example.littlecloud.repository.UserRepository;
@@ -28,15 +29,16 @@ public class UserServiceImpl implements UserService {
         User user = new User();
         user.setName(userDto.getUsername());
         user.setEmail(userDto.getEmail());
-
-        //encrypt the password once we integrate spring security
-        //user.setPassword(userDto.getPassword());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
 
-        user.setRole(Role.ADMIN);
+        user.setRole(Role.USER);
         userRepository.save(user);
     }
 
+    @Override
+    public void updateUser(User user) {
+        userRepository.save(user);
+    }
     @Override
     public User findByEmail(String email) {
         return userRepository.findByEmail(email);
@@ -44,7 +46,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByName(String username) {
-        return userRepository.findByEmail(username);
+        return userRepository.findByName(username);
+    }
+
+    @Override
+    public User findByEmailOrName(String username, String email) {
+        return userRepository.findByEmailOrName(email, username);
     }
 
     @Override

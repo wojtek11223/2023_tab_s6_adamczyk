@@ -36,7 +36,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                     Collections.singleton(new SimpleGrantedAuthority(user.getRole().getAuthority()))
             );
         } else {
-            throw new UsernameNotFoundException("Invalid username or password.");
+            throw new UsernameNotFoundException("Nieprawidłowa nazwa użytkownika lub hasło.");
         }
     }
 

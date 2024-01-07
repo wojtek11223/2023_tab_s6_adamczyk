@@ -83,7 +83,8 @@ const PhotoUploadForm = () => {
 
         headers: {
           Authorization: `Bearer ${jwtToken}`,
-          Accept: "*/*"
+          Accept: "*/*",
+          "Content-Type": "multipart/form-data",
         },
       })
     })
@@ -106,7 +107,7 @@ const PhotoUploadForm = () => {
         <div className="InputGroup">
           <div className="InputField">
             <label>Zdjęcie: </label>
-            <input type="file" onChange={handleFileChange} />
+            <input type="file" accept="image/*" onChange={handleFileChange} />
           </div>
         </div>
 

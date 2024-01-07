@@ -9,6 +9,7 @@ import Filters from "./filters/Filters";
 import Slide from "./slides/Slide";
 import AlbumsCollection from "./AlbumsCollection";
 import ImageCollection from "./ImagesCollection";
+import FiltersImages from "./filters/FiltersImages";
 
 function Albums() {
   const navigate = useNavigate();
@@ -18,10 +19,12 @@ function Albums() {
   const [albumsSort, setAlbumsSort] = useState(null);
   const [loading, setLoading] = useState(true);
   const [funny, setFunny] = useState();
+  const [imagesSort, setImagesSort] = useState(null);
   const [showSlide, setShowSlide] = useState(false);
   const [activeSlidePhoto, setActiveSlidePhoto] = useState(null);
   const { albumId } = useParams();
   const [uniqueTags, SetUniqueTags] = useState(null);
+  const [AlbumName, SetAlbumName] = useState("");
   const [ref, inView] = useInView({
     triggerOnce: true,
   });
@@ -47,9 +50,11 @@ function Albums() {
       })
       .then((response) => {
         setImages(response.data.zdjeciaDTO);
+        setImagesSort(response.data.zdjeciaDTO);
         setAlbums(response.data.kategorieDTO);
         setAlbumsSort(response.data.kategorieDTO);
         getUniqueTags(response.data.zdjeciaDTO);
+        SetAlbumName(response.data.nazwaKategorii);
       })
       .catch((error) => {
         setError(error);
@@ -80,7 +85,6 @@ function Albums() {
 
   const getUniqueTags = (images) => {
     const uniqueValuesSet = new Set();
-    debugger;
     images.forEach(image=> {
       image.tags.forEach(tag => {
         uniqueValuesSet.add(tag);
@@ -97,9 +101,11 @@ function Albums() {
     <React.Fragment>
       {showSlide ? (
         <Slide
-          images={images}
+          images={imagesSort}
           activeSlidePhoto={activeSlidePhoto}
           setActiveSlidePhoto={setActiveSlidePhoto}
+          showSlide={showSlide}
+          setShowSlide={setShowSlide}
         />
       ) : (
         <>
@@ -108,7 +114,6 @@ function Albums() {
             albumsSort={albumsSort}
             setAlbumsSort={setAlbumsSort}
             setFunny={setFunny}
-            images={images}
           />
           <AlbumsCollection
             forwardedRef={ref}
@@ -117,10 +122,18 @@ function Albums() {
             albumsSort={albumsSort}
             handleTileClick={handleTileClick}
           />
+          <FiltersImages
+            images={images}
+            imagesSort={imagesSort}
+            setImagesSort={setImagesSort}
+            setFunny={setFunny}
+            uniqueTags={uniqueTags}
+            albumName={AlbumName}
+          />
           <ImageCollection
             error={error}
             loading={loading}
-            images={images}
+            images={imagesSort}
             setShowSlide={setShowSlide}
             activeSlidePhoto={activeSlidePhoto}
             setActiveSlidePhoto={setActiveSlidePhoto}

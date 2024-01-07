@@ -46,7 +46,6 @@ public class ZdjeciaService {
 
     public SinglePhotoDTO getZdjecieByIdAndUsername(Long photoid, String username) {
         Zdjecia zdjecia = kategorieZdjeciaRepo.findZdjeciaByKategoria_IdZdjeciaAndKategoria_Uzytkownik_Name(photoid, username);
-        List<Tag> tags = tagRepo.findAllByZdjecie_IdZdjecia(photoid);
         return new SinglePhotoDTO(
                 zdjecia.getNazwa(),
                 zdjecia.getDataWykonania(),
@@ -54,7 +53,7 @@ public class ZdjeciaService {
                 zdjecia.getHeight(),
                 zdjecia.getWidth(),
                 zdjecia.getZdjecie(),
-                tags.stream().map(Tag::getTag).collect(Collectors.toList())
+                tagRepo.findAllByZdjecie_IdZdjecia(photoid).stream().map(Tag::getTag).collect(Collectors.toList())
         );
     }
 
@@ -76,39 +75,13 @@ public class ZdjeciaService {
     }
 
     private ZdjeciaDTO mapToZdjeciaDTO(Zdjecia zdjecia) {
-        String format = getImageFormat(zdjecia.getZdjecie());
-        List<Tag> tags = tagRepo.findAllByZdjecie_IdZdjecia(zdjecia.getIdZdjecia());
         return new ZdjeciaDTO(
                 zdjecia.getIdZdjecia(),
                 zdjecia.getNazwa(),
                 zdjecia.getFormat(),
+                zdjecia.getDataWykonania(),
                 zdjecia.getMiniaturka(),
-                tags.stream().map(Tag::getTag).collect(Collectors.toList())
+                tagRepo.findAllByZdjecie_IdZdjecia(zdjecia.getIdZdjecia()).stream().map(Tag::getTag).collect(Collectors.toList())
         );
-    }
-    private String getImageFormat(byte[] imageData) {
-        try (InputStream inputStream = new ByteArrayInputStream(imageData)) {
-            Metadata metadata = ImageMetadataReader.readMetadata(inputStream);
-            Iterable<Directory> directories = metadata.getDirectories();
-
-            for (Directory directory : directories) {
-                if (directory.containsTag(ExifSubIFDDirectory.TAG_COMPRESSION)) {
-                    int compressionType = directory.getInt(ExifSubIFDDirectory.TAG_COMPRESSION);
-                    switch (compressionType) {
-                        case 6:
-                            return "jpeg";
-                        case 1:
-                            return "gif";
-                        case 7:
-                            return "png";
-                        default:
-                            return "unknown";
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "unknown";
     }
 }

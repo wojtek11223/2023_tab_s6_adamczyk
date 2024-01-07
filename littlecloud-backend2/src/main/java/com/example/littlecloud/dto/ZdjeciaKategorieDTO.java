@@ -15,4 +15,5 @@ import java.util.List;
 public class ZdjeciaKategorieDTO {
     private List<ZdjeciaDTO> zdjeciaDTO;
     private List<KategorieDTO> kategorieDTO;
+    private String nazwaKategorii;
 }

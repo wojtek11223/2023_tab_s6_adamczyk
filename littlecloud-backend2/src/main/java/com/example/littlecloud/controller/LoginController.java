@@ -178,7 +178,7 @@ public class LoginController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
         }
         List<ZdjeciaDTO> images = zdjeciaService.getAllZdjeciaDTO(kategorieDefault.getIdKategorii(),authentication.getName());
-        return ResponseEntity.ok(new ZdjeciaKategorieDTO(images,userCategories));
+        return ResponseEntity.ok(new ZdjeciaKategorieDTO(images,userCategories,null));
     }
 
     @GetMapping("/photo/{photoId}")
@@ -249,11 +249,11 @@ public class LoginController {
     @GetMapping("/album/{categoryId}")
     public ResponseEntity<ZdjeciaKategorieDTO> getImages(@PathVariable Long categoryId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        List<ZdjeciaDTO> images;
         if (categoryId != null) {
-            images = zdjeciaService.getAllZdjeciaDTO(categoryId,authentication.getName());
+            List<ZdjeciaDTO> images = zdjeciaService.getAllZdjeciaDTO(categoryId,authentication.getName());
             List<KategorieDTO> subCategories = categoryService.getSubCategoriesByParentId(categoryId,authentication.getName());
-            return ResponseEntity.ok(new ZdjeciaKategorieDTO(images,subCategories));
+            String nazwaKategorii = categoryService.findAllByIdKategoriiAndUzytkownik_Name(categoryId,authentication.getName()).getNazwaKategorii();
+            return ResponseEntity.ok(new ZdjeciaKategorieDTO(images,subCategories, nazwaKategorii));
         } else {
             return ResponseEntity.status(400).body(null);
         }

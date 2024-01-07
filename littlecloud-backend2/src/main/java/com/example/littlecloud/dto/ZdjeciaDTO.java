@@ -18,6 +18,7 @@ public class ZdjeciaDTO {
     private Long idZdjecia;
     private String nazwa;
     private String format;
+    private Date dataWykonania;
     private byte[] miniaturka;
     List<String> tags;
 }

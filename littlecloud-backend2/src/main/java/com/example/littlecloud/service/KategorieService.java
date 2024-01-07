@@ -36,6 +36,10 @@ public class KategorieService {
     public Kategorie findAllByNazwaKategoriiAndUzytkownik_Name(String namecategory, String username){
         return kategorieRepo.findAllByNazwaKategoriiAndUzytkownik_Name(namecategory,username);
     }
+
+    public Kategorie findAllByIdKategoriiAndUzytkownik_Name(Long idKategorii, String username){
+        return kategorieRepo.findAllByidKategoriiAndUzytkownik_Name(idKategorii,username);
+    }
     private KategorieDTO mapKategorieToDTO(Kategorie kategorie) {
         KategorieDTO kategorieDTO = new KategorieDTO();
         kategorieDTO.setIdKategorii(kategorie.getIdKategorii());

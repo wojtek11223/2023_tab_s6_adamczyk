@@ -2,10 +2,8 @@ import React, { useState, useEffect, useRef } from "react";
 import "./Filters.css";
 import Search from "../../../assets/search.svg";
 import Arrow from "../../../assets/arrow.svg";
-import JSZip from 'jszip';
-import axios from "axios";
 
-function Filters({ albums, albumsSort, setAlbumsSort, setFunny, images }) {
+function Filters({ albums, albumsSort, setAlbumsSort, setFunny }) {
   const [selectedOption, setSelectedOption] = useState("Sortowanie");
   const [showOptions, setShowOptions] = useState(false);
   const [searchText, setSearchText] = useState("");
@@ -41,57 +39,6 @@ function Filters({ albums, albumsSort, setAlbumsSort, setFunny, images }) {
     }
   }, [searchText]);
 
-  const downloadImagesAsZip = async () => {
-    const zip = new JSZip();
-    let textContent = 'Nazwa zdjęcia | typ | data wykonania | wymiar | rozmiar\n';
-    
-    try {
-      for (const image of images) {
-        const authToken = sessionStorage.getItem("authToken");
-        const response = await axios({
-          url: `http://localhost:8080/api/photo/${image.idZdjecia}`,
-          method: "get",
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-            Accept: "*/*",
-            "Content-Type": "application/json",
-          },
-        });
-  
-        const byteCharacters = atob(response.data.zdjecie);
-        const byteNumbers = new Array(byteCharacters.length);
-        for (let i = 0; i < byteCharacters.length; i++) {
-          byteNumbers[i] = byteCharacters.charCodeAt(i);
-        }
-  
-        const byteArray = new Uint8Array(byteNumbers);
-        const blob = new Blob([byteArray], { type: response.data.format });
-        textContent +=
-          `${response.data.nazwa} | ${response.data.format} | ${response.data.dataWykonania} | ${response.data.height}x${response.data.width} | | ${blob.size/1000} KB\n`;
-  
-        // Dodaj obraz do archiwum
-        zip.file(image.nazwa, blob);
-      }
-  
-      zip.file('raport.txt', textContent);
-  
-      // Utwórz plik .zip
-      const content = await zip.generateAsync({ type: 'blob' });
-  
-      // Utwórz element <a> i ustaw atrybuty
-      const link = document.createElement('a');
-      link.href = URL.createObjectURL(content);
-      link.download = 'images.zip';
-      document.body.appendChild(link);
-  
-      // Symuluj kliknięcie w link
-      link.click();
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
-  
-
   const defaultSort = () => {
     const sortedAlbums = albumsSort.sort(
       (a, b) => a.idKategorii - b.idKategorii
@@ -116,18 +63,8 @@ function Filters({ albums, albumsSort, setAlbumsSort, setFunny, images }) {
     setFunny(2);
   };
 
-  //posłuży nam do filtracji zdjęć na podstawie tagów
-  const filterImagesByTags = (targetTags) => {
-    return images.filter(innerList => {
-      return targetTags.some(word => innerList.includes(word));
-    });
-  };
   return (
     <div className="Filters">
-      {images &&  images.length != 0 ?
-        <button style={{ color: "black" }} onClick={downloadImagesAsZip}>Pobierz obrazy jako ZIP</button>
-        : <></>
-      }
       <div className="SearchInput">
         <img src={Search} alt=""></img>
         <input

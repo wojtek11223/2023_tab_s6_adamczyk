@@ -9,5 +9,7 @@ public interface KategorieRepo extends JpaRepository<Kategorie, Long> {
     List<Kategorie> findAllByUzytkownik_Name(String username);
 
     Kategorie findAllByNazwaKategoriiAndUzytkownik_Name(String namecategory, String username);
+
+    Kategorie findAllByidKategoriiAndUzytkownik_Name(Long idKategorii,String username);
     List<Kategorie> findAllByUzytkownik_NameAndNadkategoria_IdKategorii(String username, Long id);
 }

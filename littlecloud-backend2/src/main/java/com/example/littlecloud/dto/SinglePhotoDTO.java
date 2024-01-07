@@ -16,16 +16,10 @@ import java.util.List;
 public class SinglePhotoDTO {
 
     private String nazwa;
-
     private java.sql.Date dataWykonania;
-
     private String format;
-
     private String height;
-
     private String width;
-
     private byte[] zdjecie;
-
     List<String> tags;
 }

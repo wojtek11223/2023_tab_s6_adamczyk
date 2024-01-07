@@ -26,7 +26,7 @@ function ImagesCollection({
         images.map((image) => (
           <Tile
             key={image.idZdjecia}
-            albumName={image.nazwa}
+            albumName={image.nazwa.split(".")[0]}
             image={image}
             onClick={() => handleTileClickPhoto(image)}
           ></Tile>

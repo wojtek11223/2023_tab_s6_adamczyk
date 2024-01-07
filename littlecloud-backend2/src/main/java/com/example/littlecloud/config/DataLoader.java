@@ -1,5 +1,7 @@
 package com.example.littlecloud.config;
+import com.example.littlecloud.dto.UserDto;
 import com.example.littlecloud.entity.*;
+import com.example.littlecloud.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import com.example.littlecloud.enums.Role;
 import com.example.littlecloud.repository.*;
@@ -22,7 +24,9 @@ public class DataLoader implements CommandLineRunner {
     private final ZdjeciaRepo zdjeciaRepo;
     private final PasswordEncoder passwordEncoder;
 
-    public DataLoader(KategorieZdjeciaRepo kategorieZdjeciaRepo, KategorieRepo kategoriaRepo, TagRepo tagRepo, UserRepository userRepository, ZdjeciaRepo zdjeciaRepo, PasswordEncoder passwordEncoder) {
+    private final UserService userService;
+
+    public DataLoader(KategorieZdjeciaRepo kategorieZdjeciaRepo, KategorieRepo kategoriaRepo, TagRepo tagRepo, UserRepository userRepository, ZdjeciaRepo zdjeciaRepo, PasswordEncoder passwordEncoder, UserService userService) {
         this.kategorieZdjeciaRepo = kategorieZdjeciaRepo;
         this.kategoriaRepo = kategoriaRepo;
 
@@ -30,6 +34,7 @@ public class DataLoader implements CommandLineRunner {
         this.userRepository = userRepository;
         this.zdjeciaRepo = zdjeciaRepo;
         this.passwordEncoder = passwordEncoder;
+        this.userService = userService;
     }
 
     @Override
@@ -62,19 +67,12 @@ public class DataLoader implements CommandLineRunner {
         User user = userRepository.findByEmailOrName(email,nazwauzytkownika);
         if(user== null)
         {
-            user = new User();
-            user.setName(nazwauzytkownika);
-            user.setEmail(email);
-            user.setRole(Role.USER);
-            String encodedPassword = passwordEncoder.encode(haslo);
-            user.setPassword(encodedPassword);
-            userRepository.save(user);
+            userService.saveUser(new UserDto(null,nazwauzytkownika,email,haslo));
+            user = userRepository.findByEmailOrName(email,nazwauzytkownika);
             return user;
         }
         else
             return null;
-
-
     }
     private Kategorie dodajPrzykladoweKategorie(User user1, String nazwakategorii){
         Kategorie kategorie = new Kategorie();

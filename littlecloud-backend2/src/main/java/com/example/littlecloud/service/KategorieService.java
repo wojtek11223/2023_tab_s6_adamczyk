@@ -20,6 +20,7 @@ public class KategorieService {
     }
     public List<KategorieDTO> getAllUserCategories(String username) {
         List<Kategorie> kategories = kategorieRepo.findAllByUzytkownik_Name(username);
+        kategories.removeIf(kategorie -> "default".equals(kategorie.getNazwaKategorii()));
         return kategories.stream()
                 .map(this::mapKategorieToDTO)
                 .collect(Collectors.toList());
@@ -34,7 +35,6 @@ public class KategorieService {
     public Kategorie findAllByNazwaKategoriiAndUzytkownik_Name(String namecategory, String username){
         return kategorieRepo.findAllByNazwaKategoriiAndUzytkownik_Name(namecategory,username);
     }
-
     public Kategorie findAllByIdKategoriiAndUzytkownik_Name(Long idcategory, String username){
         return kategorieRepo.findAllByIdKategoriiAndUzytkownik_Name(idcategory,username);
     }

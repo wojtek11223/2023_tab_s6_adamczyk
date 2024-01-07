@@ -1,6 +1,5 @@
 package com.example.littlecloud.config;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -42,10 +41,6 @@ public class SpringSecurity {
     }
 
     @Bean
-    public ModelMapper modelMapper() {
-        return new ModelMapper();
-    }
-    @Bean
     public static PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
@@ -63,17 +58,19 @@ public class SpringSecurity {
         http.csrf().disable()
                 .authorizeHttpRequests((authorize) ->
                         //authorize.anyRequest().authenticated()
+
                         authorize.requestMatchers(
                                 "/api/login",
-                                        "api/register",
-                                        "/api/album/*",
-                                        "/api/albums",
-                                        "/api/photo_upload"
-                                        ,"/api/getAllImages",
-                                        "/api/profile",
-                                        "/api/uploadUser",
-                                        "/api/photo/**",
-                                        "/api/add_category"
+                                "api/register",
+                                "/api/album/*",
+                                "/api/albums",
+                                "/api/photo_upload"
+                                ,"/api/getAllImages",
+                                "/api/profile",
+                                "/api/uploadUser",
+                                "/api/photo/**",
+                                "/api/add_category",
+                                "/api/delete_photo"
                                 ).permitAll()
                                 .requestMatchers("/api/test").hasRole("USER")
                                 .and().addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.sql.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -17,6 +18,8 @@ public class ZdjeciaDTO {
     private Long idZdjecia;
     private String nazwa;
     private String format;
+    private Date dataWykonania;
     private byte[] miniaturka;
+    List<String> tags;
 
 }

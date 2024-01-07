@@ -1,8 +1,6 @@
 package com.example.littlecloud.controller;
 
 import com.example.littlecloud.security.CustomUserDetailsService;
-import org.modelmapper.ModelMapper;
-import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import com.example.littlecloud.dto.*;
 import com.example.littlecloud.entity.Kategorie;
@@ -41,6 +39,8 @@ import java.nio.file.attribute.UserPrincipal;
 import java.util.List;
 import java.io.IOException;
 import java.sql.Date;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 
 @RestController
 @RequestMapping("/api")
@@ -116,7 +116,6 @@ public class LoginController {
         userService.saveUser(user);
         return ResponseEntity.ok("Użytkownik został pomyślnie dodany");
     }
-
     @GetMapping("/profile")
     public ResponseEntity<UserInfoDTO> ShowUserData() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -178,10 +177,16 @@ public class LoginController {
     }
 
     @GetMapping("/albums")
-    public ResponseEntity<List<KategorieDTO>> getAllUserCategories() {
+    public ResponseEntity<ZdjeciaKategorieDTO> getAllUserCategories() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<KategorieDTO> userCategories = categoryService.getAllUserCategories(authentication.getName());
-        return ResponseEntity.ok(userCategories);
+        Kategorie kategorieDefault = categoryService.findAllByNazwaKategoriiAndUzytkownik_Name("default", authentication.getName());
+        if(kategorieDefault == null)
+        {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
+        }
+        List<ZdjeciaDTO> images = zdjeciaService.getAllZdjeciaDTO(kategorieDefault.getIdKategorii(),authentication.getName());
+        return ResponseEntity.ok(new ZdjeciaKategorieDTO(images,userCategories,null));
     }
 
     @GetMapping("/photo/{photoId}")
@@ -212,8 +217,8 @@ public class LoginController {
                 return ResponseEntity.badRequest().body("Please upload a file");
             }
             Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            Kategorie kategorie = categoryService.findAllByNazwaKategoriiAndUzytkownik_Name(nazwaKategorii, authentication.getName());
-            if(kategorie == null)
+            Kategorie defaultKategoria = categoryService.findAllByNazwaKategoriiAndUzytkownik_Name("default", authentication.getName());
+            if(defaultKategoria == null)
             {
                 return ResponseEntity.badRequest().body("Nie istenieje podana kategoria");
             }
@@ -238,15 +243,62 @@ public class LoginController {
                     tagRepo.save(Tag);
                 });
             }
-
-            KategorieZdjecia kategorieZdjecia = new KategorieZdjecia(zdjecia,kategorie);
-            kategorieZdjeciaRepo.save(kategorieZdjecia);
-            return ResponseEntity.ok("Plik został pomyślnie dodany");
+            AtomicReference<String> niedodane_kategorie = new AtomicReference<>("");
+            if(!nazwaKategorii.isEmpty()) {
+                List<String> listakategorie = List.of(nazwaKategorii.split(","));
+                listakategorie.forEach(cat -> {
+                    Kategorie kategoria =  categoryService.findAllByNazwaKategoriiAndUzytkownik_Name(cat.trim(), authentication.getName());
+                    if(kategoria == null)
+                    {
+                        niedodane_kategorie.updateAndGet(value -> value + cat.trim() + " ");
+                    }
+                    else
+                        kategorieZdjeciaRepo.save(new KategorieZdjecia(zdjecia,kategoria));
+                });
+            }
+            kategorieZdjeciaRepo.save(new KategorieZdjecia(zdjecia,defaultKategoria));
+            String niedodane_kategorieValue = niedodane_kategorie.get();
+            if (Objects.equals(niedodane_kategorieValue, "")) {
+                return ResponseEntity.ok("Plik został pomyślnie dodany" );
+            } else {
+                return ResponseEntity.ok("Zdjęcie zostało dodane lecz nie w kategoriach: " + niedodane_kategorie);
+            }
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseEntity.status(500).body("Error uploading file");
         }
+
     }
+
+    @PostMapping("/delete_photo")
+    public ResponseEntity<String> deletephoto(@NotNull @RequestBody DeletephotoDTO deletephotoDTO) {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            Zdjecia zdjecie = zdjeciaService.getZdjeciaById(deletephotoDTO.getPhotoid());
+            if(zdjecie== null) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("Nie ma zdjęcia takiego");
+            }
+            Kategorie defaultkategorii = categoryService.findAllByNazwaKategoriiAndUzytkownik_Name("default",authentication.getName());
+            if(deletephotoDTO.getCategoryid() == null)
+            {
+                zdjeciaService.deleteZdjecia(zdjecie);
+            }
+            else
+            {
+                Long idkategorii = Long.parseLong(deletephotoDTO.getCategoryid());
+                Kategorie kategorie = categoryService.findAllByIdKategoriiAndUzytkownik_Name(idkategorii,authentication.getName());
+                zdjeciaService.deleteZdjeciafromCategory(new KategorieZdjecia(zdjecie,kategorie));
+            }
+
+            return ResponseEntity.ok("Zdjęcie zostało pomyślnie usunięte");
+        } catch (NumberFormatException e) {
+            // Obsłuż wyjątek, jeśli konwersja nie powiedzie się
+            System.err.println("Błąd konwersji: " + e.getMessage());
+            return null;
+        }
+    }
+
+
     @GetMapping("/getAllImages")
     public ResponseEntity<List<ZdjeciaDTO>> getAllImages(@RequestParam(required = false) Long categoryId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -262,11 +314,11 @@ public class LoginController {
     @GetMapping("/album/{categoryId}")
     public ResponseEntity<ZdjeciaKategorieDTO> getImages(@PathVariable Long categoryId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        List<ZdjeciaDTO> images;
         if (categoryId != null) {
-            images = zdjeciaService.getAllZdjeciaDTO(categoryId, authentication.getName());
-            List<KategorieDTO> subCategories = categoryService.getSubCategoriesByParentId(categoryId, authentication.getName());
-            return ResponseEntity.ok(new ZdjeciaKategorieDTO(images, subCategories));
+            List<ZdjeciaDTO> images = zdjeciaService.getAllZdjeciaDTO(categoryId,authentication.getName());
+            List<KategorieDTO> subCategories = categoryService.getSubCategoriesByParentId(categoryId,authentication.getName());
+            String nazwaKategorii = categoryService.findAllByIdKategoriiAndUzytkownik_Name(categoryId,authentication.getName()).getNazwaKategorii();
+            return ResponseEntity.ok(new ZdjeciaKategorieDTO(images,subCategories, nazwaKategorii));
         } else {
             return ResponseEntity.status(400).body(null);
         }

@@ -242,11 +242,44 @@ public class LoginController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         List<ZdjeciaDTO> images;
         if (categoryId != null) {
-            images = zdjeciaService.getAllZdjeciaDTO(categoryId,authentication.getName());
-            List<KategorieDTO> subCategories = categoryService.getSubCategoriesByParentId(categoryId,authentication.getName());
-            return ResponseEntity.ok(new ZdjeciaKategorieDTO(images,subCategories));
+            images = zdjeciaService.getAllZdjeciaDTO(categoryId, authentication.getName());
+            List<KategorieDTO> subCategories = categoryService.getSubCategoriesByParentId(categoryId, authentication.getName());
+            return ResponseEntity.ok(new ZdjeciaKategorieDTO(images, subCategories));
         } else {
             return ResponseEntity.status(400).body(null);
         }
     }
+    @PostMapping("/add_category")
+    public ResponseEntity<String> handleNewCategory(@NotNull @RequestBody AddCategoryDTO addCategoryDTO) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Kategorie kategorie = categoryService.findAllByNazwaKategoriiAndUzytkownik_Name(addCategoryDTO.getCategory(), authentication.getName());
+        if(kategorie != null)
+        {
+            return ResponseEntity.badRequest().body("Istenieje podana kategoria");
+        }
+        Kategorie kategoria = new Kategorie();
+        if(addCategoryDTO.getParentCategory() == null)
+        {
+            kategoria.setNadkategoria(null);
+        }
+        else {
+            Kategorie currentParentCat = categoryService.findAllByIdKategoriiAndUzytkownik_Name(addCategoryDTO.getParentCategory(), authentication.getName());
+            if(currentParentCat == null)
+            {
+                return ResponseEntity.badRequest().body("Nie istenieje kategoria rodzic");
+            }
+            if(categoryService.counterUnderCategories(currentParentCat.getIdKategorii(),authentication.getName()) >= 2)
+            {
+                return ResponseEntity.badRequest().body("Ta kategoria jest zbyt zagnieżdzona");
+            }
+            kategoria.setNadkategoria(currentParentCat);
+        }
+
+        User currentUser = userService.findByName(authentication.getName());
+        kategoria.setNazwaKategorii(addCategoryDTO.getCategory());
+        kategoria.setUzytkownik(currentUser);
+        categoryService.addCategory(kategoria);
+        return ResponseEntity.ok("Cat uploaded successfully");
+    }
+
 }

@@ -12,6 +12,7 @@ function AlbumsCollection({
   showAddCat,
   setShowAddCat,
   setFunny,
+  parentCategory
 }) {
   useEffect(() => {
     if (showAddCat) {
@@ -30,7 +31,7 @@ function AlbumsCollection({
 
   return (
     <div className="Collection" ref={forwardedRef}>
-      {showAddCat ? <TileAddCat showAddCat={showAddCat} /> : null}
+      {showAddCat ? <TileAddCat showAddCat={showAddCat} parentCategory={parentCategory} /> : null}
       {loading ? (
         <p>Loading...</p>
       ) : error ? (
@@ -43,7 +44,7 @@ function AlbumsCollection({
             onClick={() => handleTileClick(album.idKategorii)}
           ></Tile>
         ))
-      ) : (
+      ) : showAddCat ? null : (
         <p>Ta kategoria jest pusta</p>
       )}
     </div>

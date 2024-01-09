@@ -123,6 +123,7 @@ function Albums() {
             showAddCat={showAddCat}
             setShowAddCat={setShowAddCat}
             setFunny={setFunny}
+            parentCategory={albumId}
           />
           {albumId !== undefined ? (
             <ImageCollection

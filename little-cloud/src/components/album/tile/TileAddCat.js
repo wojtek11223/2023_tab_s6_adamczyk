@@ -1,20 +1,15 @@
-<<<<<<< HEAD
-import React, { useState } from "react";
+
+import React, { useState,useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useInView } from "react-intersection-observer";
 import axios from "axios";
-=======
-import React, { useRef, useEffect } from "react";
->>>>>>> bb6d830 (DodanieChowaniaKolekcji)
 import { useForm } from "react-hook-form";
 import "./Tile.css";
 
-<<<<<<< HEAD
-function TileAddCat({parentCategory}) {
+function TileAddCat({parentCategory, setShowAddCat}) {
 
   const navigate = useNavigate();
-=======
-function TileAddCat({ setShowAddCat }) {
+
   let tileRef = useRef();
 
   useEffect(() => {
@@ -28,7 +23,6 @@ function TileAddCat({ setShowAddCat }) {
       document.removeEventListener("mousedown", handler);
     };
   }, [tileRef, setShowAddCat]);
->>>>>>> bb6d830 (DodanieChowaniaKolekcji)
 
   const {
     register,
@@ -39,7 +33,6 @@ function TileAddCat({ setShowAddCat }) {
   const [message, setMessage] = useState(null);
 
   const handleRegistration = (data) => {
-<<<<<<< HEAD
       console.log(data);
       const postData = {
         category: data.albumName,
@@ -64,13 +57,6 @@ function TileAddCat({ setShowAddCat }) {
           setMessage(error.response && error.response.data ? error.response.data : error.message);
           console.error(error);
         });
-=======
-    const postData = {
-      albumName: data.albumName,
-    };
-    console.log(postData);
-    console.log(errors);
->>>>>>> bb6d830 (DodanieChowaniaKolekcji)
   };
 
   const registerOptions = {
@@ -84,15 +70,9 @@ function TileAddCat({ setShowAddCat }) {
       onSubmit={handleSubmit(handleRegistration, handleError)}
       ref={tileRef}
     >
-<<<<<<< HEAD
       {
         message ? message : <></>
       }
-      <div className="Picture">
-        <img src={Chmurka} alt="" />
-      </div>
-=======
->>>>>>> bb6d830 (DodanieChowaniaKolekcji)
       <div className="InputField">
         <input
           id="albumName"

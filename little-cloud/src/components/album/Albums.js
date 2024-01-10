@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import "./Albums.css";
 import { useNavigate } from "react-router-dom";
 import { useInView } from "react-intersection-observer";
@@ -93,6 +93,7 @@ function Albums() {
 
   const handleTileClick = (albumId) => {
     navigate(`/albums/${albumId}`);
+    console.log(funny);
     window.location.reload();
   };
 

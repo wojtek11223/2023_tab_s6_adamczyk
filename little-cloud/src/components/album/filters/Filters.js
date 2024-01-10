@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import "./Filters.css";
 import Search from "../../../assets/search.svg";
 import Arrow from "../../../assets/arrow.svg";
+import ArrowUp from "../../../assets/arrowUp.svg";
 
 function Filters({
   albums,
@@ -71,13 +72,17 @@ function Filters({
   };
 
   function AddCategory() {
-    setShowAddCat((showAddCat) => true);
+    if (!showAddCat) {
+      setShowAddCat((showAddCat) => true);
+    }
   }
 
   return (
     <div className="Filters">
       <div className="AddCategory">
-        <button onClick={AddCategory}>+</button>
+        <button onClick={AddCategory} disabled={showAddCat}>
+          +
+        </button>
       </div>
       <div className="SearchInput">
         <img src={Search} alt=""></img>
@@ -96,7 +101,7 @@ function Filters({
             }}
           >
             {selectedOption}
-            <img src={Arrow} alt="" />
+            <img src={showOptions ? ArrowUp : Arrow} alt="" />
           </button>
 
           <ul className={`SelectList ${showOptions ? "active" : "inactive"}`}>

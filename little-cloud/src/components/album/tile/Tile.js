@@ -1,6 +1,5 @@
 import React from "react";
 import "./Tile.css";
-import Chmurka from "../../../assets/Chmurka.svg";
 
 function Tile({ albumName, onClick, image }) {
   const handleTileClick = () => {
@@ -21,9 +20,7 @@ function Tile({ albumName, onClick, image }) {
           />
         </div>
       ) : (
-        <div className="Icon">
-          <img src={Chmurka} />
-        </div>
+        ""
       )}
 
       <div className="Text">

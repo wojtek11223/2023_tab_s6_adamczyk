@@ -18,6 +18,7 @@ function Slide({
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   const [slidePhoto, setSlidePhoto] = useState(null);
+  const [message, setMessage] = useState(null);
   const [ref, inView] = useInView({
     triggerOnce: true,
   });
@@ -84,6 +85,39 @@ function Slide({
         setLoading(false);
       });
   };
+
+  const handleRegistration = (data) => {
+    console.log(data);
+    const postData = {
+      tags: data.tags,
+      photoId: photoId
+    };
+    const apiUrl = "http://localhost:8080/api/";  //W[isz tu maciek Api do dodawania tagó]
+    const authToken = sessionStorage.getItem("authToken");
+    debugger;
+    axios
+      .post(apiUrl, postData, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          Accept: "*/*",
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        setMessage(response.data); //Napisz zwrot jakiegoś sukcesu
+      })
+      .catch((error) => {
+        setMessage(error.response && error.response.data ? error.response.data : error.message);
+        console.error(error);
+      });
+};
+
+const registerOptions = {
+  tags: { required: "Jest problem z tagami" },
+};
+
+const handleError = (errors) => console.log(errors);
+
   return (
     <div className="SlideContainer">
       <div className="Slide" ref={ref}>
@@ -134,6 +168,23 @@ function Slide({
           </table>
         )}
       </div>
+      {
+        message ? message : <></>
+      }
+      <form
+        className="Tile"
+        onSubmit={handleSubmit(handleRegistration, handleError)}
+      >
+        <div className="InputField">
+          <input
+            id="tags"
+            type={"text"}
+            placeholder="Wpisz tagi po przecinku"
+            autoFocus
+            {...register("tags", registerOptions.tags)}
+          />
+        </div>
+      </form>
     </div>
   );
 }

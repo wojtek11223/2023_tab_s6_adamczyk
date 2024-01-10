@@ -1,5 +1,6 @@
 import React from "react";
 import "./Menu.css";
+import MenuButton from "../../assets/MenuButton.svg";
 
 class Menu extends React.Component {
   constructor(props) {
@@ -18,7 +19,7 @@ class Menu extends React.Component {
   }
 
   handleClick = () => {
-    const { cloudHumor, setCloudHumor } = this.props;
+    const { cloudHumor } = this.props;
     this.props.setCloudHumor(!cloudHumor);
   };
 
@@ -31,10 +32,15 @@ class Menu extends React.Component {
             <>
               <ul className="Left">
                 <li>
-                  <a href="">Strona główna</a>
+                  <img src={MenuButton} alt="" />
                 </li>
                 <li>
-                  <a onClick={this.handleClick}>Chmurka</a>
+                  <a href="/">Strona główna</a>
+                </li>
+                <li>
+                  <a onClick={this.handleClick} href={() => false}>
+                    Chmurka
+                  </a>
                 </li>
               </ul>
               <ul className="Right">
@@ -50,7 +56,7 @@ class Menu extends React.Component {
             <>
               <ul className="Left">
                 <li>
-                  <a href="">Strona główna</a>
+                  <a href="/">Strona główna</a>
                 </li>
                 <li>
                   <a href="/albums">Albumy</a>
@@ -59,7 +65,9 @@ class Menu extends React.Component {
                   <a href="/photoUpload">Dodaj zdjęcie</a>
                 </li>
                 <li>
-                  <a onClick={this.handleClick}>Chmurka</a>
+                  <a onClick={this.handleClick} href={() => false}>
+                    Chmurka
+                  </a>
                 </li>
               </ul>
               <ul className="Right">

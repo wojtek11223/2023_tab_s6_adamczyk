@@ -1,6 +1,5 @@
 import React from "react";
 import "./Tile.css";
-import Chmurka from "../../../assets/Kot.jpg";
 
 function Tile({ albumName, onClick, image }) {
   const handleTileClick = () => {
@@ -11,16 +10,19 @@ function Tile({ albumName, onClick, image }) {
 
   return (
     <div className="Tile" onClick={handleTileClick}>
-      <div className="Picture">
-        <img
-          src={
-            image
-              ? `data:${image.format};base64,${image.miniaturka}`
-              : Chmurka
-          }
-          alt=""
-        />
-      </div>
+      {image ? (
+        <div className="Picture">
+          <img
+            src={
+              image ? `data:${image.format};base64,${image.miniaturka}` : null
+            }
+            alt=""
+          />
+        </div>
+      ) : (
+        ""
+      )}
+
       <div className="Text">
         <p>{albumName}</p>
       </div>

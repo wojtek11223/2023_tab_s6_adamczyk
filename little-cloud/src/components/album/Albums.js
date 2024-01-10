@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import "./Albums.css";
 import { useNavigate } from "react-router-dom";
 import { useInView } from "react-intersection-observer";
@@ -41,17 +41,17 @@ function Albums() {
             "Content-Type": "application/json",
           },
         })
-        .then((response) => {
-          setAlbums(response.data);
-          setAlbumsSort(response.data);
-        })
-        .catch((error) => {
-          console.error(error);
-          setError(error);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+          .then((response) => {
+            setAlbums(response.data);
+            setAlbumsSort(response.data);
+          })
+          .catch((error) => {
+            console.error(error);
+            setError(error);
+          })
+          .finally(() => {
+            setLoading(false);
+          });
       } else {
         apiURL = `http://localhost:8080/api/album/${albumId}`;
         axios({
@@ -93,6 +93,7 @@ function Albums() {
 
   const handleTileClick = (albumId) => {
     navigate(`/albums/${albumId}`);
+    console.log(funny);
     window.location.reload();
   };
 
@@ -103,6 +104,8 @@ function Albums() {
           images={images}
           activeSlidePhoto={activeSlidePhoto}
           setActiveSlidePhoto={setActiveSlidePhoto}
+          showSlide={showSlide}
+          setShowSlide={setShowSlide}
         />
       ) : (
         <>

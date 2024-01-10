@@ -142,3 +142,17 @@
     align-items: start;
   }
 }
+
+.Form input:-webkit-autofill,
+.Form input:-webkit-autofill:hover,
+.Form input:-webkit-autofill:focus,
+.Form textarea:-webkit-autofill,
+.Form textarea:-webkit-autofill:hover,
+.Form textarea:-webkit-autofill:focus,
+.Form select:-webkit-autofill,
+.Form select:-webkit-autofill:hover,
+.Form select:-webkit-autofill:focus {
+  transition: background-color 5000s ease-in-out 0s;
+  -webkit-text-fill-color: #262626 !important;
+  caret-color: #262626;
+}

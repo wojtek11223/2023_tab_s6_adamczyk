@@ -41,17 +41,17 @@ function Albums() {
             "Content-Type": "application/json",
           },
         })
-        .then((response) => {
-          setAlbums(response.data);
-          setAlbumsSort(response.data);
-        })
-        .catch((error) => {
-          console.error(error);
-          setError(error);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
+          .then((response) => {
+            setAlbums(response.data);
+            setAlbumsSort(response.data);
+          })
+          .catch((error) => {
+            console.error(error);
+            setError(error);
+          })
+          .finally(() => {
+            setLoading(false);
+          });
       } else {
         apiURL = `http://localhost:8080/api/album/${albumId}`;
         axios({
@@ -103,6 +103,8 @@ function Albums() {
           images={images}
           activeSlidePhoto={activeSlidePhoto}
           setActiveSlidePhoto={setActiveSlidePhoto}
+          showSlide={showSlide}
+          setShowSlide={setShowSlide}
         />
       ) : (
         <>

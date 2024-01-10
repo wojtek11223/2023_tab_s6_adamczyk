@@ -1,13 +1,15 @@
 .Tile {
   width: 100%;
+  min-height: 50px;
   border-radius: 20px;
   background-color: rgb(8, 19, 25);
   display: flex;
+  justify-content: center;
   flex-direction: column;
   transition: ease-in-out 0.2s;
   cursor: pointer;
-  padding: 15px 15px 0 15px;
   overflow: hidden;
+  position: relative;
 }
 
 .Tile .Picture {
@@ -61,8 +63,9 @@
   border-radius: 8px 8px 2px 2px;
   width: 100%;
   transition: ease-in-out 0.2s;
-  /* height: 100%;
-  object-fit: contain; */
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(90%);
 }
 
 .Tile:hover {
@@ -73,9 +76,19 @@
 
 .Tile:hover .Picture img {
   opacity: 100%;
+  filter: grayscale(0%);
+  transition: ease-in-out 0.2s;
 }
 
 .Tile:hover .Text {
   color: white;
   transition: ease-in-out 0.2s;
+}
+
+.Tile .Icon img {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  left: 10px;
+  height: 20px;
 }

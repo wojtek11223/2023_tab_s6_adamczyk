@@ -1,5 +1,6 @@
 import React from "react";
 import "./Menu.css";
+import MenuButton from "../../assets/MenuButton.svg";
 
 class Menu extends React.Component {
   constructor(props) {
@@ -30,6 +31,9 @@ class Menu extends React.Component {
           {authName == null ? (
             <>
               <ul className="Left">
+                <li>
+                  <img src={MenuButton} />
+                </li>
                 <li>
                   <a href="">Strona główna</a>
                 </li>

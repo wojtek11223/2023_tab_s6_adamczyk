@@ -8,14 +8,15 @@
   color: white;
 }
 
+body {
+  background: linear-gradient(180deg, rgb(0, 162, 255) 0%, #fff 100%);
+  background-attachment: fixed;
+  background-size: cover;
+}
+
 #root {
   display: flex;
   flex-direction: column;
   align-items: center;
   height: 100vh;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  background-color: black;
-  background: linear-gradient(180deg, rgb(0, 162, 255) 0%, #fff 100%);
 }

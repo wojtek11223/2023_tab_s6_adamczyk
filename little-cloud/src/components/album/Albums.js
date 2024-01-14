@@ -9,6 +9,7 @@ import Filters from "./filters/Filters";
 import Slide from "./slides/Slide";
 import AlbumsCollection from "./AlbumsCollection";
 import ImageCollection from "./ImagesCollection";
+import FiltersImages from "./filters/FiltersImages";
 
 function Albums() {
   const navigate = useNavigate();
@@ -18,10 +19,14 @@ function Albums() {
   const [albumsSort, setAlbumsSort] = useState(null);
   const [loading, setLoading] = useState(true);
   const [funny, setFunny] = useState();
+  const [imagesSort, setImagesSort] = useState(null);
   const [showSlide, setShowSlide] = useState(false);
   const [activeSlidePhoto, setActiveSlidePhoto] = useState(null);
   const [showAddCat, setShowAddCat] = useState(false);
   const { albumId } = useParams();
+
+  const [uniqueTags, SetUniqueTags] = useState(null);
+  const [AlbumName, SetAlbumName] = useState("");
   const [ref, inView] = useInView({
     triggerOnce: true,
   });
@@ -32,51 +37,36 @@ function Albums() {
       let apiURL;
       if (albumId === undefined) {
         apiURL = "http://localhost:8080/api/albums";
-        axios({
-          url: apiURL,
-          method: "get",
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-            Accept: "*/*",
-            "Content-Type": "application/json",
-          },
-        })
-          .then((response) => {
-            setAlbums(response.data);
-            setAlbumsSort(response.data);
-          })
-          .catch((error) => {
-            console.error(error);
-            setError(error);
-          })
-          .finally(() => {
-            setLoading(false);
-          });
       } else {
         apiURL = `http://localhost:8080/api/album/${albumId}`;
-        axios({
-          url: apiURL,
-          method: "get",
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-            Accept: "*/*",
-            "Content-Type": "application/json",
-          },
-        })
-          .then((response) => {
-            setImages(response.data.zdjeciaDTO);
-            setAlbums(response.data.kategorieDTO);
-            setAlbumsSort(response.data.kategorieDTO);
-          })
-          .catch((error) => {
-            setError(error);
-            console.error(error);
-          })
-          .finally(() => {
-            setLoading(false);
-          });
       }
+      axios({
+        url: apiURL,
+        method: "get",
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          Accept: "*/*",
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        setImages(response.data.zdjeciaDTO);
+        setImagesSort(response.data.zdjeciaDTO);
+        setAlbums(response.data.kategorieDTO);
+        setAlbumsSort(response.data.kategorieDTO);
+        getUniqueTags(response.data.zdjeciaDTO);
+        SetAlbumName(response.data.nazwaKategorii);
+      })
+      .catch((error) => {
+        setError(error);
+        console.error(error);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+
     }
+      
   }, [inView, authToken, loading, albumId]);
 
   useEffect(() => {
@@ -97,11 +87,25 @@ function Albums() {
     window.location.reload();
   };
 
+  const getUniqueTags = (images) => {
+    const uniqueValuesSet = new Set();
+    images.forEach(image=> {
+      image.tags.forEach(tag => {
+        uniqueValuesSet.add(tag);
+      });
+    });
+
+    // Zamiana zbioru na tablicę
+    const uniqueValuesArray = [...uniqueValuesSet];
+
+    SetUniqueTags(uniqueValuesArray);
+  };
+
   return (
     <React.Fragment>
       {showSlide ? (
         <Slide
-          images={images}
+          images={imagesSort}
           activeSlidePhoto={activeSlidePhoto}
           setActiveSlidePhoto={setActiveSlidePhoto}
           showSlide={showSlide}
@@ -116,6 +120,7 @@ function Albums() {
             setFunny={setFunny}
             showAddCat={showAddCat}
             setShowAddCat={setShowAddCat}
+
           />
           <AlbumsCollection
             forwardedRef={ref}
@@ -128,18 +133,23 @@ function Albums() {
             setFunny={setFunny}
             parentCategory={albumId}
           />
-          {albumId !== undefined ? (
-            <ImageCollection
-              error={error}
-              loading={loading}
-              images={images}
-              setShowSlide={setShowSlide}
-              activeSlidePhoto={activeSlidePhoto}
-              setActiveSlidePhoto={setActiveSlidePhoto}
-            />
-          ) : (
-            <></>
-          )}
+          <FiltersImages
+            images={images}
+            imagesSort={imagesSort}
+            setImagesSort={setImagesSort}
+            setFunny={setFunny}
+            uniqueTags={uniqueTags}
+            albumName={AlbumName}
+          />
+          <ImageCollection
+            error={error}
+            loading={loading}
+            images={imagesSort}
+            setShowSlide={setShowSlide}
+            activeSlidePhoto={activeSlidePhoto}
+            setActiveSlidePhoto={setActiveSlidePhoto}
+            category={albumId}
+          />
         </>
       )}
     </React.Fragment>

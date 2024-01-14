@@ -5,4 +5,6 @@ import com.example.littlecloud.entity.Zdjecia;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ZdjeciaRepo extends JpaRepository<Zdjecia, Long> {
+    void deleteByIdZdjecia(Long idZdjecia);
+    void delete(Zdjecia zdjecia1);
 }

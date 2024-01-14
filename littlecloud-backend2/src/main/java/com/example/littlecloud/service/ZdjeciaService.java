@@ -5,8 +5,13 @@ import com.drew.metadata.Metadata;
 import com.drew.metadata.exif.ExifSubIFDDirectory;
 import com.example.littlecloud.dto.SinglePhotoDTO;
 import com.example.littlecloud.dto.ZdjeciaDTO;
+import com.example.littlecloud.dto.ZdjeciaKategorieDTO;
+import com.example.littlecloud.entity.Kategorie;
+import com.example.littlecloud.entity.KategorieZdjecia;
 import com.example.littlecloud.entity.Zdjecia;
 import com.example.littlecloud.repository.KategorieZdjeciaRepo;
+import com.example.littlecloud.repository.TagRepo;
+import com.example.littlecloud.entity.Tag;
 import com.example.littlecloud.repository.ZdjeciaRepo;
 import org.springframework.stereotype.Service;
 
@@ -23,9 +28,12 @@ public class ZdjeciaService {
 
     private final ZdjeciaRepo zdjeciaRepo;
 
-    public ZdjeciaService(ZdjeciaRepo zdjeciaRepo, KategorieZdjeciaRepo kategorieZdjeciaRepo){
+    private final TagRepo tagRepo;
+
+    public ZdjeciaService(ZdjeciaRepo zdjeciaRepo, KategorieZdjeciaRepo kategorieZdjeciaRepo, TagRepo tagRepo){
         this.kategorieZdjeciaRepo =kategorieZdjeciaRepo;
         this.zdjeciaRepo= zdjeciaRepo;
+        this.tagRepo = tagRepo;
     }
     public List<Zdjecia> getAllZdjecia() {
         return zdjeciaRepo.findAll();
@@ -42,12 +50,14 @@ public class ZdjeciaService {
     public SinglePhotoDTO getZdjecieByIdAndUsername(Long photoid, String username) {
         Zdjecia zdjecia = kategorieZdjeciaRepo.findZdjeciaByKategoria_IdZdjeciaAndKategoria_Uzytkownik_Name(photoid, username);
         return new SinglePhotoDTO(
+                zdjecia.getIdZdjecia(),
                 zdjecia.getNazwa(),
                 zdjecia.getDataWykonania(),
                 zdjecia.getFormat(),
                 zdjecia.getHeight(),
                 zdjecia.getWidth(),
-                zdjecia.getZdjecie()
+                zdjecia.getZdjecie(),
+                tagRepo.findAllByZdjecie_IdZdjecia(photoid).stream().map(Tag::getTag).collect(Collectors.toList())
         );
     }
 
@@ -56,8 +66,12 @@ public class ZdjeciaService {
         return zdjeciaRepo.save(zdjecia);
     }
 
-    public void deleteZdjecia(Long id) {
-        zdjeciaRepo.deleteById(id);
+    public void deleteZdjecia(Zdjecia zdjecie) {
+        zdjeciaRepo.delete(zdjecie);
+    }
+
+    public void deleteZdjeciafromCategory(KategorieZdjecia kategorieZdjecia) {
+        kategorieZdjeciaRepo.delete(kategorieZdjecia);
     }
 
     public List<ZdjeciaDTO> getAllZdjeciaDTO(Long idcategory, String username) {
@@ -69,38 +83,13 @@ public class ZdjeciaService {
     }
 
     private ZdjeciaDTO mapToZdjeciaDTO(Zdjecia zdjecia) {
-        String format = getImageFormat(zdjecia.getZdjecie());
-
         return new ZdjeciaDTO(
                 zdjecia.getIdZdjecia(),
                 zdjecia.getNazwa(),
                 zdjecia.getFormat(),
-                zdjecia.getMiniaturka()
+                zdjecia.getDataWykonania(),
+                zdjecia.getMiniaturka(),
+                tagRepo.findAllByZdjecie_IdZdjecia(zdjecia.getIdZdjecia()).stream().map(Tag::getTag).collect(Collectors.toList())
         );
-    }
-    private String getImageFormat(byte[] imageData) {
-        try (InputStream inputStream = new ByteArrayInputStream(imageData)) {
-            Metadata metadata = ImageMetadataReader.readMetadata(inputStream);
-            Iterable<Directory> directories = metadata.getDirectories();
-
-            for (Directory directory : directories) {
-                if (directory.containsTag(ExifSubIFDDirectory.TAG_COMPRESSION)) {
-                    int compressionType = directory.getInt(ExifSubIFDDirectory.TAG_COMPRESSION);
-                    switch (compressionType) {
-                        case 6:
-                            return "jpeg";
-                        case 1:
-                            return "gif";
-                        case 7:
-                            return "png";
-                        default:
-                            return "unknown";
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return "unknown";
     }
 }

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import "./Filters.css";
 import Search from "../../../assets/search.svg";
 import Arrow from "../../../assets/arrow.svg";
+
 import ArrowUp from "../../../assets/arrowUp.svg";
 
 function Filters({
@@ -12,6 +13,7 @@ function Filters({
   showAddCat,
   setShowAddCat,
 }) {
+
   const [selectedOption, setSelectedOption] = useState("Sortowanie");
   const [showOptions, setShowOptions] = useState(false);
   const [searchText, setSearchText] = useState("");
@@ -84,6 +86,7 @@ function Filters({
           +
         </button>
       </div>
+
       <div className="SearchInput">
         <img src={Search} alt=""></img>
         <input

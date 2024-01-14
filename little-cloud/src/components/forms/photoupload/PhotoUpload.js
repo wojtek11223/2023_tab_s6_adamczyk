@@ -8,10 +8,6 @@ import ProgressBar from "./ProgressBar/ProgressBar";
 const PhotoUploadForm = () => {
   const [file, setFile] = useState(null);
   const [nazwa, setNazwa] = useState("");
-  const [format, setFormat] = useState(null);
-  const [roz, setRoz] = useState(null);
-  const [albums, setAlbums] = useState(null);
-
   const [dataWykonania, setDataWykonania] = useState("");
   const [kategoriaID, setKategoriaID] = useState("");
   const [Tag, setTag] = useState("");
@@ -88,6 +84,7 @@ const PhotoUploadForm = () => {
           {
             headers: {
               "Content-Type": "multipart/form-data",
+              Accept: "*/*",
               Authorization: `Bearer ${jwtToken}`,
               Accept: "*/*",
             },
@@ -126,7 +123,7 @@ const PhotoUploadForm = () => {
           <div className="InputGroup">
             <div className="InputField">
               <label>Zdjęcie: </label>
-              <input type="file" onChange={handleFileChange} />
+              <input type="file" onChange={handleFileChange} accept="image/*" />
             </div>
           </div>
 

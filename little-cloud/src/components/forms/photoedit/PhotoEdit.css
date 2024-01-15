@@ -1,0 +1,17 @@
+.BlurAll {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(20px);
+  z-index: 99;
+}
+
+@media screen and (max-height: 850px) {
+  .BlurAll {
+    padding-top: 100px;
+    align-items: start;
+  }
+}

@@ -14,24 +14,9 @@ function AlbumsCollection({
   showAddCat,
   setShowAddCat,
   setFunny,
-  parentCategory
+  parentCategory,
 }) {
   const [showAlbums, setShowAlbums] = useState(true);
-
-  useEffect(() => {
-    if (showAddCat) {
-      const handleEsc = (event) => {
-        if (event.key === "Escape") {
-          setShowAddCat(false);
-        }
-      };
-      window.addEventListener("keydown", handleEsc);
-
-      return () => {
-        window.removeEventListener("keydown", handleEsc);
-      };
-    }
-  }, [showAddCat, setShowAddCat]);
 
   return (
     <div className="Collection" ref={forwardedRef}>
@@ -55,7 +40,13 @@ function AlbumsCollection({
       </div>
       {showAlbums ? (
         <div className="Tiles">
-          {showAddCat ? <TileAddCat setShowAddCat={setShowAddCat} parentCategory={parentCategory} /> : null}
+          {showAddCat ? (
+            <TileAddCat
+              showAddCat={showAddCat}
+              setShowAddCat={setShowAddCat}
+              parentCategory={parentCategory}
+            />
+          ) : null}
           {loading ? (
             <p>Loading...</p>
           ) : error ? (

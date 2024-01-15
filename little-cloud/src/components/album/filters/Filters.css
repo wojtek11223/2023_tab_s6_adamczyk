@@ -13,6 +13,13 @@
   z-index: 10;
 }
 
+.SearchInput {
+  position: relative;
+  grid-area: 1 / 2 / 2 / 10;
+  width: 100%;
+  height: 100%;
+}
+
 .SearchInput input {
   color: #262626;
   width: 100%;
@@ -22,13 +29,6 @@
   outline: none;
   font-size: 15px;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-}
-
-.SearchInput {
-  position: relative;
-  grid-area: 1 / 5 / 2 / 13;
-  width: 100%;
-  height: 100%;
 }
 
 .SearchInput img {
@@ -49,19 +49,10 @@
 
 .SelectMenu {
   grid-area: 1 / 13 / 2 / 17;
-  display: flex;
-  justify-content: right;
   position: relative;
 }
 
-.SelectMenu .SelectCont {
-  width: 80%;
-  display: flex;
-  justify-content: center;
-  position: relative;
-}
-
-.SelectMenu .SelectButton {
+.SelectButton {
   position: relative;
   width: 100%;
   height: 100%;
@@ -78,7 +69,7 @@
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
 }
 
-.SelectMenu .SelectButton img {
+.SelectButton img {
   position: absolute;
   aspect-ratio: 1/1;
   width: 17px;
@@ -123,14 +114,21 @@
 }
 
 .SelectList li {
-  list-style: none;
+  position: relative;
   display: block;
+  list-style: none;
   color: #262626;
   width: 100%;
-  padding: 10px;
   border-radius: 10px;
+  padding: 10px;
   cursor: pointer;
   user-select: none;
+  text-transform: capitalize;
+}
+
+.SelectList li input[type="checkbox"] {
+  margin-right: 5px;
+  cursor: pointer;
 }
 
 .SelectList li:hover {
@@ -157,8 +155,46 @@
 }
 
 .AddCategory button:hover {
-  background-color: #262626;
+  background-color: rgb(8, 19, 25);
   color: white;
+  transition: ease-in-out 0.2s;
+}
+
+.DownloadZip {
+  grid-area: 1 / 1 / 2 / 2;
+  width: 100%;
+  height: 100%;
+}
+
+.DownloadZip button {
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  color: #262626;
+  border-radius: 10px;
+  border: none;
+  transition: ease-in-out 0.2s;
+  font-size: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.DownloadZip button img {
+  width: 20px;
+  height: 20px;
+  transition: ease-in-out 0.2s;
+  filter: invert(0%);
+}
+
+.DownloadZip button:hover {
+  background-color: rgb(8, 19, 25);
+  color: white;
+  transition: ease-in-out 0.2s;
+}
+
+.DownloadZip button:hover img {
+  filter: invert(100%);
   transition: ease-in-out 0.2s;
 }
 
@@ -166,4 +202,9 @@
   .Filters {
     width: 100%;
   }
+}
+
+.SelectMenuTags {
+  grid-area: 1 / 10 / 2 / 13;
+  position: relative;
 }

@@ -11,24 +11,30 @@ function ImagesCollection({
   loading,
   images,
   setShowSlide,
-  activeSlidePhoto,
-  setActiveSlidePhoto,
-  category
+  activePhoto,
+  setActivePhoto,
+  category,
+  setShowEditPhoto,
 }) {
   const [showPhotos, setShowPhotos] = useState(true);
 
   const navigate = useNavigate();
   const [message, setMessage] = useState(null);
 
-  const handleTileClickPhoto = (Photo) => {
-    setShowSlide(true);
-    setActiveSlidePhoto(Photo);
+  const handleEditClick = (Photo) => {
+    setShowEditPhoto(true);
+    setActivePhoto(Photo);
   };
 
-  const handleTileDeletePhot = (Photoid) => {
+  const handlePhotoClick = (Photo) => {
+    setShowSlide(true);
+    setActivePhoto(Photo);
+  };
+
+  const handleTileDeletePhoto = (Photoid) => {
     const postData = {
       categoryid: category,
-      photoid: Photoid !== undefined ? Photoid: null,
+      photoid: Photoid !== undefined ? Photoid : null,
     };
     const apiUrl = "http://localhost:8080/api/delete_photo";
     const authToken = sessionStorage.getItem("authToken");
@@ -41,11 +47,17 @@ function ImagesCollection({
         },
       })
       .then((response) => {
-        category !== undefined ? navigate(`/albums/${category}`) : navigate('/albums');
+        category !== undefined
+          ? navigate(`/albums/${category}`)
+          : navigate("/albums");
         window.location.reload();
       })
       .catch((error) => {
-        setMessage(error.response && error.response.data ? error.response.data : error.message);
+        setMessage(
+          error.response && error.response.data
+            ? error.response.data
+            : error.message
+        );
         console.error(error);
       });
   };
@@ -83,7 +95,8 @@ function ImagesCollection({
                   key={image.idZdjecia}
                   albumName={image.nazwa.split(".")[0]}
                   image={image}
-                  onClick={() => handleTileClickPhoto(image)}
+                  onClick={() => handlePhotoClick(image)}
+                  handleEditClick={() => handleEditClick(image)}
                 ></Tile>
               </React.Fragment>
             ))

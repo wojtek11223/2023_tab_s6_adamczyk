@@ -10,6 +10,7 @@ import Slide from "./slides/Slide";
 import AlbumsCollection from "./AlbumsCollection";
 import ImageCollection from "./ImagesCollection";
 import FiltersImages from "./filters/FiltersImages";
+import PhotoEdit from "../forms/photoedit/PhotoEdit";
 
 function Albums() {
   const navigate = useNavigate();
@@ -21,7 +22,8 @@ function Albums() {
   const [funny, setFunny] = useState();
   const [imagesSort, setImagesSort] = useState(null);
   const [showSlide, setShowSlide] = useState(false);
-  const [activeSlidePhoto, setActiveSlidePhoto] = useState(null);
+  const [showEditPhoto, setShowEditPhoto] = useState(false);
+  const [activePhoto, setActivePhoto] = useState(null);
   const [showAddCat, setShowAddCat] = useState(false);
   const { albumId } = useParams();
 
@@ -49,24 +51,22 @@ function Albums() {
           "Content-Type": "application/json",
         },
       })
-      .then((response) => {
-        setImages(response.data.zdjeciaDTO);
-        setImagesSort(response.data.zdjeciaDTO);
-        setAlbums(response.data.kategorieDTO);
-        setAlbumsSort(response.data.kategorieDTO);
-        getUniqueTags(response.data.zdjeciaDTO);
-        SetAlbumName(response.data.nazwaKategorii);
-      })
-      .catch((error) => {
-        setError(error);
-        console.error(error);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-
+        .then((response) => {
+          setImages(response.data.zdjeciaDTO);
+          setImagesSort(response.data.zdjeciaDTO);
+          setAlbums(response.data.kategorieDTO);
+          setAlbumsSort(response.data.kategorieDTO);
+          getUniqueTags(response.data.zdjeciaDTO);
+          SetAlbumName(response.data.nazwaKategorii);
+        })
+        .catch((error) => {
+          setError(error);
+          console.error(error);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
     }
-      
   }, [inView, authToken, loading, albumId]);
 
   useEffect(() => {
@@ -89,8 +89,8 @@ function Albums() {
 
   const getUniqueTags = (images) => {
     const uniqueValuesSet = new Set();
-    images.forEach(image=> {
-      image.tags.forEach(tag => {
+    images.forEach((image) => {
+      image.tags.forEach((tag) => {
         uniqueValuesSet.add(tag);
       });
     });
@@ -106,13 +106,20 @@ function Albums() {
       {showSlide ? (
         <Slide
           images={imagesSort}
-          activeSlidePhoto={activeSlidePhoto}
-          setActiveSlidePhoto={setActiveSlidePhoto}
+          activePhoto={activePhoto}
+          setActivePhoto={setActivePhoto}
           showSlide={showSlide}
           setShowSlide={setShowSlide}
         />
       ) : (
         <>
+          {showEditPhoto ? (
+            <PhotoEdit
+              showEditPhoto={showEditPhoto}
+              setShowEditPhoto={setShowEditPhoto}
+              activePhoto={activePhoto}
+            />
+          ) : null}
           <Filters
             albums={albums}
             albumsSort={albumsSort}
@@ -120,7 +127,6 @@ function Albums() {
             setFunny={setFunny}
             showAddCat={showAddCat}
             setShowAddCat={setShowAddCat}
-
           />
           <AlbumsCollection
             forwardedRef={ref}
@@ -146,9 +152,10 @@ function Albums() {
             loading={loading}
             images={imagesSort}
             setShowSlide={setShowSlide}
-            activeSlidePhoto={activeSlidePhoto}
-            setActiveSlidePhoto={setActiveSlidePhoto}
+            activePhoto={activePhoto}
+            setActivePhoto={setActivePhoto}
             category={albumId}
+            setShowEditPhoto={setShowEditPhoto}
           />
         </>
       )}

@@ -1,4 +1,3 @@
-
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useInView } from "react-intersection-observer";
@@ -7,8 +6,7 @@ import axios from "axios";
 import { useForm } from "react-hook-form";
 import "./Tile.css";
 
-function TileAddCat({parentCategory, setShowAddCat}) {
-
+function TileAddCat({ showAddCat, setShowAddCat, parentCategory }) {
   const navigate = useNavigate();
 
   let tileRef = useRef();
@@ -25,6 +23,20 @@ function TileAddCat({parentCategory, setShowAddCat}) {
     };
   }, [tileRef, setShowAddCat]);
 
+  useEffect(() => {
+    if (showAddCat) {
+      const handleEsc = (event) => {
+        if (event.key === "Escape") {
+          setShowAddCat(false);
+        }
+      };
+      window.addEventListener("keydown", handleEsc);
+
+      return () => {
+        window.removeEventListener("keydown", handleEsc);
+      };
+    }
+  }, [showAddCat, setShowAddCat]);
 
   const {
     register,
@@ -35,29 +47,35 @@ function TileAddCat({parentCategory, setShowAddCat}) {
   const [message, setMessage] = useState(null);
 
   const handleRegistration = (data) => {
-      console.log(data);
-      const postData = {
-        category: data.albumName,
-        parentCategory: parentCategory !== undefined ? parentCategory : null,
-      };
-      const apiUrl = "http://localhost:8080/api/add_category";
-      const authToken = sessionStorage.getItem("authToken");
-      axios
-        .post(apiUrl, postData, {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-            Accept: "*/*",
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => {
-          parentCategory !== undefined ? navigate(`/albums/${parentCategory}`) : navigate('/albums');
-          window.location.reload();
-        })
-        .catch((error) => {
-          setMessage(error.response && error.response.data ? error.response.data : error.message);
-          console.error(error);
-        });
+    console.log(data);
+    const postData = {
+      category: data.albumName,
+      parentCategory: parentCategory !== undefined ? parentCategory : null,
+    };
+    const apiUrl = "http://localhost:8080/api/add_category";
+    const authToken = sessionStorage.getItem("authToken");
+    axios
+      .post(apiUrl, postData, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          Accept: "*/*",
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        parentCategory !== undefined
+          ? navigate(`/albums/${parentCategory}`)
+          : navigate("/albums");
+        window.location.reload();
+      })
+      .catch((error) => {
+        setMessage(
+          error.response && error.response.data
+            ? error.response.data
+            : error.message
+        );
+        console.error(error);
+      });
   };
 
   const registerOptions = {
@@ -71,9 +89,7 @@ function TileAddCat({parentCategory, setShowAddCat}) {
       onSubmit={handleSubmit(handleRegistration, handleError)}
       ref={tileRef}
     >
-      {
-        message ? message : <></>
-      }
+      {message ? message : <></>}
       <div className="InputField">
         <input
           id="albumName"

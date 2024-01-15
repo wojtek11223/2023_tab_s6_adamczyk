@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import "./Menu.css";
 import MenuButton from "../../assets/MenuButton.svg";
 
@@ -31,24 +32,28 @@ class Menu extends React.Component {
           {authName == null ? (
             <>
               <ul className="Left">
-                <li>
+                {/* <li>
                   <img src={MenuButton} alt="" />
+                </li> */}
+                <li>
+                  <Link to="/login">
+                    <button>Strona główna</button>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/">Strona główna</a>
-                </li>
-                <li>
-                  <a onClick={this.handleClick} href={() => false}>
-                    Chmurka
-                  </a>
+                  <button onClick={this.handleClick}>Chmurka</button>
                 </li>
               </ul>
               <ul className="Right">
                 <li>
-                  <a href="/register">Zarejestruj się</a>
+                  <Link to="/register">
+                    <button>Zarejestruj się</button>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/login">Zaloguj się</a>
+                  <Link to="/login">
+                    <button>Zaloguj się</button>
+                  </Link>
                 </li>
               </ul>
             </>
@@ -56,26 +61,34 @@ class Menu extends React.Component {
             <>
               <ul className="Left">
                 <li>
-                  <a href="/">Strona główna</a>
+                  <Link to="/albums">
+                    <button>Strona główna</button>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/albums">Albumy</a>
+                  <Link to="/albums">
+                    <button>Albumy</button>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/photoUpload">Dodaj zdjęcie</a>
+                  <Link to="/photoUpload">
+                    <button>Dodaj zdjęcie</button>
+                  </Link>
                 </li>
                 <li>
-                  <a onClick={this.handleClick} href={() => false}>
-                    Chmurka
-                  </a>
+                  <button onClick={this.handleClick}>Chmurka</button>
                 </li>
               </ul>
               <ul className="Right">
                 <li>
-                  <a href="/logout">Wyloguj się</a>
+                  <Link to="/logout">
+                    <button>Wyloguj się</button>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/profile">Witaj {authName}</a>
+                  <Link to="/profile">
+                    <button>Witaj {authName}</button>
+                  </Link>
                 </li>
               </ul>
             </>

@@ -38,6 +38,11 @@ public class KategorieService {
     public Kategorie findAllByIdKategoriiAndUzytkownik_Name(Long idcategory, String username){
         return kategorieRepo.findAllByIdKategoriiAndUzytkownik_Name(idcategory,username);
     }
+
+    public void  delete(Long album, String username) {
+        Kategorie kategorie = findAllByIdKategoriiAndUzytkownik_Name(album,username);
+        kategorieRepo.delete(kategorie);
+    }
     public Long counterUnderCategories(Long ParentId, String username) {
         Kategorie kategorie = kategorieRepo.findAllByIdKategoriiAndUzytkownik_Name(ParentId,username);
         if(kategorie.getNadkategoria() == null)

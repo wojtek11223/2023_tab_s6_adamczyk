@@ -11,6 +11,7 @@ import AlbumsCollection from "./AlbumsCollection";
 import ImageCollection from "./ImagesCollection";
 import FiltersImages from "./filters/FiltersImages";
 import PhotoEdit from "../forms/photoedit/PhotoEdit";
+import AlbumEdit from "../forms/albumedit/AlbumEdit";
 
 function Albums() {
   const navigate = useNavigate();
@@ -23,7 +24,9 @@ function Albums() {
   const [imagesSort, setImagesSort] = useState(null);
   const [showSlide, setShowSlide] = useState(false);
   const [showEditPhoto, setShowEditPhoto] = useState(false);
+  const [showEditAlbum, setShowEditAlbum] = useState(false);
   const [activePhoto, setActivePhoto] = useState(null);
+  const [activeAlbum, setActiveAlbum] = useState(null);
   const [showAddCat, setShowAddCat] = useState(false);
   const { albumId } = useParams();
 
@@ -118,6 +121,16 @@ function Albums() {
               showEditPhoto={showEditPhoto}
               setShowEditPhoto={setShowEditPhoto}
               activePhoto={activePhoto}
+              parentCategory={albumId}
+            />
+          ) : null}
+          {showEditAlbum ? (
+            <AlbumEdit
+              showEditAlbum={showEditAlbum}
+              setShowEditAlbum={setShowEditAlbum}
+              parentCategoryName={AlbumName}
+              activeAlbum={activeAlbum}
+              parentCategory={albumId}
             />
           ) : null}
           <Filters
@@ -138,6 +151,8 @@ function Albums() {
             setShowAddCat={setShowAddCat}
             setFunny={setFunny}
             parentCategory={albumId}
+            setShowEditAlbum={setShowEditAlbum}
+            setActiveAlbum={setActiveAlbum}
           />
           <FiltersImages
             images={images}

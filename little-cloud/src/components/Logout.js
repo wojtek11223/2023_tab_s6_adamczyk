@@ -11,7 +11,9 @@ function Logout() {
       navigate("/login");
     } else {
       sessionStorage.clear();
+      sessionStorage.setItem("Logout" ,"Wylogowano");
     }
+    window.location.reload();
   }, []);
 
   return (

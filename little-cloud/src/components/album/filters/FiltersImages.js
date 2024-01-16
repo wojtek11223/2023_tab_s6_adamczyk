@@ -20,6 +20,10 @@ function FiltersImages({
   const [showMenuTags, setShowMenuTags] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [checkedTags, setCheckedTags] = useState([]);
+  const [dataWykonaniaOd, setDataWykonaniaOd] = useState("");
+  const [dataWykonaniaDo, setDataWykonaniaDo] = useState("");
+
+
 
   let menuRef = useRef();
   let menuTagRef = useRef();
@@ -123,6 +127,15 @@ function FiltersImages({
       if (albumName) {
         textContent += `\n\n Zdjęcia znajdują się w kategorii: ${albumName}`;
       }
+      if(dataWykonaniaDo && dataWykonaniaOd) {
+        textContent += `\n Od ${dataWykonaniaOd} do ${dataWykonaniaDo}`;
+      }
+      else if(dataWykonaniaDo) {
+        textContent += `\n Do ${dataWykonaniaDo}`;
+      }
+      else if(dataWykonaniaOd) {
+        textContent += `\n Od ${dataWykonaniaOd}`;
+      }
       zip.file("raport.txt", textContent);
 
       // Utwórz plik .zip
@@ -146,10 +159,10 @@ function FiltersImages({
     img = checkedTagsFilter(img);
     img = searchTextFilter(img);
     img = imagesSorted(img);
-
+    img = DateFilter(img);
     setImagesSort(img);
     setFunny(Math.random());
-  }, [checkedTags, searchText, selectedOption]);
+  }, [checkedTags, searchText, selectedOption, dataWykonaniaDo, dataWykonaniaOd]);
 
   const searchTextFilter = (img) => {
     if (searchText) {
@@ -163,6 +176,40 @@ function FiltersImages({
       return img;
     }
   };
+
+  const DateFilter = (img) => {
+    let newimages;
+    const dateOD = new Date(dataWykonaniaOd);
+    const dateDO = new Date(dataWykonaniaDo);
+    let formatOd = Math.floor(dateOD.getTime());
+    let formatDo = Math.floor(dateDO.getTime());
+
+    if(!dataWykonaniaDo && !dataWykonaniaOd)
+    {
+      return img; 
+    }
+    else if(!dataWykonaniaOd && dataWykonaniaDo)
+    {
+      newimages = img.filter((image) => image.dataWykonania <= formatDo);
+    }
+    else if(dataWykonaniaOd && !dataWykonaniaDo) {
+      newimages = img.filter((image) => image.dataWykonania >= formatOd);
+    }
+    else {
+      if(formatOd>formatDo)
+      {
+        setDataWykonaniaDo(dataWykonaniaOd);
+        setDataWykonaniaOd(dataWykonaniaDo);
+        let temp;
+        temp = formatOd;
+        formatOd = formatDo;
+        formatDo = temp;
+      }
+      newimages = img.filter((image) => image.dataWykonania >= formatOd && image.dataWykonania <= formatDo);
+    }
+    
+    return newimages;
+  }
 
   const imagesSorted = (img) => {
     if (img !== null) {
@@ -241,7 +288,7 @@ function FiltersImages({
           {uniqueTags &&
             uniqueTags.length !== 0 &&
             uniqueTags.map((item) => (
-              <li key={item}>
+              <li key={item} onClick={() => handleCheckboxChange(item)}>
                 <input
                   type="checkbox"
                   checked={checkedTags.includes(item)}
@@ -252,6 +299,24 @@ function FiltersImages({
             ))}
         </ul>
       </div>
+      <div className="InputField">
+      <label>Od:</label>
+      <input
+        style={{ color: "black" }}
+        type="date"
+        value={dataWykonaniaOd}
+        onChange={(e) => setDataWykonaniaOd(e.target.value)}
+      />
+    </div>
+    <div className="InputField">
+      <label>Do:</label>
+      <input
+        style={{ color: "black" }}
+        type="date"
+        value={dataWykonaniaDo}
+        onChange={(e) => setDataWykonaniaDo(e.target.value)}
+      />
+    </div>
       <div className="SearchInput">
         <img src={Search} alt=""></img>
         <input

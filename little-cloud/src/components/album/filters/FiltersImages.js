@@ -241,7 +241,7 @@ function FiltersImages({
           {uniqueTags &&
             uniqueTags.length !== 0 &&
             uniqueTags.map((item) => (
-              <li key={item}>
+              <li key={item} onClick={() => handleCheckboxChange(item)}>
                 <input
                   type="checkbox"
                   checked={checkedTags.includes(item)}

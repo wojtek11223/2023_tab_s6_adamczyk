@@ -64,13 +64,16 @@ public class SpringSecurity {
                                 "api/register",
                                 "/api/album/*",
                                 "/api/albums",
-                                "/api/photo_upload"
-                                ,"/api/getAllImages",
+                                "/api/photo_upload",
+                                "/api/getAllImages",
                                 "/api/profile",
                                 "/api/uploadUser",
                                 "/api/photo/**",
                                 "/api/add_category",
-                                "/api/delete_photo"
+                                "/api/delete_photo",
+                                "/api/edit_photo",
+                                "/api/edit_category",
+                                "/api/delete_category"
                                 ).permitAll()
                                 .requestMatchers("/api/test").hasRole("USER")
                                 .and().addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)

@@ -1,15 +1,27 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+
 import axios from "axios";
 import "./PhotoEdit.css";
 import "../Form.css";
 
-function PhotoEdit({ showEditPhoto, setShowEditPhoto, activePhoto }) {
+function PhotoEdit({
+  showEditPhoto,
+  setShowEditPhoto,
+  activePhoto,
+  parentCategory,
+}) {
   let editForm = useRef();
+  const navigate = useNavigate();
 
+  const [checkedTags, setCheckedTags] = useState([]);
+
+  const [message, setMessage] = useState(null);
   const {
     register,
     handleSubmit,
+    setError,
     getValues,
     formState: { errors },
   } = useForm();
@@ -30,7 +42,47 @@ function PhotoEdit({ showEditPhoto, setShowEditPhoto, activePhoto }) {
   };
 
   const onSubmit = async (data) => {
+    debugger;
     console.log(data);
+    const postData = {
+      name: `${data.name}.${
+        activePhoto.nazwa.split(".")[1] !== undefined
+          ? activePhoto.nazwa.split(".")[1]
+          : activePhoto.format.split("/")[1]
+      }`,
+      date: data.date,
+      albumsName: data.albumname,
+      tags: data.tags,
+      photoid: activePhoto.idZdjecia,
+      categoryid: parentCategory !== undefined ? parentCategory : null,
+      tagsToDelete: checkedTags,
+    };
+
+    const apiUrl = "http://localhost:8080/api/edit_photo";
+    const authToken = sessionStorage.getItem("authToken");
+    axios
+      .post(apiUrl, postData, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          Accept: "*/*",
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        parentCategory !== undefined
+          ? navigate(`/albums/${parentCategory}`)
+          : navigate("/albums");
+        window.location.reload();
+      })
+      .catch((error) => {
+        setMessage(
+          error.response && error.response.data
+            ? error.response.data
+            : error.message
+        );
+        setError();
+        console.error(error);
+      });
   };
 
   const handleError = (errors) => console.log(errors);
@@ -61,6 +113,19 @@ function PhotoEdit({ showEditPhoto, setShowEditPhoto, activePhoto }) {
       };
     }
   }, [showEditPhoto, setShowEditPhoto]);
+  const date = new Date(activePhoto.dataWykonania);
+
+  const [defaultDate, setDefaultDate] = useState(
+    date.toISOString().split("T")[0]
+  );
+
+  const handleCheckboxChange = (value) => {
+    if (checkedTags.includes(value)) {
+      setCheckedTags(checkedTags.filter((item) => item !== value));
+    } else {
+      setCheckedTags([...checkedTags, value]);
+    }
+  };
 
   return (
     <div className="BlurAll">
@@ -83,13 +148,17 @@ function PhotoEdit({ showEditPhoto, setShowEditPhoto, activePhoto }) {
         <div className="InputGroup">
           <div className="InputField">
             <label>Data Wykonania: </label>
-            <input type="date" {...register("date", registerOptions.date)} />
+            <input
+              type="date"
+              {...register("date", registerOptions.date)}
+              defaultValue={defaultDate}
+            />
           </div>
           {errors?.date && <p>{errors.date.message}</p>}
         </div>
         <div className="InputGroup">
           <div className="InputField">
-            <label>Nazwa albumu: </label>
+            <label>Nazwy albumów: </label>
             <input
               type="text"
               {...register("albumname", registerOptions.albumname)}
@@ -102,6 +171,26 @@ function PhotoEdit({ showEditPhoto, setShowEditPhoto, activePhoto }) {
             <input type="text" {...register("tags", registerOptions.tags)} />
           </div>
         </div>
+        <div className="InputGroup">
+          <div className="Blocks">
+            <ul>
+              {activePhoto &&
+                activePhoto.tags.length !== 0 &&
+                activePhoto.tags.map((item) => (
+                  <li key={item} onClick={() => handleCheckboxChange(item)}>
+                    <input
+                      type="checkbox"
+                      id={item}
+                      checked={checkedTags.includes(item)}
+                      onChange={() => handleCheckboxChange(item)}
+                    />
+                    {item.toLowerCase()}
+                  </li>
+                ))}
+            </ul>
+          </div>
+        </div>
+
         <div className="InputGroup">
           <div className="InputField">
             <input type="submit" value="Edytuj zdjęcie" />

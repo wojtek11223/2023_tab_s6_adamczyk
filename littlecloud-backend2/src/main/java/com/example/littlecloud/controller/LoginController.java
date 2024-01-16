@@ -201,8 +201,74 @@ public class LoginController {
         }
     }
 
+    @PostMapping("/edit_photo")
+    public ResponseEntity<String> editPhoto(@NotNull @RequestBody PhotoEditDTO photoEditDTO) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Zdjecia zdjecia = kategorieZdjeciaRepo.findZdjeciaByKategoria_IdZdjeciaAndKategoria_Uzytkownik_Name(photoEditDTO.getPhotoid(), authentication.getName());
+        if(zdjecia == null) {
+            return ResponseEntity.badRequest().body("Nie ma takiego zdjęcia w bazie");
+        }
+        zdjecia.setDataWykonania(photoEditDTO.getDate());
+        zdjecia.setNazwa(photoEditDTO.getName());
+        zdjeciaService.addZdjecia(zdjecia);
+        zdjeciaService.deleteTagsFromPhoto(zdjecia,photoEditDTO.getTagsToDelete());
+        zdjeciaService.addTagsToPhoto(zdjecia, photoEditDTO.getTags());
+        String niedodane = zdjeciaService.addCategoriesToPhoto(zdjecia, photoEditDTO.getAlbumsName(), authentication.getName());
 
 
+        if (Objects.equals(niedodane, "")) {
+            return ResponseEntity.ok("Zmiany zostały pomyślnie wprowadzone");
+        } else {
+            return ResponseEntity.ok("Zdjęcie zostało zmienione lecz nie dodano do : " + niedodane);
+        }
+
+    }
+
+    @PostMapping("/edit_category")
+    public  ResponseEntity<String> editCategory(@NotNull @RequestBody EditCategoryDTO editCategoryDTO) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        Kategorie kategoriatoedit = categoryService.findAllByIdKategoriiAndUzytkownik_Name(editCategoryDTO.getIdcategory(),authentication.getName());
+        if(kategoriatoedit == null) {
+            return ResponseEntity.badRequest().body("Nie ma takiego albumu");
+        }
+        if(!Objects.equals(kategoriatoedit.getNazwaKategorii(), editCategoryDTO.getNewNameCategory())) {
+            Kategorie checkNewname = categoryService.findAllByNazwaKategoriiAndUzytkownik_Name(editCategoryDTO.getNewNameCategory(),authentication.getName());
+            if(checkNewname != null) {
+                return ResponseEntity.badRequest().body("Kategoria o podanej nazwie już istnieje");
+            }
+            kategoriatoedit.setNazwaKategorii(editCategoryDTO.getNewNameCategory());
+        }
+        if(editCategoryDTO.getParentCategory() == null)
+        {
+            kategoriatoedit.setNadkategoria(null);
+        }
+        else {
+            Kategorie nadrzedna = categoryService.findAllByNazwaKategoriiAndUzytkownik_Name(editCategoryDTO.getParentCategory(),authentication.getName());
+            if(nadrzedna== null){
+               return ResponseEntity.badRequest().body("Nie ma takiego albumu nadrzednego");
+            }
+            else
+            {
+                kategoriatoedit.setNadkategoria(nadrzedna);
+            }
+
+        }
+
+        categoryService.addCategory(kategoriatoedit);
+        return ResponseEntity.ok("Udało się zmienić");
+    }
+    @PostMapping("/delete_category")
+    public ResponseEntity<String> deleteCat(@NotNull @RequestBody DeleteCategoryDTO deleteCategoryDTO) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(categoryService.findAllByIdKategoriiAndUzytkownik_Name(deleteCategoryDTO.getAlbumId(),authentication.getName()) != null) {
+            categoryService.delete(deleteCategoryDTO.getAlbumId(), authentication.getName());
+        }
+        else {
+            return ResponseEntity.badRequest().body("Nie ma takiej kategorii");
+        }
+        return ResponseEntity.ok("Udało się zmienić");
+    }
     @PostMapping("/photo_upload")
     public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file,
                                                    @RequestParam("wysokosc") String wysokosc,
@@ -232,36 +298,16 @@ public class LoginController {
             zdjecia.setWidth(szerokosc);
             zdjecia.setHeight(wysokosc);
             zdjecia.setMiniaturkaFromOriginal();
-            zdjeciaRepo.save(zdjecia);
+            zdjeciaService.addZdjecia(zdjecia);
 
-            if (!tagi.isEmpty()){
-                List<String> tags = List.of(tagi.split(","));
-                tags.forEach(tag1 -> {
-                    Tag Tag = new Tag();
-                    Tag.setTag(tag1.trim());
-                    Tag.setZdjecie(zdjecia);
-                    tagRepo.save(Tag);
-                });
-            }
-            AtomicReference<String> niedodane_kategorie = new AtomicReference<>("");
-            if(!nazwaKategorii.isEmpty()) {
-                List<String> listakategorie = List.of(nazwaKategorii.split(","));
-                listakategorie.forEach(cat -> {
-                    Kategorie kategoria =  categoryService.findAllByNazwaKategoriiAndUzytkownik_Name(cat.trim(), authentication.getName());
-                    if(kategoria == null)
-                    {
-                        niedodane_kategorie.updateAndGet(value -> value + cat.trim() + " ");
-                    }
-                    else
-                        kategorieZdjeciaRepo.save(new KategorieZdjecia(zdjecia,kategoria));
-                });
-            }
+            zdjeciaService.addTagsToPhoto(zdjecia,tagi);
+
             kategorieZdjeciaRepo.save(new KategorieZdjecia(zdjecia,defaultKategoria));
-            String niedodane_kategorieValue = niedodane_kategorie.get();
+            String niedodane_kategorieValue = zdjeciaService.addCategoriesToPhoto(zdjecia,nazwaKategorii,authentication.getName());
             if (Objects.equals(niedodane_kategorieValue, "")) {
                 return ResponseEntity.ok("Plik został pomyślnie dodany" );
             } else {
-                return ResponseEntity.ok("Zdjęcie zostało dodane lecz nie w kategoriach: " + niedodane_kategorie);
+                return ResponseEntity.ok("Zdjęcie zostało dodane lecz nie w kategoriach: " + niedodane_kategorieValue);
             }
         } catch (IOException e) {
             e.printStackTrace();

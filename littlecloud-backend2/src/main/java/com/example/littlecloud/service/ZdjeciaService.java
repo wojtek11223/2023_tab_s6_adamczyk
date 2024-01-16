@@ -19,6 +19,7 @@ import java.io.ByteArrayInputStream;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,11 +29,13 @@ public class ZdjeciaService {
 
     private final ZdjeciaRepo zdjeciaRepo;
 
+    private final KategorieService categoryService;
     private final TagRepo tagRepo;
 
-    public ZdjeciaService(ZdjeciaRepo zdjeciaRepo, KategorieZdjeciaRepo kategorieZdjeciaRepo, TagRepo tagRepo){
+    public ZdjeciaService(ZdjeciaRepo zdjeciaRepo, KategorieZdjeciaRepo kategorieZdjeciaRepo, KategorieService categoryService, TagRepo tagRepo){
         this.kategorieZdjeciaRepo =kategorieZdjeciaRepo;
         this.zdjeciaRepo= zdjeciaRepo;
+        this.categoryService = categoryService;
         this.tagRepo = tagRepo;
     }
     public List<Zdjecia> getAllZdjecia() {
@@ -73,7 +76,41 @@ public class ZdjeciaService {
     public void deleteZdjeciafromCategory(KategorieZdjecia kategorieZdjecia) {
         kategorieZdjeciaRepo.delete(kategorieZdjecia);
     }
+    public void addTagsToPhoto (Zdjecia zdjecia,String tagi) {
+        if (!tagi.isEmpty()){
+            List<String> tags = List.of(tagi.split(","));
+            tags.forEach(tag1 -> {
+                if(tagRepo.findAllByZdjecie_IdZdjeciaAndTag(zdjecia.getIdZdjecia(), tag1) == null) {
+                    Tag Tag = new Tag();
+                    Tag.setTag(tag1.trim());
+                    Tag.setZdjecie(zdjecia);
+                    tagRepo.save(Tag);
+                }
+            });
+        }
+    }
 
+    public String addCategoriesToPhoto (Zdjecia zdjecia, String categories, String username) {
+        AtomicReference<String> niedodane_kategorie = new AtomicReference<>("");
+        if(!categories.isEmpty()) {
+            List<String> listakategorie = List.of(categories.split(","));
+            listakategorie.forEach(cat -> {
+                Kategorie kategoria =  categoryService.findAllByNazwaKategoriiAndUzytkownik_Name(cat.trim(), username);
+                if(kategoria == null)
+                {
+                    niedodane_kategorie.updateAndGet(value -> value + cat.trim() + " ");
+                }
+                else
+                    kategorieZdjeciaRepo.save(new KategorieZdjecia(zdjecia,kategoria));
+            });
+        }
+        return niedodane_kategorie.get();
+    }
+    public void deleteTagsFromPhoto(Zdjecia zdjecia,List<String> tagsToDelete) {
+        tagsToDelete.forEach(tag -> {
+            tagRepo.delete(new Tag(tag,zdjecia));
+        });
+    }
     public List<ZdjeciaDTO> getAllZdjeciaDTO(Long idcategory, String username) {
         List<Zdjecia> zdjeciaList = kategorieZdjeciaRepo.findZdjeciaByKategoria_IdKategoriiAndKategoria_Uzytkownik_Name(idcategory, username);
 

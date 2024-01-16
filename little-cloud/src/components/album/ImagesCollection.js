@@ -33,8 +33,8 @@ function ImagesCollection({
 
   const handleTileDeletePhoto = (Photoid) => {
     const postData = {
-      categoryid: category,
-      photoid: Photoid !== undefined ? Photoid : null,
+      categoryid: category !== undefined ? category : null,
+      photoid: Photoid,
     };
     const apiUrl = "http://localhost:8080/api/delete_photo";
     const authToken = sessionStorage.getItem("authToken");
@@ -97,6 +97,7 @@ function ImagesCollection({
                   image={image}
                   onClick={() => handlePhotoClick(image)}
                   handleEditClick={() => handleEditClick(image)}
+                  handleDeletePhotoClick={() => handleTileDeletePhoto(image.idZdjecia)}
                 ></Tile>
               </React.Fragment>
             ))

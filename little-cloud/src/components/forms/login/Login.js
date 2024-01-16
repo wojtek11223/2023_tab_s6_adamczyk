@@ -12,9 +12,13 @@ function Login() {
   const navigate = useNavigate();
   const [message, setMessage] = useState("");
   const [passwordShow, setPasswordShow] = useState(false);
+  const [logutMessage, setLogutMessage] = useState(
+    sessionStorage.getItem("Logout")
+  );
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm();
 
@@ -23,32 +27,34 @@ function Login() {
       username: data.username,
       password: data.password,
     };
+    setLogutMessage(null);
+
     const apiUrl = "http://localhost:8080/api/login";
     axios
       .post(apiUrl, postData)
       .then((response) => {
-        sessionStorage.setItem('authToken', response.data.token);
-        sessionStorage.setItem('authName', response.data.username);
-        navigate('/albums');
+        sessionStorage.setItem("authToken", response.data.token);
+        sessionStorage.setItem("authName", response.data.username);
+        navigate("/albums");
         window.location.reload();
       })
       .catch((error) => {
         // Obsłuż błąd
-        setMessage(
-          `${
+        console.log(error.response.data.message);
+        setError("username", {
+          message: `${
             error.response ? error.response.data.message : "Unknown error"
-          }`
-        );
-        console.log(error.response.status);
+          }`,
+        });
       });
   };
   const handleError = (errors) => console.log(errors);
 
   useEffect(() => {
-    const authToken = sessionStorage.getItem('authToken');
+    const authToken = sessionStorage.getItem("authToken");
     if (authToken) {
       navigate("/albums");
-      console.log('Użytkownik jest zalogowany');
+      console.log("Użytkownik jest zalogowany");
     }
   }, []);
 
@@ -69,7 +75,7 @@ function Login() {
     <div className="Container">
       <form className="Form" onSubmit={handleSubmit(handleLogin, handleError)}>
         <div className="Text">
-          Zaloguj się :) <p>{message}</p>
+          {logutMessage ? logutMessage : `Zaloguj się :)`} <p>{message}</p>
         </div>
         <div className="InputGroup">
           <div className="InputField">

@@ -8,6 +8,7 @@ function Tile({
   image,
   handlePhotoClick,
   handleEditClick,
+  handleDeletePhotoClick,
   onClick,
 }) {
   const handleTileClick = () => {
@@ -23,7 +24,11 @@ function Tile({
   };
 
   const handleRemoveClick = () => {
-    console.log("Remove");
+    if (handleDeletePhotoClick) {
+      if (window.confirm("Czy na pewno chcesz usunąć to zdjęcie?")) {
+        handleDeletePhotoClick();
+      }
+    }
   };
 
   return (

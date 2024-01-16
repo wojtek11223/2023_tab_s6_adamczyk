@@ -35,10 +35,28 @@
 }
 
 .Box img {
-  position: fixed;
+  position: absolute;
   bottom: -20%;
   left: -20%;
   transform: scaleX(-1);
   rotate: -10deg;
   width: 50%;
+}
+
+@media screen and (max-width: 400px) {
+  .Box img {
+    width: 65%;
+  }
+}
+
+@media screen and (max-width: 350px) {
+  .Box img {
+    width: 70%;
+  }
+}
+
+@media screen and (max-width: 300px) {
+  .Box img {
+    width: 75%;
+  }
 }

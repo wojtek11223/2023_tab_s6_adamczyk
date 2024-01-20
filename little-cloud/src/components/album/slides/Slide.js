@@ -8,12 +8,11 @@ import axios from "axios";
 
 function Slide({
   images,
-  activeSlidePhoto,
-  setActiveSlidePhoto,
+  activePhoto,
+  setActivePhoto,
   showSlide,
   setShowSlide,
 }) {
-  console.log(activeSlidePhoto);
   const [exifData, setExifData] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -21,13 +20,44 @@ function Slide({
   const [ref, inView] = useInView({
     triggerOnce: true,
   });
+
+  useEffect(() => {
+    if (showSlide) {
+      const handleLeftArrow = (e) => {
+        if (e.key === "ArrowLeft") {
+          handleArrowLeftClick();
+        }
+      };
+      window.addEventListener("keydown", handleLeftArrow);
+
+      return () => {
+        window.removeEventListener("keydown", handleLeftArrow);
+      };
+    }
+  }, [activePhoto]);
+
+  useEffect(() => {
+    if (showSlide) {
+      const handleLeftArrow = (e) => {
+        if (e.key === "ArrowRight") {
+          handleArrowRightClick();
+        }
+      };
+      window.addEventListener("keydown", handleLeftArrow);
+
+      return () => {
+        window.removeEventListener("keydown", handleLeftArrow);
+      };
+    }
+  }, [activePhoto]);
+
   const handleArrowRightClick = async () => {
     setLoading(true);
-    let index = images.indexOf(activeSlidePhoto, 0) + 1;
+    let index = images.indexOf(activePhoto, 0) + 1;
     if (index > images.length - 1) {
       index = 0;
     }
-    setActiveSlidePhoto(images[index]);
+    setActivePhoto(images[index]);
     getPhoto(images[index].idZdjecia);
 
     console.log(index);
@@ -35,11 +65,11 @@ function Slide({
 
   const handleArrowLeftClick = async () => {
     setLoading(true);
-    let index = images.indexOf(activeSlidePhoto, 0) - 1;
+    let index = images.indexOf(activePhoto, 0) - 1;
     if (index < 0) {
       index = images.length - 1;
     }
-    setActiveSlidePhoto(images[index]);
+    setActivePhoto(images[index]);
     getPhoto(images[index].idZdjecia);
 
     console.log(index);
@@ -56,11 +86,11 @@ function Slide({
 
   useEffect(() => {
     if (inView) {
-      let index = images.indexOf(activeSlidePhoto, 0);
-      setActiveSlidePhoto(images[index]);
+      let index = images.indexOf(activePhoto, 0);
+      setActivePhoto(images[index]);
       getPhoto(images[index].idZdjecia);
     }
-  }, [inView, activeSlidePhoto, images, setActiveSlidePhoto]);
+  }, [inView, activePhoto, images, setActivePhoto]);
   const getPhoto = (photoId) => {
     const authToken = sessionStorage.getItem("authToken");
     axios({
@@ -84,6 +114,22 @@ function Slide({
         setLoading(false);
       });
   };
+
+  useEffect(() => {
+    if (showSlide) {
+      const handleEsc = (e) => {
+        if (e.key === "Escape") {
+          setShowSlide(false);
+        }
+      };
+      window.addEventListener("keydown", handleEsc);
+
+      return () => {
+        window.removeEventListener("keydown", handleEsc);
+      };
+    }
+  }, [showSlide, setShowSlide]);
+
   return (
     <div className="SlideContainer">
       <div className="Slide" ref={ref}>
@@ -121,16 +167,18 @@ function Slide({
         <div className="Text">EXIF Data:</div>
         {exifData && (
           <table className="Content">
-            {Object.keys(exifData).map((key) => (
-              <>
-                {typeof exifData[key] === "string" ? (
-                  <tr>
-                    <th className="TableCategory">{key}: </th>
-                    <th className="TableData">{exifData[key].toString()}</th>
-                  </tr>
-                ) : null}
-              </>
-            ))}
+            <tbody>
+              {Object.keys(exifData).map((key, index) => (
+                <React.Fragment key={index}>
+                  {typeof exifData[key] === "string" ? (
+                    <tr>
+                      <th className="TableCategory">{key}</th>
+                      <th className="TableData">{exifData[key].toString()}</th>
+                    </tr>
+                  ) : null}
+                </React.Fragment>
+              ))}
+            </tbody>
           </table>
         )}
       </div>

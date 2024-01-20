@@ -13,7 +13,6 @@ function Filters({
   showAddCat,
   setShowAddCat,
 }) {
-
   const [selectedOption, setSelectedOption] = useState("Sortowanie");
   const [showOptions, setShowOptions] = useState(false);
   const [searchText, setSearchText] = useState("");
@@ -96,44 +95,42 @@ function Filters({
         />
       </div>
       <div className="SelectMenu" ref={menuRef}>
-        <div className="SelectCont">
-          <button
-            className="SelectButton"
-            onClick={() => {
-              setShowOptions(!showOptions);
+        <button
+          className="SelectButton"
+          onClick={() => {
+            setShowOptions(!showOptions);
+          }}
+        >
+          {selectedOption}
+          <img src={showOptions ? ArrowUp : Arrow} alt="" />
+        </button>
+
+        <ul className={`SelectList ${showOptions ? "active" : "inactive"}`}>
+          <li
+            onClick={(e) => {
+              setSelectedOption(e.target.innerHTML);
+              defaultSort();
             }}
           >
-            {selectedOption}
-            <img src={showOptions ? ArrowUp : Arrow} alt="" />
-          </button>
-
-          <ul className={`SelectList ${showOptions ? "active" : "inactive"}`}>
-            <li
-              onClick={(e) => {
-                setSelectedOption(e.target.innerHTML);
-                defaultSort();
-              }}
-            >
-              Domyślnie
-            </li>
-            <li
-              onClick={(e) => {
-                setSelectedOption(e.target.innerHTML);
-                handleSort();
-              }}
-            >
-              Alfabetycznie rosnąco
-            </li>
-            <li
-              onClick={(e) => {
-                setSelectedOption(e.target.innerHTML);
-                handleSortRe();
-              }}
-            >
-              Alfabetycznie malejąco
-            </li>
-          </ul>
-        </div>
+            Domyślnie
+          </li>
+          <li
+            onClick={(e) => {
+              setSelectedOption(e.target.innerHTML);
+              handleSort();
+            }}
+          >
+            Alfabetycznie rosnąco
+          </li>
+          <li
+            onClick={(e) => {
+              setSelectedOption(e.target.innerHTML);
+              handleSortRe();
+            }}
+          >
+            Alfabetycznie malejąco
+          </li>
+        </ul>
       </div>
     </div>
   );

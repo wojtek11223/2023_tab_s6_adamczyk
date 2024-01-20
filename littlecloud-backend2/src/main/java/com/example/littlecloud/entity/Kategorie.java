@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 
 @Entity
@@ -25,10 +27,12 @@ public class Kategorie {
 
     @ManyToOne
     @JoinColumn(name = "id_kat_nadrz")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private Kategorie nadkategoria;
 
     @ManyToOne
     @JoinColumn(name = "id_uzytkownik", nullable = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User uzytkownik;
 
 }

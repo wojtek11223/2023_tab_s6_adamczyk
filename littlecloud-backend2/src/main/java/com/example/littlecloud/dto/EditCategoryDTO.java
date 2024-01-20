@@ -6,20 +6,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.sql.Date;
-import java.util.List;
-
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PhotoEditDTO {
-    String name;
-    Date date;
-    String albumsName;
-    String tags;
-    Long photoid;
+public class EditCategoryDTO {
     @Nullable
-    Long categoryid;
-    List<String> tagsToDelete;
+    private String parentCategory;
+    private Long idcategory;
+    private String newNameCategory;
 }

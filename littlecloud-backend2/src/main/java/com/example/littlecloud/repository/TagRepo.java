@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface TagRepo extends JpaRepository<Tag, Long> {
     List<Tag> findAllByZdjecie_IdZdjecia(Long photoid);
+
+    Tag findAllByZdjecie_IdZdjeciaAndTag(Long photoid, String tag);
 }

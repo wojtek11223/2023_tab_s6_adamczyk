@@ -6,9 +6,10 @@ import "../Form.css";
 import ProgressBar from "./ProgressBar/ProgressBar";
 
 const PhotoUploadForm = () => {
+  const currentDate = new Date();
   const [file, setFile] = useState(null);
   const [nazwa, setNazwa] = useState("");
-  const [dataWykonania, setDataWykonania] = useState("");
+  const [dataWykonania, setDataWykonania] = useState(currentDate.toISOString().split('T')[0]);
   const [kategoriaID, setKategoriaID] = useState("");
   const [Tag, setTag] = useState("");
   const [message, setMessage] = useState("");
@@ -86,7 +87,6 @@ const PhotoUploadForm = () => {
               "Content-Type": "multipart/form-data",
               Accept: "*/*",
               Authorization: `Bearer ${jwtToken}`,
-              Accept: "*/*",
             },
             onUploadProgress: (e) => {
               setProgressBar(Math.round(100 * e.loaded) / e.total);
@@ -134,7 +134,6 @@ const PhotoUploadForm = () => {
               <input
                 style={{ color: "black" }}
                 type="date"
-                accept="image/*"
                 value={dataWykonania}
                 onChange={(e) => setDataWykonania(e.target.value)}
               />

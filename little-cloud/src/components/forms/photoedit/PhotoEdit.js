@@ -113,7 +113,7 @@ function PhotoEdit({
       };
     }
   }, [showEditPhoto, setShowEditPhoto]);
-  const date = new Date(activePhoto.dataWykonania);
+  const date = new Date(activePhoto.dataWykonania + 86400000);
 
   const [defaultDate, setDefaultDate] = useState(
     date.toISOString().split("T")[0]

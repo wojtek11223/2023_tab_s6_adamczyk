@@ -66,6 +66,11 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public void deleteUser(Long userId) {
+        userRepository.deleteById(userId);
+    }
+
     private UserDto convertEntityToDto(User user){
         UserDto userDto = new UserDto();
         userDto.setUsername(user.getName());

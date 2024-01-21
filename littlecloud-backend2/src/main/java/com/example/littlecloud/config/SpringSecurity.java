@@ -73,7 +73,8 @@ public class SpringSecurity {
                                 "/api/delete_photo",
                                 "/api/edit_photo",
                                 "/api/edit_category",
-                                "/api/delete_category"
+                                "/api/delete_category",
+                                "/api/deleteAccount"
                                 ).permitAll()
                                 .requestMatchers("/api/test").hasRole("USER")
                                 .and().addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class)

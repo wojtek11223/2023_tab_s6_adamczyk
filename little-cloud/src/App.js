@@ -10,7 +10,6 @@ import React, { useState } from "react";
 
 import CloudSmile from "./assets/CloudSmile.svg";
 import CloudSad from "./assets/CloudSad.svg";
-
 import "./App.css";
 import Menu from "./components/menu/Menu";
 import Login from "./components/forms/login/Login";
@@ -20,8 +19,6 @@ import Logout from "./components/Logout";
 import PhotoUploadForm from "./components/forms/photoupload/PhotoUpload";
 import Profile from "./components/forms/profile/Profile";
 import Photo from "./components/album/slides/Slide";
-import AddCategory from "./components/forms/addcategory/AddCategory";
-
 
 function App() {
   const [cloudHumor, setCloudHumor] = useState(false);

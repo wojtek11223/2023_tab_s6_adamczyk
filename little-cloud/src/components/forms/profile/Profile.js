@@ -16,6 +16,7 @@ function Profile() {
   const [userInfo, getUserInfo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [authToken, setToken] = useState(null);
+  const [deleteAccountLoading, setDeleteAccountLoading] = useState(false);
   const [ref, inView] = useInView({
     triggerOnce: true,
   });
@@ -29,6 +30,36 @@ function Profile() {
   } = useForm();
 
   const handleError = (errors) => console.log(errors);
+
+
+  const handleDeleteAccount = async () => {
+    const userConfirmed = window.confirm("Czy na pewno chcesz usunąć konto?");
+  
+    if (userConfirmed) {
+      try {
+        setDeleteAccountLoading(true);
+  
+        await axios.delete("http://localhost:8080/api/deleteAccount", {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            Accept: "*/*",
+            "Content-Type": "application/json",
+          },
+        });
+  
+        sessionStorage.removeItem("authToken");
+        sessionStorage.removeItem("authName");
+        window.location.reload();
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setDeleteAccountLoading(false);
+      }
+    }
+  };
+  
+  
+  
 
   const registerOptions = {
     username: {
@@ -200,12 +231,28 @@ function Profile() {
               </div>
               {errors?.repassword && <p>{errors.repassword.message}</p>}
             </div>
+
+            <div className="InputGroup">
             <input
               id="regulations"
               type="submit"
               value={"Zatwierdź zmiany"}
             ></input>
+            </div>
+            
+            <div className="InputGroup">
+                <input
+                    id="deleteAccount"
+                    type="button"
+                    value={"Usuń konto"}
+                    onClick={() => handleDeleteAccount()}
+                    disabled={deleteAccountLoading}
+                  ></input>
+            </div>
+
           </div>
+
+          
         </form>
       )}
     </div>

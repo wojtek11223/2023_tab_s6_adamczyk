@@ -104,6 +104,7 @@
   padding: 10px;
 }
 
+
 .Profile input[type="checkbox"] {
   display: flex;
   width: 25px;
@@ -173,9 +174,23 @@
   user-select: none;
 }
 
+.Profile .InputGroup input[type="button"] {
+  background-color: rgb(141, 13, 13);
+  color: white;
+  margin-bottom: 0;
+  transition: ease-in-out 0.2s;
+}
+
+.Profile .InputGroup input[type="button"]:hover {
+  background-color: white;
+  color: #262626;
+  transition: ease-in-out 0.2s;
+}
+
 @media screen and (max-height: 850px) {
   .Container {
     padding-top: 50px;
     align-items: start;
   }
 }
+

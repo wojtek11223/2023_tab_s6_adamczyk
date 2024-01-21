@@ -125,6 +125,34 @@ public class LoginController {
 
         }
 
+    @DeleteMapping("/deleteAccount")
+    public ResponseEntity<String> deleteAccount() {
+        try {
+
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+
+            String userName = authentication.getName();
+
+
+            User userToDelete = userService.findByName(userName);
+
+            if (userToDelete != null) {
+
+                userService.deleteUser(userToDelete.getId());
+                return ResponseEntity.ok("Udało się usunąć użytkownika");
+            } else {
+
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
     @PostMapping("/uploadUser")
     public ResponseEntity<String> uploadUser(@NotNull @RequestBody UserDto user) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();

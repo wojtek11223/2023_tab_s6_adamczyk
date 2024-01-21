@@ -20,10 +20,8 @@ function FiltersImages({
   const [showMenuTags, setShowMenuTags] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [checkedTags, setCheckedTags] = useState([]);
-  const [dataWykonaniaOd, setDataWykonaniaOd] = useState("");
-  const [dataWykonaniaDo, setDataWykonaniaDo] = useState("");
-
-
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
 
   let menuRef = useRef();
   let menuTagRef = useRef();
@@ -127,14 +125,12 @@ function FiltersImages({
       if (albumName) {
         textContent += `\n\n Zdjęcia znajdują się w kategorii: ${albumName}`;
       }
-      if(dataWykonaniaDo && dataWykonaniaOd) {
-        textContent += `\n Od ${dataWykonaniaOd} do ${dataWykonaniaDo}`;
-      }
-      else if(dataWykonaniaDo) {
-        textContent += `\n Do ${dataWykonaniaDo}`;
-      }
-      else if(dataWykonaniaOd) {
-        textContent += `\n Od ${dataWykonaniaOd}`;
+      if (dateTo && dateFrom) {
+        textContent += `\n Od ${dateFrom} do ${dateTo}`;
+      } else if (dateTo) {
+        textContent += `\n Do ${dateTo}`;
+      } else if (dateFrom) {
+        textContent += `\n Od ${dateFrom}`;
       }
       zip.file("raport.txt", textContent);
 
@@ -162,7 +158,7 @@ function FiltersImages({
     img = DateFilter(img);
     setImagesSort(img);
     setFunny(Math.random());
-  }, [checkedTags, searchText, selectedOption, dataWykonaniaDo, dataWykonaniaOd]);
+  }, [checkedTags, searchText, selectedOption, dateTo, dateFrom]);
 
   const searchTextFilter = (img) => {
     if (searchText) {
@@ -179,37 +175,34 @@ function FiltersImages({
 
   const DateFilter = (img) => {
     let newimages;
-    const dateOD = new Date(dataWykonaniaOd);
-    const dateDO = new Date(dataWykonaniaDo);
+    const dateOD = new Date(dateFrom);
+    const dateDO = new Date(dateTo);
     let formatOd = Math.floor(dateOD.getTime());
     let formatDo = Math.floor(dateDO.getTime());
 
-    if(!dataWykonaniaDo && !dataWykonaniaOd)
-    {
-      return img; 
-    }
-    else if(!dataWykonaniaOd && dataWykonaniaDo)
-    {
+    if (!dateTo && !dateFrom) {
+      return img;
+    } else if (!dateFrom && dateTo) {
       newimages = img.filter((image) => image.dataWykonania <= formatDo);
-    }
-    else if(dataWykonaniaOd && !dataWykonaniaDo) {
+    } else if (dateFrom && !dateTo) {
       newimages = img.filter((image) => image.dataWykonania >= formatOd);
-    }
-    else {
-      if(formatOd>formatDo)
-      {
-        setDataWykonaniaDo(dataWykonaniaOd);
-        setDataWykonaniaOd(dataWykonaniaDo);
+    } else {
+      if (formatOd > formatDo) {
+        setDateTo(dateFrom);
+        setDateFrom(dateTo);
         let temp;
         temp = formatOd;
         formatOd = formatDo;
         formatDo = temp;
       }
-      newimages = img.filter((image) => image.dataWykonania >= formatOd && image.dataWykonania <= formatDo);
+      newimages = img.filter(
+        (image) =>
+          image.dataWykonania >= formatOd && image.dataWykonania <= formatDo
+      );
     }
-    
+
     return newimages;
-  }
+  };
 
   const imagesSorted = (img) => {
     if (img !== null) {
@@ -219,7 +212,7 @@ function FiltersImages({
         return handleSort(img);
       } else if (selectedOption === "Daty wykonania rosnąco") {
         return handleDateSort(img);
-      } else if (selectedOption == "Daty wykonania malejąco") {
+      } else if (selectedOption === "Daty wykonania malejąco") {
         return handleDateSortRe(img);
       } else {
         return defaultSort(img);
@@ -299,24 +292,29 @@ function FiltersImages({
             ))}
         </ul>
       </div>
-      <div className="InputField">
-      <label>Od:</label>
-      <input
-        style={{ color: "black" }}
-        type="date"
-        value={dataWykonaniaOd}
-        onChange={(e) => setDataWykonaniaOd(e.target.value)}
-      />
-    </div>
-    <div className="InputField">
-      <label>Do:</label>
-      <input
-        style={{ color: "black" }}
-        type="date"
-        value={dataWykonaniaDo}
-        onChange={(e) => setDataWykonaniaDo(e.target.value)}
-      />
-    </div>
+      <div className="Dates">
+        <div className="Date From">
+          <div className="InputField">
+            <label>Od:</label>
+            <input
+              type="date"
+              value={dateFrom}
+              onChange={(e) => setDateFrom(e.target.value)}
+            />
+          </div>
+        </div>
+
+        <div className="Date To">
+          <div className="InputField">
+            <label>Do: </label>
+            <input
+              type="date"
+              value={dateTo}
+              onChange={(e) => setDateTo(e.target.value)}
+            />
+          </div>
+        </div>
+      </div>
       <div className="SearchInput">
         <img src={Search} alt=""></img>
         <input

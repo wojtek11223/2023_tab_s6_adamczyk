@@ -14,6 +14,7 @@ function AlbumEdit({ showEditAlbum, setShowEditAlbum, parentCategoryName,parentC
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm();
 

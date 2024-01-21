@@ -104,8 +104,8 @@ const PhotoUploadForm = () => {
       .catch((error) => {
         setMessage(
           error.response.data !== undefined
-            ? error.response.data
-            : "Error uploading file"
+          ? error.response.data
+          : "Error uploading file"
         );
         console.error("Error uploading file:", error);
       });

@@ -16,7 +16,8 @@
   position: relative;
 }
 
-.Form .InputField Label {
+.Form .InputField Label,
+.Form .Blocks Label {
   position: absolute;
   font-size: 15px;
   color: #262626;
@@ -111,7 +112,7 @@
   padding: 10px;
 }
 
-.Form .InputGroup .InputField [type="checkbox"] {
+.Form .InputGroup .Regulations [type="checkbox"] {
   display: flex;
   width: 25px;
   height: 25px;
@@ -124,12 +125,12 @@
   transition: ease-in-out 0.1s;
 }
 
-.Form .InputGroup .InputField input[type="checkbox"]:hover {
+.Form .InputGroup .Regulations input[type="checkbox"]:hover {
   background-color: rgb(128, 208, 255);
   transition: ease-in-out 0.1s;
 }
 
-.Form .InputGroup .InputField input[type="checkbox"]:checked {
+.Form .InputGroup .Regulations input[type="checkbox"]:checked {
   width: 25px;
   height: 25px;
   background-color: rgb(0, 162, 255);

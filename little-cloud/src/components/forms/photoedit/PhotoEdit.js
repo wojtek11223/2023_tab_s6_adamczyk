@@ -142,6 +142,7 @@ function PhotoEdit({
               defaultValue={activePhoto.nazwa.split(".")[0]}
               {...register("name", registerOptions.name)}
             />
+            {errors?.name && <p>{errors.name.message}</p>}
           </div>
         </div>
 
@@ -173,6 +174,7 @@ function PhotoEdit({
         </div>
         <div className="InputGroup">
           <div className="Blocks">
+            <label>Zaznacz tagi, które chcesz usunąć: </label>
             <ul>
               {activePhoto &&
                 activePhoto.tags.length !== 0 &&

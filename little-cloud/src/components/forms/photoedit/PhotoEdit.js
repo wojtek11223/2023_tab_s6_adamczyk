@@ -142,6 +142,7 @@ function PhotoEdit({
               defaultValue={activePhoto.nazwa.split(".")[0]}
               {...register("name", registerOptions.name)}
             />
+            {errors?.name && <p>{errors.name.message}</p>}
           </div>
         </div>
 

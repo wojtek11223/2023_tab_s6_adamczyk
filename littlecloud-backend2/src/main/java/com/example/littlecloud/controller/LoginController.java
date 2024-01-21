@@ -250,6 +250,14 @@ public class LoginController {
             }
             else
             {
+                if(nadrzedna == kategoriatoedit)
+                {
+                    return ResponseEntity.badRequest().body("Nie można przypisać siebie jako kategori nadrzęnej");
+                }
+                if(categoryService.counterUnderCategories(nadrzedna.getIdKategorii(),authentication.getName()) >=2 )
+                {
+                    return ResponseEntity.badRequest().body("Podany album nadrzędny ma już za dużo podalbumów");
+                }
                 kategoriatoedit.setNadkategoria(nadrzedna);
             }
 
@@ -262,11 +270,17 @@ public class LoginController {
     public ResponseEntity<String> deleteCat(@NotNull @RequestBody DeleteCategoryDTO deleteCategoryDTO) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(categoryService.findAllByIdKategoriiAndUzytkownik_Name(deleteCategoryDTO.getAlbumId(),authentication.getName()) != null) {
+            List<Kategorie> kategorie_podrzedne = categoryService.getSubCategoriesByParentIdCat(deleteCategoryDTO.getAlbumId(),authentication.getName());
+            kategorie_podrzedne.forEach((cat) -> {
+                cat.setNadkategoria(null);
+                categoryService.addCategory(cat);
+            });
             categoryService.delete(deleteCategoryDTO.getAlbumId(), authentication.getName());
         }
         else {
             return ResponseEntity.badRequest().body("Nie ma takiej kategorii");
         }
+
         return ResponseEntity.ok("Udało się zmienić");
     }
     @PostMapping("/photo_upload")

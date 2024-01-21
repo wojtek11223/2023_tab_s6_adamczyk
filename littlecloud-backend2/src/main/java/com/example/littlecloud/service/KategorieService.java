@@ -32,6 +32,10 @@ public class KategorieService {
                 .collect(Collectors.toList());
     }
 
+    public List<Kategorie> getSubCategoriesByParentIdCat(Long parentid, String username) {
+        return kategorieRepo.findAllByUzytkownik_NameAndNadkategoria_IdKategorii(username,parentid);
+    }
+
     public Kategorie findAllByNazwaKategoriiAndUzytkownik_Name(String namecategory, String username){
         return kategorieRepo.findAllByNazwaKategoriiAndUzytkownik_Name(namecategory,username);
     }

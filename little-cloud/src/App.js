@@ -18,6 +18,7 @@ import Albums from "./components/album/Albums";
 import Logout from "./components/Logout";
 import PhotoUploadForm from "./components/forms/photoupload/PhotoUpload";
 import Profile from "./components/forms/profile/Profile";
+import MainPage from "./components/album/mainpage/MainPage";
 import Photo from "./components/album/slides/Slide";
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
         <Route index element={<Navigate to="/login" />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/mainpage" element={<MainPage />} />
         {sessionStorage.getItem("authName") != null ? (
           <>
             <Route path="/albums" element={<Albums />} />
@@ -37,6 +39,7 @@ function App() {
             <Route path="/logout" element={<Logout />} />
             <Route path="/photoUpload" element={<PhotoUploadForm />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/mainpage" element={<MainPage />} />
           </>
         ) : (
           <Route path="*" element={<Navigate to="/login" />} />

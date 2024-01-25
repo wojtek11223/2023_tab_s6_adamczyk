@@ -1,0 +1,84 @@
+/* MainPage.css */
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Arial', sans-serif; 
+    background-color: #f0f0f0; 
+  }
+  
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    z-index: 3;
+  }
+  
+  h1 {
+    color: #d6d7dd; 
+    text-align: center;
+    font-size: 10em;
+    margin-bottom: 0px;
+    margin-left: 10px;
+    margin-right: 10px;
+    text-shadow: 22px 2px 18px rgb(3, 24, 29);
+  }
+  
+   p5 {
+    color: #d6d7dd; 
+    text-align: center;
+    margin-left: 21px;
+    margin-top: 0px;
+    font-size: 2.5em; 
+  }
+  
+
+  #aboutus {
+    background-color: rgba(3, 24, 29, 0);
+    padding: 40px 0;
+    border-radius: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .aboutus-boxes {
+    text-align: center;
+    
+  }
+  
+  .aboutus-box {
+    background-color: rgba(3, 24, 29, 0.434);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s ease-in-out;
+    height: 200px;
+    border-color: blue;
+    box-shadow: 1px 1px 15px;
+    width: 100%;
+    max-width: 700px;
+    margin: 20px;
+  }
+  
+  .aboutus-box:hover {
+    transform: scale(1.05);
+  }
+  
+  .aboutus-box h3 {
+    font-size: 2em;
+    margin-bottom: 15px;
+    margin-top: 20px;
+  }
+  
+  .aboutus-box p {
+    font-size: 1em;
+    margin-left: 15px;
+    margin-right: 15px;
+    text-align: justify;
+  }
+  
+
+  .bottom-space {
+    height: 100px;
+    background-color: #f0f0f000;
+  }

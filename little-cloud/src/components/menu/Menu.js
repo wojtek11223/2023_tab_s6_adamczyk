@@ -36,7 +36,7 @@ class Menu extends React.Component {
                   <img src={MenuButton} alt="" />
                 </li> */}
                 <li>
-                  <Link to="/login">
+                  <Link to="/mainpage">
                     <button>Strona główna</button>
                   </Link>
                 </li>
@@ -61,7 +61,7 @@ class Menu extends React.Component {
             <>
               <ul className="Left">
                 <li>
-                  <Link to="/albums">
+                  <Link to="/mainpage">
                     <button>Strona główna</button>
                   </Link>
                 </li>

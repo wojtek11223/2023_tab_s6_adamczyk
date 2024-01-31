@@ -76,11 +76,6 @@ class Menu extends React.Component {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/photoUpload">
-                    <button>Dodaj zdjęcie</button>
-                  </Link>
-                </li>
-                <li>
                   <button onClick={this.handleClick}>Chmurka</button>
                 </li>
                 <li>

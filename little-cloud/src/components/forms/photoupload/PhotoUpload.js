@@ -4,20 +4,21 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "../Form.css";
 import ProgressBar from "./ProgressBar/ProgressBar";
+import { useNavigate } from "react-router-dom";
 
 
 
-const PhotoUploadForm = ({showAddPhoto, setShowAddPhoto, AlbumName}) => {
+const PhotoUploadForm = ({showAddPhoto, setShowAddPhoto, AlbumName, category}) => {
   const currentDate = new Date();
   const [file, setFile] = useState(null);
   const [nazwa, setNazwa] = useState("");
   const [dataWykonania, setDataWykonania] = useState(currentDate.toISOString().split('T')[0]);
-  const [kategoriaID, setKategoriaID] = useState("");
+  const [kategoriaID, setKategoriaID] = useState(AlbumName !== undefined ? AlbumName : "");
   const [Tag, setTag] = useState("");
   const [message, setMessage] = useState("");
   const [progressBar, setProgressBar] = useState(null);
   let addForm = useRef();
-
+  const navigate = useNavigate();
   const getImageInfoFromFile = (file) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -134,6 +135,10 @@ const PhotoUploadForm = ({showAddPhoto, setShowAddPhoto, AlbumName}) => {
             ? response.data
             : "File uploaded successfully"
         );
+        category !== undefined
+        ? navigate(`/albums/${category}`)
+        : navigate("/albums");
+        window.location.reload();
       })
       .catch((error) => {
         setMessage(

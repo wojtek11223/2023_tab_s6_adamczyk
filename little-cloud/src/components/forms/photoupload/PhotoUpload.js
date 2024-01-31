@@ -1,11 +1,13 @@
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import axios from "axios";
 import "../Form.css";
 import ProgressBar from "./ProgressBar/ProgressBar";
 
-const PhotoUploadForm = () => {
+
+
+const PhotoUploadForm = ({showAddPhoto, setShowAddPhoto, AlbumName}) => {
   const currentDate = new Date();
   const [file, setFile] = useState(null);
   const [nazwa, setNazwa] = useState("");
@@ -14,6 +16,7 @@ const PhotoUploadForm = () => {
   const [Tag, setTag] = useState("");
   const [message, setMessage] = useState("");
   const [progressBar, setProgressBar] = useState(null);
+  let addForm = useRef();
 
   const getImageInfoFromFile = (file) => {
     return new Promise((resolve, reject) => {
@@ -42,6 +45,9 @@ const PhotoUploadForm = () => {
       reader.readAsDataURL(file);
     });
   };
+
+
+
   const handleFileChange = (e) => {
     setProgressBar(0);
     setMessage(null);
@@ -53,6 +59,34 @@ const PhotoUploadForm = () => {
       setNazwa(selectedFile.name);
     }
   };
+
+  useEffect(() => {
+    if (showAddPhoto) {
+      const handleEsc = (e) => {
+        if (e.key === "Escape") {
+          setShowAddPhoto(false);
+        }
+      };
+      window.addEventListener("keydown", handleEsc);
+
+      return () => {
+        window.removeEventListener("keydown", handleEsc);
+      };
+    }
+  }, [showAddPhoto, setShowAddPhoto]);
+
+  useEffect(() => {
+    function handler(e) {
+      if (addForm && !addForm.current.contains(e.target)) {
+        setShowAddPhoto(false);
+      }
+    }
+    document.addEventListener("mousedown", handler);
+    return () => {
+      document.removeEventListener("mousedown", handler);
+    };
+  }, [addForm]);
+
   useEffect(() => {
     const handlePopstate = () => {
       window.location.reload();
@@ -114,8 +148,8 @@ const PhotoUploadForm = () => {
   return (
     <>
       <ProgressBar progressBar={progressBar} />
-      <div className="Container">
-        <form className="Form" onSubmit={handleSubmit}>
+      <div className="BlurAll">
+        <form className="Form" onSubmit={handleSubmit} ref={addForm}>
           <div className="Text">
             Dodaj zdjęcie {message && <p>{message}</p>}
           </div>
@@ -145,7 +179,7 @@ const PhotoUploadForm = () => {
               <input
                 style={{ color: "black" }}
                 type="text"
-                value={kategoriaID}
+                defaultValue={AlbumName ? AlbumName : ""}
                 onChange={(e) => setKategoriaID(e.target.value)}
               />
             </div>

@@ -5,6 +5,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 import Tile from "./tile/Tile";
+import "./ImagesCollection.css"; 
 
 function ImagesCollection({
   error,
@@ -15,6 +16,7 @@ function ImagesCollection({
   setActivePhoto,
   category,
   setShowEditPhoto,
+  setShowAddPhoto
 }) {
   const [showPhotos, setShowPhotos] = useState(true);
 
@@ -30,6 +32,7 @@ function ImagesCollection({
     setShowSlide(true);
     setActivePhoto(Photo);
   };
+
 
   const handleTileDeletePhoto = (Photoid) => {
     const postData = {
@@ -89,7 +92,7 @@ function ImagesCollection({
           ) : error ? (
             <p>{error.message}</p>
           ) : images && images.length !== 0 ? (
-            images.map((image) => (
+            images.map((image, index) => (
               <React.Fragment key={image.idZdjecia}>
                 <Tile
                   key={image.idZdjecia}
@@ -98,7 +101,18 @@ function ImagesCollection({
                   onClick={() => handlePhotoClick(image)}
                   handleEditClick={() => handleEditClick(image)}
                   handleDeletePhotoClick={() => handleTileDeletePhoto(image.idZdjecia)}
+                  
                 ></Tile>
+                  {index === images.length - 1 && (
+                    <button
+                      className="add-photo-button"
+                      onClick={()=>setShowAddPhoto(true)}
+                    >
+                      +
+                    </button>
+                  )}
+
+                
               </React.Fragment>
             ))
           ) : (

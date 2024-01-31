@@ -1,0 +1,24 @@
+/* ImagesCollection.css */
+
+.ImagesCollection {
+  width: 200px;
+  height: 200px;
+}
+
+.add-photo-button {
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    color: #262626;
+    border-radius: 10px;
+    border: none;
+    transition: ease-in-out 0.2s;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.add-photo-button:hover {
+  background-color: rgb(8, 19, 25);
+  color: white;
+  transition: ease-in-out 0.2s;
+}

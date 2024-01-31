@@ -18,8 +18,9 @@ import Albums from "./components/album/Albums";
 import Logout from "./components/Logout";
 import PhotoUploadForm from "./components/forms/photoupload/PhotoUpload";
 import Profile from "./components/forms/profile/Profile";
-import MainPage from "./components/album/mainpage/MainPage";
+import MainPage from "./components/mainpage/MainPage";
 import Photo from "./components/album/slides/Slide";
+import Help from "./components/help/Help";
 
 function App() {
   const [cloudHumor, setCloudHumor] = useState(false);
@@ -32,6 +33,7 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/mainpage" element={<MainPage />} />
+        <Route path="/help" element={<Help />} />
         {sessionStorage.getItem("authName") != null ? (
           <>
             <Route path="/albums" element={<Albums />} />
@@ -40,6 +42,7 @@ function App() {
             <Route path="/photoUpload" element={<PhotoUploadForm />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/mainpage" element={<MainPage />} />
+            <Route path="/help" element={<Help />} />
           </>
         ) : (
           <Route path="*" element={<Navigate to="/login" />} />

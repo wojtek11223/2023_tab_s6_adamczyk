@@ -43,6 +43,11 @@ class Menu extends React.Component {
                 <li>
                   <button onClick={this.handleClick}>Chmurka</button>
                 </li>
+                <li>
+                  <Link to="/help">
+                    <button>Pomoc</button>
+                  </Link>
+                </li>
               </ul>
               <ul className="Right">
                 <li>
@@ -71,12 +76,12 @@ class Menu extends React.Component {
                   </Link>
                 </li>
                 <li>
-                  <Link to="/photoUpload">
-                    <button>Dodaj zdjęcie</button>
-                  </Link>
+                  <button onClick={this.handleClick}>Chmurka</button>
                 </li>
                 <li>
-                  <button onClick={this.handleClick}>Chmurka</button>
+                  <Link to="/help">
+                    <button>Pomoc</button>
+                  </Link>
                 </li>
               </ul>
               <ul className="Right">

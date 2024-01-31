@@ -4,20 +4,21 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import "../Form.css";
 import ProgressBar from "./ProgressBar/ProgressBar";
+import { useNavigate } from "react-router-dom";
 
 
 
-const PhotoUploadForm = ({showAddPhoto, setShowAddPhoto, AlbumName}) => {
+const PhotoUploadForm = ({showAddPhoto, setShowAddPhoto, AlbumName, category}) => {
   const currentDate = new Date();
   const [file, setFile] = useState(null);
   const [nazwa, setNazwa] = useState("");
   const [dataWykonania, setDataWykonania] = useState(currentDate.toISOString().split('T')[0]);
-  const [kategoriaID, setKategoriaID] = useState("");
+  const [kategoriaID, setKategoriaID] = useState(AlbumName !== undefined ? AlbumName : "");
   const [Tag, setTag] = useState("");
   const [message, setMessage] = useState("");
   const [progressBar, setProgressBar] = useState(null);
   let addForm = useRef();
-
+  const navigate = useNavigate();
   const getImageInfoFromFile = (file) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -103,46 +104,55 @@ const PhotoUploadForm = ({showAddPhoto, setShowAddPhoto, AlbumName}) => {
     e.preventDefault();
     debugger;
     const jwtToken = sessionStorage.getItem("authToken");
-    getImageInfoFromFile(file).then((info) => {
-      const postZdjecieDTO = {
-        file: file,
-        nazwa: nazwa,
-        wysokosc: info.resolution.height,
-        szerokosc: info.resolution.width,
-        dataWykonania: dataWykonania,
-        nazwaKategorii: kategoriaID,
-        tagi: Tag
-      };
-        return axios.post(
-          "http://localhost:8080/api/photo_upload",
-          postZdjecieDTO,
-          {
-            headers: {
-              "Content-Type": "multipart/form-data",
-              Accept: "*/*",
-              Authorization: `Bearer ${jwtToken}`,
-            },
-            onUploadProgress: (e) => {
-              setProgressBar(Math.round(100 * e.loaded) / e.total);
-            },
-          }
-        );
-      })
-      .then((response) => {
-        setMessage(
-          response.data !== undefined
-            ? response.data
-            : "File uploaded successfully"
-        );
-      })
-      .catch((error) => {
-        setMessage(
-          error.response.data !== undefined
-          ? error.response.data
-          : "Error uploading file"
-        );
-        console.error("Error uploading file:", error);
-      });
+    if(file) {
+      getImageInfoFromFile(file).then((info) => {
+        const postZdjecieDTO = {
+          file: file,
+          nazwa: nazwa,
+          wysokosc: info.resolution.height,
+          szerokosc: info.resolution.width,
+          dataWykonania: dataWykonania,
+          nazwaKategorii: kategoriaID,
+          tagi: Tag
+        };
+          return axios.post(
+            "http://localhost:8080/api/photo_upload",
+            postZdjecieDTO,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+                Accept: "*/*",
+                Authorization: `Bearer ${jwtToken}`,
+              },
+              onUploadProgress: (e) => {
+                setProgressBar(Math.round(100 * e.loaded) / e.total);
+              },
+            }
+          );
+        })
+        .then((response) => {
+          setMessage(
+            response.data !== undefined
+              ? response.data
+              : "File uploaded successfully"
+          );
+          category !== undefined
+          ? navigate(`/albums/${category}`)
+          : navigate("/albums");
+          window.location.reload();
+        })
+        .catch((error) => {
+          setMessage(
+            error.response.data !== undefined
+            ? error.response.data
+            : "Error uploading file"
+          );
+          console.error("Error uploading file:", error);
+        });
+    }
+    else {
+      setMessage("Dodaj zdjęcie");
+    }
   };
 
   return (

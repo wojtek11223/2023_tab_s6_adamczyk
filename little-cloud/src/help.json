@@ -1,0 +1,10 @@
+[
+  { "id": 0, "question": "Jak edytować dane użytkownika?", "answer": "Należy wcisnąć przycisk \"Witaj [twoja nazwa użytkownika]\" znajdujący się w prawym górnym rogu ekranu, po czym wprowadzić nowe dane i zatwierdzić zmiany." },
+  { "id": 1, "question": "Jak usunąć konto?", "answer": "Należy wcisnąć przycisk \"Witaj [twoja nazwa użytkownika]\" znajdujący się w prawym górnym rogu ekranu, po czym wcisnąć przycisk \"Usuń konto\"." },
+  { "id": 2, "question": "Jak dodać album?", "answer": "Będąc w zakładce Albumy, należy wcisnąć przycisk oznaczony znakiem plus w lewym górnym rogu interfejsu, w polu które się pojawiło wpisać nazwę albumu, i wcisnąć enter." },
+  { "id": 3, "question": "Jak edytować dane albumu?", "answer": "Należy najechać kursorem na wybrany album, po czym wcisnąć ikonkę ołówka. Po wypełnieniu formularza należy wcisnąć przycisk \"Edytuj album\". Aby pozostawić atrybut bez zmian, wystarczy nie wypełniać odpowiadającego mu pola w formularzu."},
+  { "id": 4, "question": "Jak dodać zdjęcie?", "answer": "Należy wejść w zakładkę \"Dodaj zdjęcie\", wybrać plik z dysku, datę wykonania oraz kategorię do której zdjęcie będzie należeć, opcjonalnie można dodać tagi. Po wypełnieniu formularza należy wcisnąć przycisk \"Prześlij zdjęcie\". Jest możliwość dodania wielu tagów na raz, aby to zrobić, należy wpisać tagi w pole o nazwie \"Tagi:\" rozdzielając je przecinkiem." },
+  { "id": 5, "question": "Jak edytować dane zdjęcia?", "answer": "Należy najechać kursorem na wybrane zdjęcie, po czym wcisnąć ikonkę ołówka. Po wypełnieniu formularza należy wcisnąć przycisk \"Edytuj zdjęcie\". Aby pozostawić atrybut bez zmian, wystarczy nie wypełniać odpowiadającego mu pola w formularzu. Jest możliwość dodania wielu tagów na raz, aby to zrobić, należy wpisać tagi w pole o nazwie \"Tagi:\" rozdzielając je przecinkiem." },
+  { "id": 6, "question": "Jak usunąć album?", "answer": "Należy najechać kursorem na wybrany album, po czym wcisnąć ikonkę X, następnie potwierdzić." },
+  { "id": 7, "question": "Jak usunąć zdjęcie?", "answer": "Należy najechać kursorem na wybrane zdjęcie, po czym wcisnąć ikonkę X, następnie potwierdzić." }
+]

@@ -141,6 +141,7 @@ function Albums() {
               showAddPhoto={showAddPhoto}
               setShowAddPhoto={setShowAddPhoto}
               AlbumName={AlbumName}
+              category={albumId}
             />
           ) : null}
           <Filters

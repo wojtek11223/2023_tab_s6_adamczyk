@@ -103,21 +103,18 @@ function ImagesCollection({
                   handleDeletePhotoClick={() => handleTileDeletePhoto(image.idZdjecia)}
                   
                 ></Tile>
-                  {index === images.length - 1 && (
-                    <button
-                      className="add-photo-button"
-                      onClick={()=>setShowAddPhoto(true)}
-                    >
-                      +
-                    </button>
-                  )}
 
-                
               </React.Fragment>
             ))
           ) : (
             <p>Nie ma żadnych zdjęć</p>
           )}
+          <button
+            className="add-photo-button"
+            onClick={()=>setShowAddPhoto(true)}
+          >
+            +
+          </button>
         </div>
       ) : null}
     </div>

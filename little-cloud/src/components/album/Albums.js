@@ -12,9 +12,11 @@ import ImageCollection from "./ImagesCollection";
 import FiltersImages from "./filters/FiltersImages";
 import PhotoEdit from "../forms/photoedit/PhotoEdit";
 import AlbumEdit from "../forms/albumedit/AlbumEdit";
+import PhotoUploadForm from "../forms/photoupload/PhotoUpload";
 
 function Albums() {
   const navigate = useNavigate();
+  const [showAddPhoto, setShowAddPhoto] = useState(false);
   const [error, setError] = useState(null);
   const [albums, setAlbums] = useState(null);
   const [images, setImages] = useState(null);
@@ -29,6 +31,7 @@ function Albums() {
   const [activeAlbum, setActiveAlbum] = useState(null);
   const [showAddCat, setShowAddCat] = useState(false);
   const { albumId } = useParams();
+  
 
   const [uniqueTags, SetUniqueTags] = useState(null);
   const [AlbumName, SetAlbumName] = useState("");
@@ -133,6 +136,13 @@ function Albums() {
               parentCategory={albumId}
             />
           ) : null}
+          {showAddPhoto ? (
+            <PhotoUploadForm
+              showAddPhoto={showAddPhoto}
+              setShowAddPhoto={setShowAddPhoto}
+              AlbumName={AlbumName}
+            />
+          ) : null}
           <Filters
             albums={albums}
             albumsSort={albumsSort}
@@ -171,6 +181,7 @@ function Albums() {
             setActivePhoto={setActivePhoto}
             category={albumId}
             setShowEditPhoto={setShowEditPhoto}
+            setShowAddPhoto={setShowAddPhoto}
           />
         </>
       )}

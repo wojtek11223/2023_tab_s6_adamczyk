@@ -51,3 +51,14 @@
 .Menu li img {
   height: 30px;
 }
+
+@media screen and (max-width: 1140px) {
+  .Right,
+  .Left {
+    display: none;
+  }
+  .LeftSelectMenu,
+  .RightSelectMenu {
+    display: block;
+  }
+}

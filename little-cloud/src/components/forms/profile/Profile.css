@@ -104,7 +104,6 @@
   padding: 10px;
 }
 
-
 .Profile input[type="checkbox"] {
   display: flex;
   width: 25px;
@@ -194,3 +193,8 @@
   }
 }
 
+@media screen and (max-height: 850px) and (max-width: 1140px) {
+  .Container {
+    padding-top: 0px;
+  }
+}

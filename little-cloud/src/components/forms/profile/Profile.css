@@ -185,16 +185,3 @@
   color: #262626;
   transition: ease-in-out 0.2s;
 }
-
-@media screen and (max-height: 850px) {
-  .Container {
-    padding-top: 50px;
-    align-items: start;
-  }
-}
-
-@media screen and (max-height: 850px) and (max-width: 1140px) {
-  .Container {
-    padding-top: 0px;
-  }
-}

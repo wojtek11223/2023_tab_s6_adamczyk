@@ -49,3 +49,9 @@
     align-items: start;
   }
 }
+
+@media screen and (max-width: 1140px) {
+  .BlurAll {
+    margin-top: 0;
+  }
+}

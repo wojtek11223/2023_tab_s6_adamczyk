@@ -1,7 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import MenuSmall from "./MenuSmall";
 import "./Menu.css";
-import MenuButton from "../../assets/MenuButton.svg";
 
 class Menu extends React.Component {
   constructor(props) {
@@ -10,6 +10,8 @@ class Menu extends React.Component {
     // Inicjalizacja stanu
     this.state = {
       authName: null,
+      showLeftMenu: false,
+      showRightMenu: false,
     };
   }
 
@@ -28,6 +30,7 @@ class Menu extends React.Component {
     const { authName } = this.state;
     return (
       <React.Fragment>
+        <MenuSmall authName={authName} handleClick={this.handleClick} />
         <div className="Menu">
           {authName == null ? (
             <>
@@ -61,6 +64,7 @@ class Menu extends React.Component {
                   </Link>
                 </li>
               </ul>
+              <div className="SelectMenu"></div>
             </>
           ) : (
             <>

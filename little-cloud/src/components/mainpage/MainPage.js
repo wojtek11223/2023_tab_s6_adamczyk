@@ -36,7 +36,7 @@ function MainPage() {
   }, [navigate]);
 
   return (
-    <div>
+    <div className="MainPage">
       <div className="container">
         <h1>Littlecloud</h1>
         <p5>Twoja mała chmurka.</p5>

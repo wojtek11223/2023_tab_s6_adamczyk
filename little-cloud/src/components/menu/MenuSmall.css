@@ -1,0 +1,94 @@
+.MenuSmall {
+  position: fixed;
+  width: 100%;
+  z-index: 999;
+  height: 50px;
+  background-color: rgb(8, 19, 25);
+  display: flex;
+  justify-content: space-between;
+}
+
+.LeftSelectMenu,
+.RightSelectMenu {
+  display: block;
+  position: relative;
+}
+
+.LeftSelectMenu .Select,
+.RightSelectMenu .Select {
+  background-color: transparent;
+  color: white;
+  border: none;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: ease-in-out 0.2s;
+  width: 200px;
+}
+
+.Select:hover {
+  box-shadow: inset 0 -4px 0 white;
+  transition: ease-in-out 0.2s;
+}
+
+.List {
+  display: block;
+  width: 100%;
+  list-style-type: none;
+  background-color: white;
+  border-radius: 0 0 20px 20px;
+  padding: 10px;
+}
+
+.List.inactive {
+  visibility: hidden;
+  opacity: 0;
+}
+
+.List.active {
+  visibility: visible;
+  opacity: 100;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+.List li a button,
+.List li button {
+  display: block;
+  width: 100%;
+  border: none;
+  background-color: transparent;
+  color: rgb(8, 19, 25);
+  padding: 10px;
+  transition: ease-in-out 0.2s;
+  text-wrap: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  height: 40px;
+  border-radius: 10px;
+}
+
+.List li a button:hover,
+.List li button:hover {
+  transition: ease-in-out 0.2s;
+  background-color: rgb(8, 19, 25);
+  color: white;
+}
+
+.LeftSelectMenu .List {
+  position: absolute;
+  top: 50px;
+  left: 0;
+}
+
+.RightSelectMenu .List {
+  position: absolute;
+  top: 50px;
+  right: 0;
+}
+
+@media screen and (min-width: 1140px) {
+  .MenuSmall {
+    display: none;
+  }
+}

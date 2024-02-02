@@ -63,3 +63,9 @@ p5 {
   margin-right: 15px;
   text-align: justify;
 }
+
+@media screen and (max-width: 1140px) {
+  .MainPage {
+    padding-top: 50px;
+  }
+}

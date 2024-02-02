@@ -104,7 +104,6 @@
   padding: 10px;
 }
 
-
 .Profile input[type="checkbox"] {
   display: flex;
   width: 25px;
@@ -186,11 +185,3 @@
   color: #262626;
   transition: ease-in-out 0.2s;
 }
-
-@media screen and (max-height: 850px) {
-  .Container {
-    padding-top: 50px;
-    align-items: start;
-  }
-}
-

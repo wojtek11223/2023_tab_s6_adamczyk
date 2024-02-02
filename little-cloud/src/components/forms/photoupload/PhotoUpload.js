@@ -112,7 +112,7 @@ const PhotoUploadForm = ({showAddPhoto, setShowAddPhoto, AlbumName, category}) =
           wysokosc: info.resolution.height,
           szerokosc: info.resolution.width,
           dataWykonania: dataWykonania,
-          nazwaKategorii: kategoriaID,
+          nazwaKategorii: kategoriaID ? kategoriaID : "",
           tagi: Tag
         };
           return axios.post(

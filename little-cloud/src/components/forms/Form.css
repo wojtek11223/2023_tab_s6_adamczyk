@@ -143,8 +143,8 @@
 
 @media screen and (max-height: 850px) {
   .Container {
-    padding-top: 50px;
     align-items: start;
+    padding-top: 100px;
   }
 }
 

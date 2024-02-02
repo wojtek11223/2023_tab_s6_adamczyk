@@ -256,7 +256,7 @@ function FiltersImages({
 
   return (
     <div className="Filters">
-      {images && images.length !== 0 ? (
+      {imagesSort && imagesSort.length !== 0 ? (
         <div className="DownloadZip">
           <button onClick={downloadImagesAsZip}>
             <img src={Download} />

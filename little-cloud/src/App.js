@@ -29,7 +29,7 @@ function App() {
     <BrowserRouter>
       <Menu cloudHumor={cloudHumor} setCloudHumor={setCloudHumor} />
       <Routes>
-        <Route index element={<Navigate to="/login" />} />
+        <Route index element={<Navigate to="/mainpage" />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/mainpage" element={<MainPage />} />

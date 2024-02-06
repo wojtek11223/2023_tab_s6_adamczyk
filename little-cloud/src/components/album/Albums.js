@@ -34,7 +34,7 @@ function Albums() {
   
 
   const [uniqueTags, SetUniqueTags] = useState(null);
-  const [AlbumName, SetAlbumName] = useState("");
+  const [AlbumName, SetAlbumName] = useState(null);
   const [ref, inView] = useInView({
     triggerOnce: true,
   });
@@ -164,6 +164,7 @@ function Albums() {
             parentCategory={albumId}
             setShowEditAlbum={setShowEditAlbum}
             setActiveAlbum={setActiveAlbum}
+            albumName={AlbumName}
           />
           <FiltersImages
             images={images}

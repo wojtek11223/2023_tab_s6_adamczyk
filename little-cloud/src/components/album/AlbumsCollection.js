@@ -19,7 +19,8 @@ function AlbumsCollection({
   setFunny,
   parentCategory,
   setShowEditAlbum,
-  setActiveAlbum
+  setActiveAlbum,
+  albumName
 }) {
   const [showAlbums, setShowAlbums] = useState(true);
 
@@ -62,7 +63,7 @@ function AlbumsCollection({
   return (
     <div className="Collection" ref={forwardedRef}>
       <div className="Title">
-        <div className="Text">Albumy:</div>
+        <div className="Text">{`${albumName ? albumName : "Albumy"}:`}</div>
         <button
           onClick={() => {
             setShowAlbums(!showAlbums);

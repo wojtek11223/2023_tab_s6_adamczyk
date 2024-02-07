@@ -32,6 +32,8 @@
   font-size: 25px;
   color: white;
   border-radius: 20px;
+  white-space: nowrap;
+  overflow: ellipsis;
 }
 
 .Title button {

@@ -46,19 +46,9 @@ public class DataLoader implements CommandLineRunner {
                 Kategorie kategorie1 = dodajPrzykladoweKategorie(user1,"Moje fotki");
                 Kategorie kategorie2 = dodajPrzykladoweKategorie(user1,"Zwierzątka", kategorie1);
                 Kategorie kategorie3 = dodajPrzykladoweKategorie(user1,"Inne", kategorie1);
-                Zdjecia zdjecie = dodajPrzykladoweZdjecie("studenci przy maszynie", "2023-11-22", "studenci.jpg");
-                dodajPrzykladoweKategorieZdjecia(zdjecie, kategorie1);
-                dodajPrzykladowyTag(zdjecie, "zajęcia");
-                dodajPrzykladowyTag(zdjecie, "studenci");
-                Zdjecia zdjecie1 =dodajPrzykladoweZdjecie("kot za drzewem", "2022-01-26", "kot1.jpg");
-                dodajPrzykladoweKategorieZdjecia(zdjecie1, kategorie2);
-                dodajPrzykladowyTag(zdjecie1, "kotek");
-                Zdjecia zdjecie2 =dodajPrzykladoweZdjecie("kot na balu", "2023-11-22", "kot4.jpg");
-                dodajPrzykladoweKategorieZdjecia(zdjecie2, kategorie2);
-                dodajPrzykladowyTag(zdjecie2, "kotek");
             }
         }
-        catch (IOException e) {
+        catch (Exception e) {
             e.printStackTrace();
         }
 

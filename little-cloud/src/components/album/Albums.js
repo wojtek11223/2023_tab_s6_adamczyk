@@ -31,8 +31,7 @@ function Albums() {
   const [activeAlbum, setActiveAlbum] = useState(null);
   const [showAddCat, setShowAddCat] = useState(false);
   const { albumId } = useParams();
-  
-
+  const [actualId, setActualID] = useState(false);
   const [uniqueTags, SetUniqueTags] = useState(null);
   const [AlbumName, SetAlbumName] = useState(null);
   const [ref, inView] = useInView({
@@ -47,6 +46,7 @@ function Albums() {
         apiURL = "http://localhost:8080/api/albums";
       } else {
         apiURL = `http://localhost:8080/api/album/${albumId}`;
+        setActualID(true);
       }
       axios({
         url: apiURL,
@@ -86,6 +86,13 @@ function Albums() {
       window.removeEventListener("popstate", handlePopstate);
     };
   }, []);
+
+  useEffect(() => {
+    if(actualId)
+    {
+      window.location.reload();
+    }
+  }, [albumId]);
 
   const handleTileClick = (albumId) => {
     navigate(`/albums/${albumId}`);
